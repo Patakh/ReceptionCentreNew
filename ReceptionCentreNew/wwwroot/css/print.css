@@ -1,0 +1,306 @@
+﻿p {
+    text-indent: 50px;
+    line-height: 1.9;
+}
+
+.fs-14 {
+    font-size: 14px !important;
+}
+
+.fs-16 {
+    font-size: 16px !important;
+}
+
+.fs-18 {
+    font-size: 18px !important;
+}
+
+.fs-20 {
+    font-size: 20px !important;
+}
+
+.fs-22 {
+    font-size: 22px !important;
+}
+
+.fs-24 {
+    font-size: 24px !important;
+}
+
+.fs-26 {
+    font-size: 26px !important;
+}
+
+.fs-28 {
+    font-size: 28px !important;
+}
+
+div.page {
+    background: white;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 0.5cm;
+    box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+}
+
+tbody {
+    color: #000;
+}
+
+th {
+    font-weight: 600;
+}
+
+.dl-horizontal dd {
+    margin-left: 35px;
+}
+
+.print-view {
+    display: block;
+}
+
+@media print {
+    .print-view {
+        display: block;
+    }
+
+    .card-box-print {
+        padding: 20px;
+        border: 1px solid black;
+        -webkit-border-radius: 5px;
+        border-radius: 5px;
+        -moz-border-radius: 5px;
+        background-clip: padding-box;
+        margin-bottom: 20px;
+        background-color: #fff;
+        background-color: white;
+    }
+
+    p {
+        text-indent: 50px;
+        line-height: 1.9;
+    }
+
+    .th-ws {
+        white-space: nowrap;
+        font-size: 11px;
+    }
+
+    .brd {
+        border-bottom: 0.5px solid black;
+        /* Параметры границы */
+    }
+
+    .pm-b-70 {
+        padding-bottom: 60px !important;
+    }
+
+    .pm-b-35 {
+        padding-bottom: 35px !important;
+    }
+
+    div.page {
+        background: white;
+        display: block;
+        margin: 0 auto;
+        margin-bottom: 0.5cm;
+        box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);
+    }
+
+    .fs-7 {
+        font-size: 7px !important;
+    }
+
+    .fs-8 {
+        font-size: 8px !important;
+    }
+
+    .fs-9 {
+        font-size: 9px !important;
+    }
+
+    .fs-10 {
+        font-size: 10px !important;
+    }
+
+    .fs-11 {
+        font-size: 11px !important;
+    }
+
+    .fs-12 {
+        font-size: 12px !important;
+    }
+
+    .fs-13 {
+        font-size: 13px !important;
+    }
+
+    .fs-14 {
+        font-size: 14px !important;
+    }
+
+    .fs-16 {
+        font-size: 16px !important;
+    }
+
+    .fs-18 {
+        font-size: 18px !important;
+    }
+
+    .fs-20 {
+        font-size: 20px !important;
+    }
+
+    .fs-22 {
+        font-size: 22px !important;
+    }
+
+    .fs-24 {
+        font-size: 24px !important;
+    }
+
+    .fs-26 {
+        font-size: 26px !important;
+    }
+
+    .fs-28 {
+        font-size: 28px !important;
+    }
+
+    .col-print-1 {
+        width: 8%;
+        float: left;
+    }
+
+    .col-print-2 {
+        width: 16%;
+        float: left;
+    }
+
+    .col-print-3 {
+        width: 25%;
+        float: left;
+    }
+
+    .col-print-4 {
+        width: 33%;
+        float: left;
+    }
+
+    .col-print-5 {
+        width: 42%;
+        float: left;
+    }
+
+    .col-print-6 {
+        width: 50%;
+        float: left;
+    }
+
+    .col-print-7 {
+        width: 58%;
+        float: left;
+    }
+
+    .col-print-8 {
+        width: 66%;
+        float: left;
+    }
+
+    .col-print-9 {
+        width: 75%;
+        float: left;
+    }
+
+    .col-print-10 {
+        width: 83%;
+        float: left;
+    }
+
+    .col-print-11 {
+        width: 92%;
+        float: left;
+    }
+
+    .col-print-12 {
+        width: 100%;
+        float: left;
+    }
+
+    .dl-horizontal dt {
+        float: left;
+        min-width: 80px;
+        overflow: hidden;
+        clear: left;
+        text-align: left;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        /*margin-bottom: -10px;*/
+    }
+
+    .dl-horizontal dd {
+        margin-left: 100px;
+        /*margin-bottom: -10px;*/
+    }
+
+    blockquote {
+        padding: 10px 20px;
+        margin: 0 0 20px;
+        font-size: 17.5px;
+    }
+
+        blockquote ol:last-child,
+        blockquote p:last-child,
+        blockquote ul:last-child {
+            margin-bottom: 0;
+        }
+
+        blockquote .small,
+        blockquote footer,
+        blockquote small {
+            display: block;
+            font-size: 80%;
+            line-height: 1.42857143;
+            color: #777;
+        }
+
+            blockquote .small:before,
+            blockquote footer:before,
+            blockquote small:before {
+                content: '\2014 \00A0';
+            }
+
+        .blockquote-reverse,
+        blockquote.pull-right {
+            padding-right: 15px;
+            padding-left: 0;
+            text-align: right;
+            border-right: 5px solid #000;
+            border-left: 0;
+        }
+
+            .blockquote-reverse .small:before,
+            .blockquote-reverse footer:before,
+            .blockquote-reverse small:before,
+            blockquote.pull-right .small:before,
+            blockquote.pull-right footer:before,
+            blockquote.pull-right small:before {
+                content: '';
+            }
+
+            .blockquote-reverse .small:after,
+            .blockquote-reverse footer:after,
+            .blockquote-reverse small:after,
+            blockquote.pull-right .small:after,
+            blockquote.pull-right footer:after,
+            blockquote.pull-right small:after {
+                content: '\00A0 \2014';
+            }
+
+    hr {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border: 0;
+        border-top: 1px solid rgb(0, 0, 0);
+    }
+}

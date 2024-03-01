@@ -1,0 +1,162 @@
+﻿
+.scan-picture{
+    width: 100%;
+    position: relative;
+    border-top: 0;
+}
+
+.scan-picture img{
+    border: 1px solid #ddd;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    height: 269.9px;
+    border-top: 0;
+}
+
+
+
+.scan-picture .success-result{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: rgba(164, 228, 184, 0.85);
+    padding-top: 84px;
+    border-radius: 0 0 5px 5px;
+}
+
+.scan-picture .error-result, .modal-card-body > .error-result{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    background: rgba(253, 190, 153, 0.85);
+    padding-top: 84px;
+    border-radius: 0 0 5px 5px;
+}
+
+.scan-picture .error-result i, .scan-picture .success-result i, .modal-card-body > .error-result i{
+    position: initial;
+    color: #ffffff;
+    font-size: 86px;
+}
+
+.modal-card-body > .error-result{
+    padding-top: 25%;
+    background: none;
+        width: 95%;
+    height: 95%;
+}
+
+.modal-card-body > .error-result i{
+    color: rgba(253, 190, 153, 0.85);
+}
+
+.add-scan-picture
+{
+    width: 192px;
+    height: 269.9px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: rgba(242, 235, 223, 0.17);
+
+}
+
+.add-scan-picture:hover
+{
+    background: rgba(242, 235, 223, 0.37);
+}
+
+.add-scan-picture i
+{
+    width:100%;
+    font-size: 80px;
+    margin-top:40%;
+    color: #8e623e;
+    display:block;
+}
+
+.scan-picture-name{
+    display: flex;
+    float: none;
+    width: 100%;
+    height: 30px;
+    border: 1px solid #d6d6d6;
+    line-height: 20px;
+    padding: 0 40px 0 20px;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    border-radius: 5px 5px 0 0;
+    align-items: center;
+}
+
+
+
+.add-picture-block {
+    width:25%; 
+    padding-right: 20px;
+    margin-bottom:20px;
+    display:inline-block;
+    vertical-align:bottom;
+}
+
+.picture-block {
+    width:212px; 
+    padding-right: 20px;
+    margin-top:20px;
+    margin-bottom:20px;
+    display:inline-block;
+    vertical-align:top;
+    position: relative;
+}
+
+.picture-block i{
+    position: absolute;
+    right: 5px;
+    top: -25px;
+    font-size: 35px;
+    color: #b93a3a;
+}
+
+.modal-card-body .error-message {
+    color: #e6472b;
+    font-size: 16px;
+}
+
+
+.picture-block:hover, .add-picture-block:hover  {
+    cursor:pointer;
+}
+
+.loading-scan{
+    text-align:center;
+}
+
+.loading-scan i{
+    font-size:50px;
+    display: inline-block;
+}
+
+.ion-spin, .ion-loading-a, .ion-loading-b, .ion-loading-c, .ion-loading-d, .ion-looping, .ion-refreshing, .ion-ios7-reloading {
+    -webkit-animation: spin 1s infinite linear;
+    -moz-animation: spin 1s infinite linear;
+    -o-animation: spin 1s infinite linear;
+    animation: spin 1s infinite linear;
+}
+
+.ion-loading-a {
+    -webkit-animation-timing-function: steps(80, start);
+    -moz-animation-timing-function: steps(80, start);
+    animation-timing-function: steps(80, start);
+}
+
+.error-connect-scanapp {
+    display: block;
+    margin: 0px 0px 20px;
+    padding-left: 15px;
+    line-height: 20px;
+    font-size: 14px;
+    color: #e44d32;
+}

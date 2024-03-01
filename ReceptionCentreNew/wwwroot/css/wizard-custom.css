@@ -1,0 +1,87 @@
+.swMain > ul > li {
+    position:relative;
+}
+
+.swMain > ul > li > a.selected {
+    cursor: default;
+    font-weight: 500;
+}
+
+
+.swMain > ul > li > a.done {
+    color: #333;
+    cursor: pointer;
+}
+
+.swMain > ul .stepNumber {
+    background-color: #fcfcfd;
+    border: 3px solid #CED1D6;
+    font-size: 13px;
+    height: 20px;
+    line-height: 15px;
+    width: 20px;
+}
+
+.swMain > ul li > a:before {
+    border-top: 3px solid #CED1D6;
+    top: 20px;
+}
+
+.swMain ul li > a.done .stepNumber:before {
+    margin-right: 0px;
+}
+
+.swMain > ul li > a.selected .stepDesc, .swMain li > a.done .stepDesc {
+    color: #2e4352;
+}
+
+.swMain > ul li .stepDesc {
+    margin-top: 0;
+        color: #2e4352;
+}
+
+/*.swMain > ul li:first-child > a:before {
+    left: 0%;
+    max-width: 100%;
+}
+
+.swMain > ul li:last-child > a:before {
+    max-width: 100%;
+    width: 100%;
+}*/
+
+.swMain > ul .stepNumber {
+    top: 8px;
+}
+
+.selected-name {
+    position: absolute;
+    left: 50%;
+    top: 0px;
+    width: 100%;
+    font-weight: bold;
+}
+
+@media (max-width: 768px) {
+    .swMain > ul li {
+        display: block;
+        float: left;
+        width: 50%;
+        margin-bottom: 20px;
+    }
+
+    .swMain > ul li:nth-child(odd):last-child {
+        width: 100%;
+    }
+
+    .swMain > ul li .selected-name {
+        left: 0%;
+        top: -5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .swMain > ul li {
+        width: 100%;
+    }
+}
