@@ -1,0 +1,102 @@
+﻿.table td, .table th {
+    padding: 5px;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.footable > thead > tr > th > span.footable-sort-indicator {
+    display: initial;
+}
+
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background-color: #1d8a71;
+    border-color: #1d8a71;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: white;
+}
+
+#datatable_wrapper > .row {
+    width: 100%;
+}
+
+.pagination {
+    float: right;
+}
+
+div.dataTables_info {
+    padding: 6px 12px;
+}
+
+div.dataTables_paginate ul.pagination {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.pagination > li > a, .pagination > li > span {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: 5px;
+    line-height: 1.42857143;
+    color: black;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+.pagination > li.active > a, .pagination > li > span {
+    color: white;
+    background-color: #cc9969;
+    border-color: #cc9969;
+}
+
+    .pagination > li.active > a:hover, .pagination > li > span {
+        color: white;
+        background-color: #cc9969;
+        border-color: #cc9969;
+    }
+
+table.dataTable thead .sorting, table.dataTable thead .sorting_desc, table.dataTable thead .sorting_asc {
+    cursor: pointer;
+}
+
+    table.dataTable thead .sorting:after {
+        content: "\e022" !important;
+        display: inline-block;
+        font-family: 'footable';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        padding-left: 5px;
+    }
+
+    table.dataTable thead .sorting_asc:after {
+        content: "\e013" !important;
+        display: inline-block;
+        font-family: 'footable';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        padding-left: 5px;
+    }
+
+    table.dataTable thead .sorting_desc:after {
+        content: "\e012" !important;
+        display: inline-block;
+        font-family: 'footable';
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        -webkit-font-smoothing: antialiased;
+        padding-left: 5px;
+    }

@@ -1,0 +1,107 @@
+﻿@media print {
+    @page {
+        size: portrait;
+    }
+
+    .page {
+        height: auto;
+        width: 100%;
+        page-break-after: always;
+    }
+    /*==table==*/
+    .table {
+        width: 100%;
+        margin-bottom: 20px;
+        font-size: 12px;
+        border: 1px solid #000;
+        border-collapse: collapse;
+    }
+    .table td,
+    .table th {
+        padding: 3px 10px;
+        border: 1px solid #000;
+    }
+
+    .table th {
+        font-weight: 400;
+    }
+
+    table thead th, table tbody td {
+        font-size: 10px !important;
+        padding: 5px !important;
+    }
+
+    /*====*/
+
+    .dl-horizontal dt {
+        min-width: 90px;
+    }
+
+    .dl-horizontal dd {
+        margin-left: 110px;
+    }
+
+    table thead tr th {
+        font-weight: bold;
+    }
+
+    thead {
+        display: table-row-group;
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
+    #printable th {
+        text-align: center;
+        padding: 2px; /* Поля вокруг содержимого ячеек */
+        border: 1px solid black; /* Граница вокруг ячеек */
+        /*font-size: 10.0pt;*/
+        font-weight: bold;
+    }
+
+        #printable th span {
+            color: #808080;
+            font-weight: normal;
+        }
+
+    h6 {
+        margin: 10px !important;
+    }
+    /*---*/
+    .report_head {
+        padding-bottom: 5px;
+    }
+
+   .report_head table tbody td {
+            font-size: 12px !important;
+            padding: 3px !important;
+        }
+
+    .org_name {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .report_name {
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .head-left {
+        border-right: 1px solid black;
+    }
+
+    .head-center {
+        border-right: 1px solid black;
+    }
+
+    .report_head {
+        display: block !important;
+    }
+    .text-right {
+    text-align:right!important;
+    }
+}
