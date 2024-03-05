@@ -133,6 +133,7 @@
     <None Include="Views\Shared\_LoginPartial.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
     <None Include="wwwroot\js\admin\admin-layout.js" />
+    <None Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
