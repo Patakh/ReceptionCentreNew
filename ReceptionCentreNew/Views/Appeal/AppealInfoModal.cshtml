@@ -1,0 +1,524 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.DataAppealSelect
+@{
+    ViewBag.Title = "Обращение";
+}
+<script>
+    $(document).ready(function () {        
+        $('select.select2').select2();        
+        $('a[href="#notification-calls"]').click();
+    });
+    $('.cancel_play, .close, [data-dismiss="modal"]').click(function () {
+        $('#newModal #appeal_play_content audio').trigger("pause");
+    });
+
+    //---Обращение---
+    $('#btn_edit_appeal').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditAppeal", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id', modal:true},
+                success: function (data) {
+                    $('#newModal').modal('show');
+                    $('#newModal').html(data);
+                }
+            });
+    });
+
+    //---Вкладки---
+    $('a[href="#notes"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCommentts", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notes').html(data);
+                }
+            });
+    });
+    $('a[href="#changeLogs"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableChangeLogs", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#changeLogs').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-messages"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableEmails", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-messages').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-calls"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCalls", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-calls').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-sms"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableSms", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-sms').html(data);
+                }
+            });
+        });
+
+        $('a[href="#files"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableFiles", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#files').html(data);
+                }
+            });
+        });
+    
+    //---Комментарии----
+        $(document).on('click', '#notes ul li button i.md-delete', function () {
+            var commentId = $(this).closest('li').data('commenttId');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCommentDelete", "Appeal")',
+                data: { commentId: commentId },
+                success: function (data) {
+                    successDelete();
+                    $('#notes').html(data);
+                    console.log("delete");
+                }
+            })
+        });
+
+        $(document).on('click', '#notes ul li button i.md-replay', function () {
+            var commentId = $(this).closest('li').data('commenttId');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCommentRecovery", "Appeal")',
+                data: { commentId: commentId },
+                success: function (data) {
+                    $('#notes').html(data);
+                    console.log("recovery");
+                }
+
+            })
+        });
+
+        $(document).on('click', '#notes ul li button i.md-mode-edit', function (e) {
+            var commentId = $(this).closest('li').data('commenttId');
+            var edit_commentt = $(this).closest('li').data('commentt');
+            $('#notes ul li').removeClass('edit');
+            $(this).closest('li').addClass('edit');
+            $('#addCommentsForm').find('[name="id"]').val(commentId);
+            $('#addCommentsForm').find('[name="commentt"]').val(edit_commentt).css('border', '1px dashed green');
+            //$('#addCommentsForm').find('[type="submit"]').html("<i class='fa fa-edit m-l-5'></i>");
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", false);
+        });
+
+        $(document).on('click', '#notes ul li button i.md-clear', function (e) {
+            var commentId = "00000000-0000-0000-0000-000000000000";
+            $('#notes ul li').removeClass('edit');
+            $('#addCommentsForm').find('[name="id"]').val(commentId);
+            $('#addCommentsForm').find('[name="commentt"]').val('').css('border', '1px solid #E3E3E3');
+            //$('#addCommentsForm').find('[type="submit"]').html("<i class='fa fa-paper-plane m-l-5'></i>");
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
+    });
+</script>
+<style>
+    .nav > li > a {
+        padding: 0 10px;
+    }
+    /*.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+        background-color: #b78068;
+    }*/
+    @@media (min-width: 992px) {
+        .modal-lg {
+            max-width: 990px;
+            margin:0.75rem auto;
+        }
+    }
+
+    .modal-body {
+        padding:20px 0px 0px 0px !important;
+        max-height:710px;
+    }
+    .modal-body > .row {
+       margin:0px;
+    }
+    .card-box {
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+        padding:15px;
+    }
+
+    .conversation-list {
+        height: auto;
+        max-height: 280px;
+    }
+        .conversation-list .conversation-text {           
+            width: 80%;
+        }
+
+    #text-appeal.long {
+        cursor: pointer;
+    }
+
+    #text-appeal:hover.clip {
+        color: #007bff;
+    }
+
+    .clip {
+        white-space: nowrap; /* Запрещаем перенос строк */
+        overflow: hidden; /* Обрезаем все, что не помещается в область */
+        text-overflow: ellipsis; /* Добавляем многоточие */
+    }
+
+    .text-black-60 {
+        color: rgba(0,0,0,.6) !important;
+    }
+
+    .font-125 {
+        font-size: 1.25rem;
+        font-weight: 400;
+    }
+    .font-10 {
+        font-size: 10px;
+    }
+    .font-11 {
+        font-size: 11px;
+    }
+    .font-24 {
+        font-size: 24px;
+    }
+
+    .font-400 {
+        font-weight: 400;
+    }
+
+    .m-r-0{
+        margin-right:0px;
+    }
+    .p-l-30 {
+        padding-left:30px;
+    }
+    .p-r-30 {
+        padding-right: 30px;
+    }
+    /*---Tabs---*/
+    #pills-tab-notification.nav-pills .nav-link {
+        color: rgba(0,0,0,.6) !important;
+        background-color: transparent;
+    }
+    #pills-tab-notification.nav-pills .nav-link.active, #pills-tab-notification.nav-pills .nav-link:hover {
+        color: #62a3ff!important;
+        background-color: transparent;
+    }
+    
+</style>
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Обращение</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body custom-scrollbar">
+            <div class="row">
+                <input type="hidden" value="@Model.out_data_appeal_id" class="_glAppealId" />
+                <div class="col-lg-9">
+                    <div class="card-box m-b-15">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-black-60 font-125">
+                                    <i class="font-24 m-r-5 @(Model.out_category=="Жалоба"?"md md-report-problem text-danger":Model.out_category=="Предложение"?"md md-chat text-success":Model.out_category=="Вопрос"?"md md-help text-custom":Model.out_category=="Отзыв"?"md md-rate-review text-info":Model.out_category=="Оповещение"?"md md-announcement text-warning":"")"></i>
+                                    @Model.out_category
+                                    @if (User.IsInRole("superadmin") || User.IsInRole("admin") || Model.out_spr_employees_id == ViewBag.SprEmployeesId)
+                                    {
+                                        if (Model.out_status_name != "Исполнено")
+                                        {
+                                            <button type="button" class="btn btn-link text-danger" style="padding:1px 6px;" id="btn_edit_appeal">
+                                                <i class="ion-edit"></i>
+                                            </button>
+                                        }
+                                    }
+                                </h5>
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <strong class=""><span class="@(Model.out_status_name.ToString() == "Исполнено" ? "text-success" : Model.out_status_name.ToString() == "Ошибка" ? "text-danger" : Model.out_status_name.ToString() == "Прекращено" ? "text-mfc" : "text-warning" )">@(Model.out_status_name)</span></strong>
+                                <br />
+                                @{int d = 0; TimeSpan tms = (Model.out_date_regulation - DateTime.Now).Value;}
+                                @if (Model.out_date_execution == null)
+                                {
+                                    d = (Model.out_date_regulation - DateTime.Now).Value.Days;
+                                    if (d < 0)
+                                    {
+                                        <span class="font-16 text-nowrap"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span><br />
+                                    }
+                                    else
+                                    {
+                                        <span class="font-16 text-nowrap"><i class="md  md-av-timer m-r-5"></i><span class="text-success">@(tms.Days) дн. @(tms.Hours) ч. @(tms.Minutes) мин.</span></span><br />
+                                    }
+                                }
+                                else
+                                {
+                                    <i class="fa fa-calendar m-r-5"></i><span class="font-500 text-nowrap">@Model.out_date_execution.Value.ToShortDateString() </span> <i class="ion ion-ios7-clock-outline m-r-5"></i><span class="font-500 text-nowrap">@Model.out_date_execution.Value.ToShortTimeString()</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>
+                                    <span class="text-muted font-12">Номер </span><br />
+                                    <span class="text-danger">#@Model.out_number_appeal</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p>
+                                    <span class="text-muted font-12">Дата и время </span><br />
+                                    <i class="fa fa-calendar m-r-5"></i> @Model.out_date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.out_date_add.Value.ToShortTimeString()
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div id="text-appeal" class="font-13 custom-scrollbar" style="max-height:60px;">@Model.out_text_appeal</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-box m-b-15" style="min-height:330px;">
+                        <ul class="nav nav-pills m-b-15" id="pills-tab" role="tablist" style="border-bottom:1px solid #dee2e6; padding-bottom:10px;">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="pills-stages-tab" data-toggle="pill" href="#stages" role="tab" aria-controls="stages" aria-selected="true">Этапы
+                                   @if (ViewBag.RouteStageCount>0) {<pre class="badge badge-mfc">@ViewBag.RouteStageCount</pre>}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-notes-tab" data-toggle="pill" href="#notes" role="tab" aria-controls="notes" aria-selected="false">Примечания
+                                    @if (ViewBag.CommentsCount > 0) {<pre class="badge badge-mfc">@ViewBag.CommentsCount</pre>}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-notification-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">Оповещения
+                                    @if (ViewBag.NotithCount > 0){<pre class="badge badge-mfc">@ViewBag.NotithCount</pre>}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-files-tab" data-toggle="pill" href="#files" role="tab" aria-controls="files" aria-selected="false">Файлы
+                                    @if (ViewBag.FileCount > 0){<pre class="badge badge-mfc">@ViewBag.FileCount</pre>}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="pills-changeLogs-tab" data-toggle="pill" href="#changeLogs" role="tab" aria-controls="changeLogs" aria-selected="false">История изменений
+                                    @if (ViewBag.ChangeLogCount > 0){<pre class="badge badge-mfc">@ViewBag.ChangeLogCount</pre>}
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="pills-tabContent">
+                            <!-- Этапы -->
+                            <div class="tab-pane fade show active" id="stages" role="tabpanel" aria-labelledby="pills-stages-tab">
+                                @Html.Action("PartialTableRouteStages", "Appeal", new { appealId = Model.out_data_appeal_id })
+                            </div>
+                            <!-- Примечания -->
+                            <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="pills-notes-tab">
+
+                            </div>
+                            <!-- Оповещание -->
+                            <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="pills-notification-tab">
+                                <ul class="nav nav-pills m-b-0 justify-content-center" id="pills-tab-notification" role="tablist" >
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="pills-motification-calls-tab" data-toggle="pill" href="#notification-calls" role="tab" aria-controls="#notification-calls" aria-selected="true">                                           
+                                            <i class="md md-call font-18"></i>
+                                            <pre class="badge">@ViewBag.CallCount</pre>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" id="pills-motification-messages-tab" data-toggle="pill" href="#notification-messages" role="tab" aria-controls="notification-messages" aria-selected="false">
+                                            <i class="md md-email font-18"></i>
+                                            <pre class="badge">@ViewBag.EmailCount</pre>
+                                        </a>
+                                    </li>                                                                     
+                                </ul>
+                                <div class="tab-content" id="pills-tabContent">
+                                    <!-- Звонки -->
+                                    <div class="tab-pane fade show active" id="notification-calls" role="tabpanel" aria-labelledby="pills-motification-calls-tab">
+
+                                    </div>
+                                    <!-- Письма -->
+                                    <div class="tab-pane fade show active" id="notification-messages" role="tabpanel" aria-labelledby="pills-motification-messages-tab">
+
+                                    </div>
+                                    
+                                    <!-- CMC -->
+                                    <div class="tab-pane fade show active" id="notification-sms" role="tabpanel" aria-labelledby="pills-motification-sms-tab">
+
+                                    </div>
+                                </div>                                    
+                                </div>
+
+                             <!-- Файлы -->
+                            <div class="tab-pane fade" id="files" role="tabpanel" aria-labelledby="pills-files-tab">
+                                
+                            </div>
+                            
+                            <!-- История изменений -->
+                            <div class="tab-pane fade" id="changeLogs" role="tabpanel" aria-labelledby="pills-changeLogs-tab">...</div>
+                            </div>
+                    </div>
+
+                </div>
+                <div class="col-lg-3"> 
+                            <div class="card-box m-b-15">
+                                <h4 class="text-black-60 font-18 font-400"><i class="md md-person-outline vertical-middle m-r-5" style="font-size:22px"></i>Заявитель</h4>
+                                <p class="font-13">
+                                    <span class="text-muted font-12">ФИО и контакты:</span><br />
+                                    <span title="@Model.out_applicant_name"><i class="md md-person"></i>  @Model.out_applicant_name</span>
+                                    @if (Model.out_phone_number != null)
+                                    {<br /> <button type="button" class="btn btn-link font-13" onclick="onCallModalBtnClick('@Model.out_phone_number', '@Model.out_number_appeal');"><i class="md-call m-r-5"></i>@Model.out_phone_number</button>}
+                                    @if (Model.out_email_ != null)
+                                    {<br /> <span>&#64; @Model.out_email_</span>}
+                                </p>
+                                <h4 class="text-black-60 font-18 font-400"><i class="md md-info-outline vertical-middle m-r-5" style="font-size:20px"></i>Дополнительно</h4>
+                                @if (Model.out_mfc_name != null || Model.out_case_number != null)
+                                {
+                                    <p class="clip">
+                                        <span class="text-muted font-12">МФЦ и номер обращения: </span><br />
+                                        @if (Model.out_mfc_name != null)
+                                        {
+                                            <span title="@Model.out_mfc_name"> <img src="/Content/images/logo.png" height="15" style="opacity:0.6" /> @Model.out_mfc_name </span>
+                                            <br />
+                                        }
+                                        @if (Model.out_case_number != null)
+                                        {
+                                            string[] n = Model.out_case_number.Split(' ');
+                                            foreach (var item in n)
+                                            {
+                                                if (item.Length != 0)
+                                                {
+                                                    <a class="font-12" href="http://192.168.34.9:81/Case?CaseId=@item.Replace("#","")" target="_blank">@item</a>
+                                                }
+                                            }
+                                        }
+                                    </p>
+                                }
+
+                                @if (Model.out_employees_name != null)
+                                {
+                                    <p class="clip">
+                                        <span class="text-muted font-12">Принял: </span><br />
+                                        <span title="@Model.out_employees_name"> <i class="md md-person"></i> @Model.out_employees_name </span>
+                                    </p>
+                                }
+                                @if (Model.out_employees_name_execution != null)
+                                {
+                                    <p class="clip">
+                                        <span class="text-muted font-12">Исполнил: </span><br />
+                                        <span title="@Model.out_employees_name_execution"> <i class="md md-person"></i> @Model.out_employees_name_execution </span>
+                                    </p>
+                                }
+                                @if (Model.out_date_regulation != null)
+                                {
+                                    <p>
+                                        <span class="text-muted font-12">Регламентная дата: </span><br />
+                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.out_date_regulation.Value.ToShortDateString() </span>
+                                    </p>
+                                }
+                                @if (Model.out_date_execution != null)
+                                {
+                                    <p>
+                                        <span class="text-muted font-12">Дата исполнения:</span><br />
+                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.out_date_execution.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.out_date_execution.Value.ToShortTimeString() </span>
+                                    </p>
+                                }
+
+                                <p class="font-13"><span class="text-muted font-12">Способ обращения: </span> <br />@Model.out_type</p>
+                                <p class="font-13"><span class="text-muted font-12">Предмет: </span> <br />@Model.out_subject_treatment</p>
+                                <p class="font-13"><span class="text-muted font-12">Сложность: </span> <br />@Model.out_type_difficulty</p>
+                            </div>               
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Закрыть</button>
+        </div>
+    </div>
+</div>
+<script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+@section scripts{
+    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script>
+
+        var filteringCall = $('#callsTable');
+        filteringCall.footable();
+        $('#filter_count').text($('#callsTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#tr_count').text($('#callsTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextCalls').keyup(function (evt) {
+            evt.preventDefault();
+            filteringCall.trigger('footable_filter', { filter: $(this).val() });
+            $('#callsTable #filter_count').text($('#callsTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+
+        function printStatement(url, params) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: params,
+                success: function (data) {
+                    $(data).printThis({
+                        debug: false,
+                        importCSS: true,
+                        importStyle: true,
+                        printContainer: true,
+                        loadCSS: "",
+                        pageTitle: "",
+                        removeInline: false,
+                        printDelay: 333,
+                        header: null,
+                        formValues: true
+                    });
+                }
+            });
+        }        
+
+        if ('@Model.out_phone_number' != '' && '@Model.out_phone_number' != 'null' && '@Model.out_phone_number' != null) {
+            $(document).on('click', '#btnCallModalFromAppeal', function () {
+                @{
+                    string a = ""; string b="";
+                    if (Model.out_phone_number!= null)
+                    {
+                        a = @Model.out_phone_number.Replace(")", "").Replace("(", "").Replace("-", "").Replace("+7 ", "8").Replace("+7", "8").Replace(" ", "").Replace("+3", "8");
+                        b = @Model.out_number_appeal;
+                    }
+                 }
+                var d = '@b';
+                console.log(@a + "-" + d);
+                onCallModalBtnClick('@a', d);
+        });
+        };
+
+        $('#AddRouteStageForm').validate();
+
+
+        
+    </script>
+}

@@ -1,0 +1,149 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_call>
+<style>
+    .route-table {
+        min-width:300px!important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+        $('.slimscroll-route').slimScroll({
+           height: '450px',
+            position: 'right',
+            size: "5px",
+            color: '#6c757d',
+            wheelStep: 20
+        });
+
+        $('.badge.call').text(@ViewBag.newCallCount);
+                
+        $('#newAppealSearchCall').click(function () {
+        $.ajax({
+            url: '@Url.Action("newPartialModalAttachCall", "Appeal")',
+            type: 'Post',
+            data: { search: $('#searchNewTextAttachCalls').val() },
+            success: function (data) {
+                $('#newModal').html(data);
+            }
+        });
+        });
+
+        $('button#callAttach').click(function () {
+            var callId = $('#newCallTable tr.active').data('callId');
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '@Url.Action("NewAppealCall", "Appeal")',
+                data: { callId: callId},
+                success: function (data) {
+                    $('#newModalOver').modal('hide');
+                    $('#newModal #new_appeal_call').html(data);
+                    swal("Готово!", "Звонок успешно прикреплен.", "success").then(function () {
+                    });
+                },
+                error: function (errorData) {
+                    @if (User.IsInRole("superadmin"))
+                    {
+                        @:console.log(errorData.responseText);
+                    }
+                    $.Notification.notify('error', 'right top', 'Ошибка!', 'Произошла ошибка при прикреплении звонка.');
+                }
+            });
+        });
+
+        $('.btn_play').click(function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("Play_Audio", "Call")',
+                type: 'Post',
+                data: { id: id },
+                success: function (data) {
+                    $('#new_play_content').html(data);
+                    $('#new_play_content audio').trigger("play");
+                }
+            });
+        })
+
+        $('.cancel_play, .close').click(function () {
+            $('#new_play_content audio').trigger("pause");
+        });
+    });
+</script>
+
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Прикрепление звонка</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-4">
+                <div class="input-group m-t-10 m-b-15">
+                    <input type="text" id="searchNewTextAttachCalls" class="form-control input-lg" placeholder="Поиск..." value="@ViewBag.SearchNewAttachCall">
+                    <span class="input-group-btn">
+                        <button id="newAppealSearchCall" placeholder="Поиск звонка" type="button" class="btn btn-primary btn-lg waves-effect waves-light"><i class="fa fa-search m-r-5"></i> Найти</button>
+                    </span>
+                </div>
+            </div>
+                <div class="table-responsive mb-4 slimscroll-route">
+                    @if (Model.Any())
+                    {
+                        <table id="newCallTable" class="table route-table table-hover table-vertical-middle">
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr data-call-id="@item.id">
+                                        <td>
+                                            @item.phone_number
+                                        </td>
+                                        <td>
+                                            @item.time_talk
+                                        </td>
+                                        <td>
+                                            @item.date_call
+                                        </td>
+                                        <td class="text-right">
+                                            @if (item.save_ftp)
+                                            {
+                                                <button type="button" class="btn_play btn btn-link btn-audio" data-id="@item.id"><i class="md md-play-circle-outline"></i></button>
+                                            }
+                                        </td>
+                                        <td class="check">
+                                            <i class="ion-checkmark-circled"></i>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-default">
+                            <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Звонков не найдено</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        <div id="new_play_content">
+
+                </div>
+            <div class="modal-footer">                
+                <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Закрыть</button>
+                <button type="button" id="callAttach" class="btn btn-primary waves-effect waves-light">Добавить</button>
+            </div>
+        </div>
+</div>
+
+<script>
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row)').click(function () {
+        if ($(this).is('.active')) {
+            $(this).removeClass('active').removeClass('unfocused');
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').removeClass('unfocused');
+        } else {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').addClass('unfocused');
+            $(this).removeClass('unfocused').addClass('active');
+        }
+    });
+</script>

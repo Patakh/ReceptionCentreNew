@@ -1,0 +1,160 @@
+﻿@model ReceptionCentreNew.Models.EmailsViewModel
+
+<style>
+    .not_read {
+        font-weight: bold;
+        color: black !important;
+    }
+</style>
+<div class="card-box p-0">
+    @if (Model.EmailList.Any())
+    {
+        <div class="table-responsive">
+            <table id="emailsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                <div class="input-group">
+                    <div class="input-group-prepend align-items-center">
+                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" id="searchTextEmails" class="form-control pl-0 border-0" placeholder="Поиск писем" aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                </div>
+                <tbody>
+                    @foreach (var item in Model.EmailList.OrderByDescending(o => o.out_date_email))
+                    {
+                        <tr data-email-id="@item.out_id" data-is_connected="@item.out_number_appeal" @{if (item.out_is_read != true) { <text> class="not_read" </text>  } }>
+                            <td class="vertical-middle">
+                                @if (item.out_email_type == 2)
+                                {<span><i class="glyphicon glyphicon-arrow-left" style="color:green"></i></span> }
+                                else
+                                {<span><i class="glyphicon glyphicon-arrow-right" style="color:red"></i></span>}
+                            </td>
+                            <td class="vertical-middle is_reader">
+                                <button type="button" data-email-id="@item.out_id" data-is_read="@item.out_is_read" title="Прочитано/непрочитано" class="btn btn-link btn_read" style="font-size: 18px;line-height: 18px;" @{if (!(User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))) { <text> disabled </text>  } }>
+                                    @if (item.out_is_read == true)
+                                    {<i class="text-success ion-ios7-circle-filled"></i>}
+                                    else
+                                    {<i class="text-danger ion-ios7-circle-filled"></i>}
+                                </button>
+                            </td>
+                            <td class="vertical-middle p-l-20-important">
+                                <span class="text font-13">@Html.DisplayFor(m => item.out_email_)</span>
+                            </td>
+                            <td class="vertical-middle p-l-20-important" width="50%">
+                                <div class="text-clip-cust font-13 pull-left" style="max-width:300px; margin:0px 10px 0 0;" title="@Html.DisplayFor(m => item.out_caption)">@Html.DisplayFor(m => item.out_caption)</div>
+                                <div class="text-clip-cust text-muted font-13" style="max-width:250px;" title="@Html.DisplayFor(m => item.out_text_email)">@Html.DisplayFor(m => item.out_text_email)</div>
+                            </td>
+                            <td class="vertical-middle">
+                                <span class="text font-13">@Html.DisplayFor(m => item.out_date_email)</span>
+                            </td>
+                            <td class="vertical-middle p-r-20-important text-right" style="font-size: 22px;line-height: 22px;">
+                                @if (item.out_number_appeal == null)
+                                {
+                                    if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
+                                    {
+                                        <button type="button" title="Создать обращение на основе письма" class="btn btn-link" onclick="window.open('@Url.Action("NewAppeal", "Appeal", new { emailId = item.out_id })')"><i class="ti-file"></i></button>
+                                    }
+                                }
+                                else
+                                {
+                                    <i title="Прикреплен" class="glyphicon glyphicon-file" style="font-size: 22px;line-height: 22px; padding:1px 6px; cursor:default; color:#ccc"></i>
+                                }
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "appeal_number": "@item.out_number_appeal", "employees_fio": "@item.out_employees_name", "is_read": "@item.out_is_read"}'>
+                                    <i class="ion-ios7-information-outline"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="foot-row">
+                        <td colspan="3" class="text-left">
+                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                        </td>
+                        <td colspan="3">
+                            <div class="text-right">
+                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <!-- Все звонки -->
+        <script>
+            $(document).ready(function () {
+                var filtering = $('#emailsTable');
+                filtering.footable();
+                $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+                $('#tr_count').text($('.footable tbody tr').length);
+
+                // Search input
+                $('#searchTextEmails').keyup(function (evt) {
+                    evt.preventDefault();
+                    filtering.trigger('footable_filter', { filter: $(this).val() });
+                    $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+                });
+            });
+
+            $(function () {
+                $('button[data-tooltip-info]').tooltip({
+                    title: function () {
+                        var tooltipInfo = $(this).data('tooltipInfo');
+                        return "<div class='text-left'>" +
+                            "<strong>Номер дела:</strong> " + tooltipInfo['appeal_number'] + "</br>" +
+                            "<strong>Сотрудник:</strong> " + tooltipInfo['employees_fio'] + "</br>" +
+                            "<strong>Прочитано:</strong> " + (tooltipInfo['is_read'] != "False" ? "ДА" : "НЕТ") + "</br>" +
+                            "</div>";
+                    },
+                    html: true,
+                    placement: "left"
+                });
+            });
+
+            // Добавляем возможность выбора строки в таблице
+            $('#callsTable tr:not(.thead-row, .foot-row)').click(function () {
+                $(this).siblings('tr:not(.thead-row)').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            $('#emailsTable tr').not(".no-click").click(function () {
+            var emailId = $(this).data("emailId");
+            $(this).children('td.is_reader').children('button').html('<i class="text-success ion-ios7-circle-filled"></i>');
+            $(this).removeClass("not_read");
+            $.ajax({
+                url: '@Url.Action("PartialModalReadEmail", "Email")',
+                data: { emailId: emailId },
+                success: function (data) {
+                    $('#newModal').modal('show');
+                    $('#newModal').html(data);
+                },
+            });
+        });
+        $('#emailsTable tr').children('td.is_reader').children('button').click(function (e) {
+            e.stopPropagation();
+            var $this = $(this);
+            var emailId = $(this).data("emailId");
+            var is_read = $(this).data("is_read");
+            $.ajax({
+                url: '@Url.Action("SubmitEmailSave", "Email")',
+                type: 'POST',
+                data: { emailId: emailId },
+                success: function (data) {
+                    if ($this.children('i').hasClass('text-success')) {
+                        $this.html('<i class="text-danger ion-ios7-circle-filled"></i>');
+                        $this.closest("tr").addClass("not_read");
+                    }
+                    else {
+                        $this.html('<i class="text-success ion-ios7-circle-filled"></i>');
+                        $this.closest("tr").removeClass("not_read");
+                    }
+                },
+            });
+        });
+        </script>
+    }
+    else
+    {
+        <div class="alert-no-record" >
+            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span>
+        </div>
+    }
+</div>

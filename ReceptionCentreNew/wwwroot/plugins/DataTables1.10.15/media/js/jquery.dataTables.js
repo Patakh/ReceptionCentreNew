@@ -1261,9 +1261,9 @@
 				 * Cache the header, body and footer as required, creating them if needed
 				 */
 			
-				// Work around for Webkit bug 83867 - store the caption-side before removing from doc
-				var captions = $this.children('caption').each( function () {
-					this._captionSide = $(this).css('caption-side');
+				// Work around for Webkit bug 83867 - store the Caption-side before removing from doc
+				var captions = $this.children('Caption').each( function () {
+					this._captionSide = $(this).css('Caption-side');
 				} );
 			
 				var thead = $this.children('thead');
@@ -1281,7 +1281,7 @@
 				var tfoot = $this.children('tfoot');
 				if ( tfoot.length === 0 && captions.length > 0 && (oSettings.oScroll.sX !== "" || oSettings.oScroll.sY !== "") ) {
 					// If we are a scrolling table, and no footer has been given, then we need to create
-					// a tfoot element for the caption element to be appended to
+					// a tfoot element for the Caption element to be appended to
 					tfoot = $('<tfoot/>').appendTo($this);
 				}
 			
@@ -5058,8 +5058,8 @@
 		var scrollX = scroll.sX;
 		var scrollY = scroll.sY;
 		var classes = settings.oClasses;
-		var caption = table.children('caption');
-		var captionSide = caption.length ? caption[0]._captionSide : null;
+		var Caption = table.children('Caption');
+		var captionSide = Caption.length ? Caption[0]._captionSide : null;
 		var headerClone = $( table[0].cloneNode(false) );
 		var footerClone = $( table[0].cloneNode(false) );
 		var footer = table.children('tfoot');
@@ -5107,7 +5107,7 @@
 								headerClone
 									.removeAttr('id')
 									.css( 'margin-left', 0 )
-									.append( captionSide === 'top' ? caption : null )
+									.append( captionSide === 'top' ? Caption : null )
 									.append(
 										table.children('thead')
 									)
@@ -5138,7 +5138,7 @@
 								footerClone
 									.removeAttr('id')
 									.css( 'margin-left', 0 )
-									.append( captionSide === 'bottom' ? caption : null )
+									.append( captionSide === 'bottom' ? Caption : null )
 									.append(
 										table.children('tfoot')
 									)

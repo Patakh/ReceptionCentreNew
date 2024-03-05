@@ -6293,7 +6293,7 @@ if (typeof jQuery === 'undefined') {
             min: 'min',
             max: 'max',
             trim: 'trim',
-            utf8bytes: 'utf8Bytes'
+            utf8bytes: 'utf8bytes'
         },
 
         enableByHtml5: function($field) {
@@ -6358,7 +6358,7 @@ if (typeof jQuery === 'undefined') {
                                  }
                                  return s;
                              },
-                length     = options.utf8Bytes ? utf8Length(value) : value.length,
+                length     = options.utf8bytes ? utf8Length(value) : value.length,
                 isValid    = true,
                 message    = options.message || $.fn.bootstrapValidator.i18n.stringLength['default'];
 

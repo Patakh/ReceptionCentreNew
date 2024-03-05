@@ -25,7 +25,7 @@
             indicatorLoading: '<i class="glyphicon glyphicon-hourglass text-muted"></i>'
         },
         layoutTemplates: {
-            fileIcon: '<i class="glyphicon glyphicon-file kv-caption-icon"></i>'
+            fileIcon: '<i class="glyphicon glyphicon-file kv-Caption-icon"></i>'
         },
         previewZoomButtonIcons: {
             prev: '<i class="glyphicon glyphicon-triangle-left"></i>',

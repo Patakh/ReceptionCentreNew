@@ -1,0 +1,71 @@
+﻿@model ReceptionCentreNew.Models.SmsViewModel
+@if (Model.SmsList.Any())
+{
+    <div class="card-box p-0 m-t-20 m-b-20">
+        <div class="input-group">
+            <span class="input-group-btn">
+                <button type="button" class="btn waves-effect waves-light btn-link p-l-20-important"><i class="fa fa-search"></i></button>
+            </span>
+            <input type="text" id="searchTextSms" class="text-dark no-border-input" placeholder="Поиск сообщений"><ul class="typeahead dropdown-menu"></ul><ul class="typeahead dropdown-menu"></ul>
+        </div>
+        <div class="table-responsive">
+            <table id="messagesTable" class="table table-hover" style="margin-top: 0 !important; width:100%!important">
+                <thead class="hidden">
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SmsList.OrderByDescending(o => o.date_message))
+                    {
+                        <tr>
+                            <td class="vertical-middle">
+                                @if (item.message_type == 2)
+                                {<span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span> }
+                                else
+                                {<span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span>}
+                            </td>
+                            <td class="vertical-middle p-l-20-important">
+                                <span class="text font-13">@Html.DisplayFor(m => item.phone_number)</span>
+                            </td>                            
+                            <td class="vertical-middle p-l-20-important" width="45%">
+                                <span class="text font-13">@Html.DisplayFor(m => item.text_message)</span>
+                            </td>
+                            <td class="vertical-middle">
+                                <span class="text font-13">@Html.DisplayFor(m => item.date_message)</span>
+                            </td>
+                            <td class="vertical-middle p-r-20-important">
+                                <span class="text font-13">@Html.DisplayFor(m => item.employees_name)</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <link href="~/Content/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/Content/plugins/datatables/dataTables.bootstrap.js"></script>
+    <script>
+        $(document).ready(function () {
+            var oTable = $('#messagesTable').DataTable({
+                "order": [[3, "desc"]],
+                "dom": 't<"row m-t-10 p-l-20-important p-b-10 m-r-15"<"col-sm-4"i><"col-sm-8"p>>'
+            });
+            $('#searchTextSms').keyup(function () {
+                oTable.search($(this).val()).draw();
+            });
+        });
+    </script>
+}
+else
+{
+    <div class="alert alert-default">
+        <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span>
+    </div>
+}

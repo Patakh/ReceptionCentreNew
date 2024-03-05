@@ -1,0 +1,74 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal
+<style>
+    select option {
+        background: black;
+    }
+
+    .select2-container {
+        z-index: 9999;
+    }
+</style>
+
+    @using (Ajax.BeginForm("SubmitNewAppealSave", "Call", Model, new AjaxOptions { UpdateTargetId = "call-new-appeal" }, new { @id = "AddNewAppealForm", @class = "form-horizontal" }))
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.applicant_name, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.applicant_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.applicant_name) } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.phone_number, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.phone_number, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.email_, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.email_, new Dictionary<string, object> { { "class", "form-control email" } })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.spr_mfc_id, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.spr_mfc_id, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.text_appeal, new Dictionary<string, object> { })
+            @Html.TextAreaFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "form-control required no-resize" }, { "rows", "5" }, { "placeholder", Html.DisplayNameFor(model => model.text_appeal) } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.spr_category_id, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.spr_category_id, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.spr_subject_treatment_id, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.spr_subject_treatment_id, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.spr_type_id, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.spr_type_id, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+        </div>
+
+        <div class="form-group row">
+            @Html.LabelFor(model => model.spr_type_difficulty_id, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.spr_type_difficulty_id, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+        </div>
+
+        <div class="form-group mt-4">
+            <div class="text-right">
+                <button id="create_new_appeal" type="submit" class="btn btn-primary waves-effect waves-light">Добавить</button>
+            </div>
+        </div>
+    }
+<script>
+    var h = $('.row.flex-grow-1').height() - 510;
+    h = h > 350 ? 350 : h;
+    $('#AddNewAppealForm').closest('.card-body.custom-scrollbar').height(h);
+
+    $(document).ready(function () {
+        $('#call-new-appeal .select2').select2();
+        $('#call-new-appeal .select2-nosearch').select2({ minimumResultsForSearch: Infinity });
+    });
+    $('#AddNewAppealForm').validate();
+</script>

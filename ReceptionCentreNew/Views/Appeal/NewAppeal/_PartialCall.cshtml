@@ -1,0 +1,43 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal_call
+@*<form class="form-horizontal" id="newAppealCallForm">*@
+<div id="newAppealCallForm">
+    @if (Model != null)
+    {
+        <label class="text-muted m-b-0 m-t-0" for="bell">Звонок</label>
+        <div class="input-group">
+            <input type="hidden" name="newCallId" value="@Model.id" />
+            <input type="text" name="call_caption" class="form-control" value="Тел: @Model.phone_number, Дата: @Model.date_call" />
+            <div class="input-group-append">
+                <button id="clear_call" class="btn btn-info waves-effect waves-light" type="button">
+                    <i class="md md-clear"></i>
+                </button>
+            </div>
+        </div>
+    }
+    else
+    {
+        <label class="text-muted m-b-0 m-t-0" for="bell">Звонок</label>
+        <div class="input-group">
+            <input type="hidden" name="newCallId" value="" />
+            <input type="text" name="call_caption" class="form-control" value="" />
+            <div class="input-group-append">
+                <button id="new_call_modal" class="btn btn-success waves-effect waves-light" type="button">
+                    <i class="md md-add"></i>
+                </button>
+            </div>
+        </div>
+    }
+</div>
+@*</form>*@
+<script>
+    $('#clear_call').click(function () {
+        $.ajax({
+            url: '@Url.Action("NewAppealCall", "Appeal")',
+            type: 'POST',
+            data: {},
+            success: function (data) {
+                $('#new_appeal_call').html(data);
+            },
+        });
+    });
+</script>

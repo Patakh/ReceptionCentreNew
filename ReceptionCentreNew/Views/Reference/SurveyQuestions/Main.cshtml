@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Опрос";
+}
+@Html.MvcSiteMap().SiteMapPath()
+<!-- Категории обращения -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div>
+    <div id="surveyQuestionContainer">
+
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/Content/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
+
+    <script>
+         $(document).ready(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableSurveyQuestions", "Reference")',
+                success: function (data) {
+                    $('#surveyQuestionContainer').html(data);
+                }
+            })
+        });
+    </script>
+
+    <!--Сотрудники-->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

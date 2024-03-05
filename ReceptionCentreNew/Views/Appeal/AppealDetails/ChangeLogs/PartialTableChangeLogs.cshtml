@@ -1,0 +1,112 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+<style>
+    .table-td-sm td {
+        padding: 0.1rem 0.1rem;
+    }
+</style>
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+@if (Model.DataChangeLogList.Any())
+{
+    <div class="input-group">
+        <div class="input-group-prepend align-items-center">
+            <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+        </div>
+        <input type="text" id="searchTextChangeLogs" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+    </div>
+    <table id="changeLogsTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0 font-12" data-page-size="4" data-limit-navigation="5">
+        <thead>
+            <tr>
+                <th class="number-row p-l-20-important" style="min-width:40px;">№</th>
+                <th >Таблица</th>
+                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().old_value)</th>
+                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().new_value)</th>
+                <th style="min-width:100px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().employees_name)</th>                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.DataChangeLogList)
+            {
+                <tr>
+                    <td class="number-row p-l-20-important">
+                        @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.table_name_)<br />
+                        <span class="text-muted">Поле: </span>@Html.DisplayFor(i => item.field_name_)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.old_value)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.new_value)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.employees_name)<br />
+                        <span class="text-muted">Дата: </span>@Html.DisplayFor(i => item.date_change)
+                    </td>
+                    <td class="actions text-right">
+                        <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"table_name_": "@item.table_name_", "field_name_": "@item.field_name_", "employees_fio": "@item.employees_name", "date_change": "@item.date_change", "commentt": "@item.commentt", "old_value": "@item.old_value", "new_value": "@item.new_value", "table_name_base_": "@item.table_name_base_", "field_name_base_": "@item.field_name_base_"}'>
+                            <i class="ion-ios7-information-outline"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="foot-row">
+                <td colspan="3" class="text-left">
+                    <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                </td>
+                <td colspan="3">
+                    <div class="text-right">
+                        <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <div class="alert-no-record">
+        <span><strong><i class="icon-info"></i></strong> Нет данных </span>
+    </div>
+}
+
+<script>
+    $(document).ready(function () {
+        var filtering = $('#changeLogsTable');
+        filtering.footable();
+        $('#changeLogsTable #filter_count').text($('#changeLogsTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#changeLogsTable #tr_count').text($('#changeLogsTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextChangeLogs').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#changeLogsTable #filter_count').text($('#changeLogsTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+    });
+
+
+    $(function () {
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Таблица</strong>: " + tooltipInfo['table_name_'] + " - " + tooltipInfo['table_name_base_'] + "</br>" +
+                    "<strong>Поле</strong>: " + tooltipInfo['field_name_'] + " - " + tooltipInfo['field_name_base_'] + "</br>" +
+                    "<strong>Старое значение</strong>: " + tooltipInfo['old_value'] + "</br>" +
+                    "<strong>Новое значение</strong>: " + tooltipInfo['new_value'] + "</br>" +
+                    "<strong>Комментарии</strong>: " + tooltipInfo['commentt'] + "</br>" +
+                    "<hr class='m-t-5 m-b-5'>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['date_change'] + "</br>" +
+                    "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
+    });
+</script>

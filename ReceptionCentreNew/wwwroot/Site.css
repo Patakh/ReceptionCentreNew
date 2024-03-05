@@ -32,7 +32,7 @@
     border: 1px solid #ddd;
 }
 
-.report-table caption + thead tr:first-child th, .report-table caption + thead tr:first-child td, .report-table colgroup + thead tr:first-child th, .report-table colgroup + thead tr:first-child td, .report-table thead:first-child tr:first-child th, .report-table thead:first-child tr:first-child td {
+.report-table Caption + thead tr:first-child th, .report-table Caption + thead tr:first-child td, .report-table colgroup + thead tr:first-child th, .report-table colgroup + thead tr:first-child td, .report-table thead:first-child tr:first-child th, .report-table thead:first-child tr:first-child td {
     border: 1px solid #ddd;
 }
 

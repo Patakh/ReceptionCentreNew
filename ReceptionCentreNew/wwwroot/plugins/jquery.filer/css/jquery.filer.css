@@ -200,7 +200,7 @@ span.jFiler-icon-file.f-audio:after {
     pointer-events: none;
 }
 
-.jFiler-theme-default .jFiler.dragged .jFiler-input .jFiler-input-caption {
+.jFiler-theme-default .jFiler.dragged .jFiler-input .jFiler-input-Caption {
     width: 100%;
     text-align: center;
 }
@@ -209,7 +209,7 @@ span.jFiler-icon-file.f-audio:after {
     display: none;
 }
 
-.jFiler-theme-default .jFiler-input-caption {
+.jFiler-theme-default .jFiler-input-Caption {
     display: block;
     float: left;
     height: 100%;

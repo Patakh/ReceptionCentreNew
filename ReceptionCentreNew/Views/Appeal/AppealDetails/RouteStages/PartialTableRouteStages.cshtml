@@ -1,0 +1,70 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+
+@using (Ajax.BeginForm("SubmitNextRouteStageSave", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "stages", OnBegin="console.log('+этап')" }, new { @id = "AddRouteStageForm", @class = "form-submit" }))
+{
+    <div class="case-next-stage form-row p-b-10">
+        <div class="col-md-6 col-lg-6">
+            @Html.DropDownList("employeeId", ViewBag.Employees as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownList("routeStageId", ViewBag.RouteStages as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary waves-effect waves-light">Добавить этап</button>
+        </div>
+    </div>
+}
+
+@if (Model.DataAppealRoutesStageList.Any())
+{
+    <div class="panel panel-border panel-primary">
+        <div class="panel-body p-0 table-responsive">
+            <table class="table table-vertical-middle">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_stage_name) @Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_date_start) </th>                        
+                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_employees_name)</th>
+                        <th>Дни</th>
+                        <th>Дополнительно</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.DataAppealRoutesStageList)
+                    {
+                        <tr class="text-nowrap">
+                            <td class="vertical-middle">
+                                @Html.DisplayFor(i => item.out_stage_name)<br />
+                                <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.out_date_start) 
+                                <i class="fa fa-clock-o text-muted"></i> <span class="text-muted">@Html.DisplayFor(i => item.out_time_start)</span>
+                            </td>
+                           
+                            <td class="font-13 vertical-middle">
+                                <div title="@item.out_employees_name" class="clip" style="max-width:210px">@item.out_employees_name</div>
+                            </td>
+                            <td class="vertical-middle">
+                                <span class="text-muted">Регл. <span style="margin-left: 3px;"></span> @Html.DisplayFor(i => item.out_count_day_regulation)</span><br />
+                                <span class="text-muted">Факт. @Html.DisplayFor(i => item.out_count_day_fact)</span>
+                            </td>
+                            <td>
+                                <span class="text-muted">Регл. <i class="fa fa-calendar text-muted" style="margin-left: 3px;"></i> @Html.DisplayFor(i => item.out_date_regulation)</span><br />
+                                <span class="text-muted">Факт. <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.out_date_stop)</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert-no-record">
+        <span><i class="icon-info"></i> Нет этапов.</span>
+    </div>
+}
+
+    <script>
+    $(document).ready(function () {
+        $('select.select2').select2();
+    });
+        </script>

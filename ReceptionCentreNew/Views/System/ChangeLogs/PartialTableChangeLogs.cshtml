@@ -1,0 +1,67 @@
+﻿@model ReceptionCentreNew.Models.ReferenceViewModel
+<div class="card-box p-0">
+    <div class="table-responsive">
+        <table id="ChangeLogsTable" class="footable journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                </div>
+                <input type="text" id="searchTextChangeLogs" name="search" value="@ViewBag.Serach" title=" ... нажмите Enter" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <div class="input-group-append align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
+                </div>
+            </div>
+            <tbody>
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                    <th>Таблица</th>
+                    <th style="width:30%">@Html.DisplayNameFor(model => model.DataChangeLogList.First().old_value)</th>
+                    <th style="width:30%">@Html.DisplayNameFor(model => model.DataChangeLogList.First().new_value)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataChangeLogList.First().employees_name)</th>
+                    <th>Дата</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DataChangeLogList)
+                {
+                    <tr>
+                        <td class="number-row p-l-20-important">
+                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.table_name_)<br />
+                            <span class="text-muted">Поле: </span>@Html.DisplayFor(i => item.field_name_)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.old_value)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.new_value)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.employees_name)                            
+                        </td> 
+                        <td>@item.date_change.ToString("yyyy.MM.dd HH:mm")</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-left">
+                        <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>                        
+                    </td>
+                    <td colspan="3">
+                        <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
+                            @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableChangeLogs", "System", new { page = x.CurrentPage, search = ViewBag.Serach}, new AjaxOptions { UpdateTargetId = "changeLogsContainer" }))
+                        </div>
+                    </td>
+                </tr>                
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+ 
+</script>

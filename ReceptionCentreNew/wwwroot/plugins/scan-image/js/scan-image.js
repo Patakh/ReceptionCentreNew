@@ -85,9 +85,9 @@ $(document).on('click', '.modal-footer #saveScan', function () {
                         url: urlSaveImage,
                         type: "POST",
                         async: false,
-                        data: { data_services_table_id: params.data_services_table_id, data_services_info_id: params.data_services_info_id, file_name: $('.picture-block[data-index="' + index + '"] input.scan-picture-name').val(), file_size: element.length },
+                        data: { data_services_table_id: params.data_services_table_id, DataServicesInfoId: params.DataServicesInfoId, FileName: $('.picture-block[data-index="' + index + '"] input.scan-picture-name').val(), FileSize: element.length },
                         success: function (data) {
-                            scanHub.server.uploadFTP(ftpModelData.ftpServer, ftpModelData.ftpLogin, ftpModelData.ftpPass, ftpModelData.ftpFolder, params.data_services_info_id, data.id, index, element);
+                            scanHub.server.uploadFTP(ftpModelData.ftpServer, ftpModelData.ftpLogin, ftpModelData.ftpPass, ftpModelData.ftpFolder, params.DataServicesInfoId, data.id, index, element);
                         },
                         error: function (data) {
                             errorUpload.push(index);

@@ -1,27 +1,26 @@
+using AisReception.Data.Context.App;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Areas.Identity.Role;
 using ReceptionCentreNew.Areas.Identity.User;
-using ReceptionCentreNew.Data.Context.App; 
+using ReceptionCentreNew.Data.Context.App;
+using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Data.Context.Identity;
-  
+using ReceptionCentreNew.Models;
+
 var builder = WebApplication.CreateBuilder(args);
  
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ReceptionCentreContext>(options =>
-    options.UseNpgsql(connectionString));
+builder.Services.AddDbContext<ReceptionCentreContext>(options=>
+options.UseNpgsql(connectionString));
 
 builder.Services.AddDbContext<AuthenticationContext>(options =>
-    options.UseNpgsql(connectionString));
-
-builder.Services.AddIdentityCore<ApplicationUser>()
-    .AddEntityFrameworkStores<AuthenticationContext>()
-    .AddSignInManager();
-
+options.UseNpgsql(connectionString));
+ 
 builder.Services.AddIdentity<ApplicationUser, EmployeesRole>(options =>
 {
-    options.User.RequireUniqueEmail = true;
+    options.User.RequireUniqueEmail = false;
 
     options.SignIn.RequireConfirmedAccount = false;
     options.SignIn.RequireConfirmedEmail = false;
@@ -38,10 +37,9 @@ builder.Services.AddIdentity<ApplicationUser, EmployeesRole>(options =>
     .AddEntityFrameworkStores<AuthenticationContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-  
-
+builder.Services.AddDatabaseDeveloperPageExceptionFilter(); 
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IRepository, EFRepository>();
 
 var app = builder.Build();
 
@@ -68,6 +66,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

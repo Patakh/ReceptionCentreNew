@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Тип обращения";
+}
+
+@Html.MvcSiteMap().SiteMapPath()
+<!-- Тип обращения -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div id="caseTypeContainer">
+    @*@Html.Action("PartialTableCaseType", "Reference")*@
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".select2").select2();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCaseType", "Reference")',
+                success: function (data) {
+                    $('#caseTypeContainer').html(data);
+                }
+            })
+        });
+    </script>
+    <!--Тип обращения-->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

@@ -28,7 +28,7 @@
             '    <div class="kv-fileinput-error"></div>\n' +
             '    </div>\n' +
             '</div>',
-            footer: '<td class="file-details-cell"><div class="explorer-caption" title="{caption}">{caption}</div> ' +
+            footer: '<td class="file-details-cell"><div class="explorer-Caption" title="{Caption}">{Caption}</div> ' +
             '{size}{progress}</td><td class="file-actions-cell">{indicator} {actions}</td>',
             actions: '{drag}\n' +
             '<div class="file-actions">\n' +
@@ -38,11 +38,11 @@
             '</div>',
             zoomCache: '<tr style="display:none" class="kv-zoom-cache-theme"><td>' +
             '<table class="kv-zoom-cache">{zoomContent}</table></td></tr>',
-            fileIcon: '<i class="fa fa-file kv-caption-icon"></i> '
+            fileIcon: '<i class="fa fa-file kv-Caption-icon"></i> '
         },
         previewMarkupTags: {
             tagBefore1: teTagBef + '>' + teContent,
-            tagBefore2: teTagBef + ' title="{caption}">' + teContent,
+            tagBefore2: teTagBef + ' title="{Caption}">' + teContent,
             tagAfter: '</td>\n{footer}</tr>\n'
         },
         previewSettings: {

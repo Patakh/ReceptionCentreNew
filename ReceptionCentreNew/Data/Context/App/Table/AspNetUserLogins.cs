@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReceptionCentreNew.Data.Context.App.Table;
+namespace ReceptionCentreNew.Data.Context.App;
 
 public partial class AspNetUserLogins
 {

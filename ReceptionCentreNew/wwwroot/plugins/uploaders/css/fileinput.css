@@ -43,14 +43,14 @@
     display: block;
 }
 
-.file-caption-name {
+.file-Caption-name {
     display: inline-block;
     overflow: hidden;
     height: 20px;
     word-break: break-all;
 }
 
-.input-group-lg .file-caption-name {
+.input-group-lg .file-Caption-name {
     height: 25px;
 }
 
@@ -76,7 +76,7 @@
     margin: 5px 0;
 }
 
-.file-caption-disabled {
+.file-Caption-disabled {
     background-color: #EEEEEE;
     cursor: not-allowed;
     opacity: 1;
@@ -166,7 +166,7 @@
     display: none;
 }
 
-.file-caption-main {
+.file-Caption-main {
     width: 100%;
 }
 
@@ -205,7 +205,7 @@
     opacity: 1;
 }
 
-.file-footer-caption {
+.file-footer-Caption {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -223,7 +223,7 @@
     box-shadow: none;
 }
 
-.file-preview-frame:not(.file-preview-error) .file-footer-caption:hover {
+.file-preview-frame:not(.file-preview-error) .file-footer-Caption:hover {
     color: #000;
 }
 

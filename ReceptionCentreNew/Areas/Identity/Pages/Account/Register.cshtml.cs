@@ -42,7 +42,7 @@ public class RegisterModel : PageModel
     {
         [Required]
         [Display(Name = "Логин")]
-        public string Email { get; set; }
+        public string Login { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -68,7 +68,7 @@ public class RegisterModel : PageModel
         ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         if (ModelState.IsValid)
         {
-            var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+            var user = new ApplicationUser { UserName = Input.Login, Email = Input.Login };
             var result = await _userManager.CreateAsync(user, Input.Password);
             if (result.Succeeded)
             {
@@ -82,12 +82,12 @@ public class RegisterModel : PageModel
                     values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                     protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                await _emailSender.SendEmailAsync(Input.Login, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 if (_userManager.Options.SignIn.RequireConfirmedAccount)
                 {
-                    return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    return RedirectToPage("RegisterConfirmation", new { email = Input.Login, returnUrl = returnUrl });
                 }
                 else
                 {

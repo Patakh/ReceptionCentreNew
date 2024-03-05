@@ -105,7 +105,7 @@
                 initId: obj.previewInitId,
                 footer: obj._getLayoutTemplate('footer').replace(/\{progress}/g, obj._renderThumbProgress()),
                 isDelete: obj.initialPreviewShowDelete,
-                caption: obj.initialCaption,
+                Caption: obj.initialCaption,
                 actions: function (showUpload, showDelete, showZoom, showDrag, disabled, url, key) {
                     return obj._renderFileActions(showUpload, showDelete, showZoom, showDrag, disabled, url, key, true);
                 }
@@ -136,7 +136,7 @@
             }
             if (asData) {
                 cat = data.previewAsData ? ifSet('type', config, data.previewFileType || 'generic') : 'generic';
-                cap = ifSet('caption', config);
+                cap = ifSet('Caption', config);
                 ftr = previewCache.footer(id, i, isDisabled, (config && config.size || null));
                 ftype = ifSet('filetype', config, cat);
                 out = data.parseTemplate(cat, content, cap, ftype, previewId, ftr, ind, null);
@@ -238,15 +238,15 @@
             previewCache.data[id].tags[index] = null;
         },
         out: function (id) {
-            var html = '', data = previewCache.data[id], caption, len = previewCache.count(id, true);
+            var html = '', data = previewCache.data[id], Caption, len = previewCache.count(id, true);
             if (len === 0) {
-                return {content: '', caption: ''};
+                return {content: '', Caption: ''};
             }
             for (var i = 0; i < len; i++) {
                 html += previewCache.get(id, i);
             }
-            caption = data.msg(previewCache.count(id));
-            return {content: '<div class="file-initial-thumbs">' + html + '</div>', caption: caption};
+            Caption = data.msg(previewCache.count(id));
+            return {content: '<div class="file-initial-thumbs">' + html + '</div>', Caption: Caption};
         },
         footer: function (id, i, isDisabled, size) {
             var data = previewCache.data[id];
@@ -254,13 +254,13 @@
             if (data.config.length === 0 || isEmpty(data.config[i])) {
                 return '';
             }
-            var config = data.config[i], caption = ifSet('caption', config), width = ifSet('width', config, 'auto'),
+            var config = data.config[i], Caption = ifSet('Caption', config), width = ifSet('width', config, 'auto'),
                 url = ifSet('url', config, false), key = ifSet('key', config, null),
                 showDel = ifSet('showDelete', config, true), showZoom = ifSet('showZoom', config, data.showZoom),
                 showDrag = ifSet('showDrag', config, data.showDrag), disabled = (url === false) && isDisabled,
                 actions = data.isDelete ? data.actions(false, showDel, showZoom, showDrag, disabled, url, key) : '',
                 footer = data.footer.replace(/\{actions}/g, actions);
-            return footer.replace(/\{caption}/g, caption).replace(/\{size}/g, data.getSize(size))
+            return footer.replace(/\{Caption}/g, Caption).replace(/\{size}/g, data.getSize(size))
                 .replace(/\{width}/g, width).replace(/\{indicator}/g, '').replace(/\{indicatorTitle}/g, '');
         }
     };
@@ -320,7 +320,7 @@
     tMain1 = '{preview}\n' +
         '<div class="kv-upload-progress hide"></div>\n' +
         '<div class="input-group {class}">\n' +
-        '   {caption}\n' +
+        '   {Caption}\n' +
         '   <div class="input-group-btn">\n' +
         '       {remove}\n' +
         '       {cancel}\n' +
@@ -340,9 +340,9 @@
         '    </div>\n' +
         '</div>';
     tClose = '<div class="close fileinput-remove">&times;</div>\n';
-    tFileIcon = '<i class="glyphicon glyphicon-file kv-caption-icon"></i>';
-    tCaption = '<div tabindex="500" class="form-control file-caption {class}">\n' +
-        '   <div class="file-caption-name"></div>\n' +
+    tFileIcon = '<i class="glyphicon glyphicon-file kv-Caption-icon"></i>';
+    tCaption = '<div tabindex="500" class="form-control file-Caption {class}">\n' +
+        '   <div class="file-Caption-name"></div>\n' +
         '</div>\n';
     //noinspection HtmlUnknownAttribute
     tBtnDefault = '<button type="{type}" tabindex="500" title="{title}" class="{css}" {status}>{icon} {label}</button>';
@@ -372,7 +372,7 @@
         '</div>';
     tSize = ' <br><samp>({sizeText})</samp>';
     tFooter = '<div class="file-thumbnail-footer">\n' +
-        '    <div class="file-footer-caption" title="{caption}">{caption}{size}</div>\n' +
+        '    <div class="file-footer-Caption" title="{Caption}">{Caption}{size}</div>\n' +
         '    {progress} {actions}\n' +
         '</div>';
     tActions = '<div class="file-actions">\n' +
@@ -392,13 +392,13 @@
     tTagBef = '<div class="file-preview-frame{frameClass}" id="{previewId}" data-fileindex="{fileindex}"' +
         ' data-template="{template}"';
     tTagBef1 = tTagBef + '><div class="kv-file-content">\n';
-    tTagBef2 = tTagBef + ' title="{caption}" ' + STYLE_SETTING + '><div class="kv-file-content">\n';
+    tTagBef2 = tTagBef + ' title="{Caption}" ' + STYLE_SETTING + '><div class="kv-file-content">\n';
     tTagAft = '</div>{footer}\n</div>\n';
     tGeneric = '{content}\n';
-    tHtml = '<div class="kv-preview-data file-preview-html" title="{caption}" ' + STYLE_SETTING + '>{data}</div>\n';
-    tImage = '<img src="{data}" class="kv-preview-data file-preview-image" title="{caption}" alt="{caption}" ' +
+    tHtml = '<div class="kv-preview-data file-preview-html" title="{Caption}" ' + STYLE_SETTING + '>{data}</div>\n';
+    tImage = '<img src="{data}" class="kv-preview-data file-preview-image" title="{Caption}" alt="{Caption}" ' +
         STYLE_SETTING + '>\n';
-    tText = '<textarea class="kv-preview-data file-preview-text" title="{caption}" readonly ' + STYLE_SETTING +
+    tText = '<textarea class="kv-preview-data file-preview-text" title="{Caption}" readonly ' + STYLE_SETTING +
         '>{data}</textarea>\n';
     tVideo = '<video class="kv-preview-data" width="{width}" height="{height}" controls>\n' +
         '<source src="{data}" type="{type}">\n' + DEFAULT_PREVIEW + '\n</video>\n';
@@ -407,7 +407,7 @@
     tFlash = '<object class="kv-preview-data file-object" type="application/x-shockwave-flash" ' +
         'width="{width}" height="{height}" data="{data}">\n' + OBJECT_PARAMS + ' ' + DEFAULT_PREVIEW + '\n</object>\n';
     tObject = '<object class="kv-preview-data file-object" data="{data}" type="{type}" width="{width}" height="{height}">\n' +
-        '<param name="movie" value="{caption}" />\n' + OBJECT_PARAMS + ' ' + DEFAULT_PREVIEW + '\n</object>\n';
+        '<param name="movie" value="{Caption}" />\n' + OBJECT_PARAMS + ' ' + DEFAULT_PREVIEW + '\n</object>\n';
     tPdf = '<embed class="kv-preview-data" src="{data}" width="{width}" height="{height}" type="application/pdf">\n';
     tOther = '<div class="kv-preview-data file-preview-other-frame">\n' + DEFAULT_PREVIEW + '\n</div>\n';
     defaultLayoutTemplates = {
@@ -416,7 +416,7 @@
         preview: tPreview,
         close: tClose,
         fileIcon: tFileIcon,
-        caption: tCaption,
+        Caption: tCaption,
         modalMain: tModalMain,
         modal: tModal,
         progress: tProgress,
@@ -655,7 +655,7 @@
                 (self.isUploadable && self.dropZoneEnabled || !isEmpty(self.defaultPreviewContent));
             self.slug = typeof options.slugCallback === "function" ? options.slugCallback : self._slugDefault;
             self.mainTemplate = self.showCaption ? self._getLayoutTemplate('main1') : self._getLayoutTemplate('main2');
-            self.captionTemplate = self._getLayoutTemplate('caption');
+            self.captionTemplate = self._getLayoutTemplate('Caption');
             self.previewGenericTemplate = self._getPreviewTemplate('generic');
             if (self.resizeImage && (self.maxImageWidth || self.maxImageHeight)) {
                 self.imageCanvas = document.createElement('canvas');
@@ -672,8 +672,8 @@
             self.$dropZone = self.$container.find('.file-drop-zone');
             self.$progress = self.$container.find('.kv-upload-progress');
             self.$btnUpload = self.$container.find('.fileinput-upload');
-            self.$captionContainer = getElement(options, 'elCaptionContainer', self.$container.find('.file-caption'));
-            self.$caption = getElement(options, 'elCaptionText', self.$container.find('.file-caption-name'));
+            self.$captionContainer = getElement(options, 'elCaptionContainer', self.$container.find('.file-Caption'));
+            self.$caption = getElement(options, 'elCaptionText', self.$container.find('.file-Caption-name'));
             self.$previewContainer = getElement(options, 'elPreviewContainer', self.$container.find('.file-preview'));
             self.$preview = getElement(options, 'elPreviewImage', self.$container.find('.file-preview-thumbnails'));
             self.$previewStatus = getElement(options, 'elPreviewStatus', self.$container.find('.file-preview-status'));
@@ -719,21 +719,21 @@
             $err.find('ul').remove();
             return $.trim($err.text()).length ? true : false;
         },
-        _errorHandler: function (evt, caption) {
+        _errorHandler: function (evt, Caption) {
             var self = this, err = evt.target.error;
             /** @namespace err.NOT_FOUND_ERR */
             /** @namespace err.SECURITY_ERR */
             /** @namespace err.NOT_READABLE_ERR */
             if (err.code === err.NOT_FOUND_ERR) {
-                self._showError(self.msgFileNotFound.replace('{name}', caption));
+                self._showError(self.msgFileNotFound.replace('{name}', Caption));
             } else if (err.code === err.SECURITY_ERR) {
-                self._showError(self.msgFileSecured.replace('{name}', caption));
+                self._showError(self.msgFileSecured.replace('{name}', Caption));
             } else if (err.code === err.NOT_READABLE_ERR) {
-                self._showError(self.msgFileNotReadable.replace('{name}', caption));
+                self._showError(self.msgFileNotReadable.replace('{name}', Caption));
             } else if (err.code === err.ABORT_ERR) {
-                self._showError(self.msgFilePreviewAborted.replace('{name}', caption));
+                self._showError(self.msgFilePreviewAborted.replace('{name}', Caption));
             } else {
-                self._showError(self.msgFilePreviewError.replace('{name}', caption));
+                self._showError(self.msgFilePreviewError.replace('{name}', Caption));
             }
         },
         _addError: function (msg) {
@@ -1087,7 +1087,7 @@
                 return;
             }
             out = previewCache.out(self.id);
-            cap = isInit && self.initialCaption ? self.initialCaption : out.caption;
+            cap = isInit && self.initialCaption ? self.initialCaption : out.Caption;
             self.$preview.html(out.content);
             self._setCaption(cap);
             self._initSortable();
@@ -1229,7 +1229,7 @@
             tmplt = $preview.data('template') || 'generic';
             $content = $preview.find('.kv-file-content');
             body = $content.length ? $content.html() : '';
-            title = $preview.find('.file-footer-caption').text() || '';
+            title = $preview.find('.file-footer-Caption').text() || '';
             $modal.find('.kv-zoom-title').html(title);
             $body = $modal.find('.kv-zoom-body');
             if (animate) {
@@ -1494,7 +1494,7 @@
             if (previewCache.count(self.id)) {
                 out = previewCache.out(self.id);
                 self.$preview.html(out.content);
-                cap = self.initialCaption ? self.initialCaption : out.caption;
+                cap = self.initialCaption ? self.initialCaption : out.Caption;
                 self._setCaption(cap);
             } else {
                 self._clearPreview();
@@ -1528,7 +1528,7 @@
             if (self._hasInitialPreview()) {
                 out = previewCache.out(self.id);
                 self.$preview.html(out.content);
-                self._setCaption(out.caption);
+                self._setCaption(out.Caption);
                 self._initPreviewActions();
             } else {
                 self._clearPreview();
@@ -2050,11 +2050,11 @@
         },
         _hideFileIcon: function () {
             if (this.overwriteInitial) {
-                this.$captionContainer.find('.kv-caption-icon').hide();
+                this.$captionContainer.find('.kv-Caption-icon').hide();
             }
         },
         _showFileIcon: function () {
-            this.$captionContainer.find('.kv-caption-icon').show();
+            this.$captionContainer.find('.kv-Caption-icon').show();
         },
         _getSize: function (bytes) {
             var size = parseFloat(bytes);
@@ -2073,19 +2073,19 @@
         },
         _generatePreviewTemplate: function (cat, data, fname, ftype, previewId, isError, size, frameClass, foot, ind) {
             var self = this, tmplt = self._getPreviewTemplate(cat), content, sText, css = frameClass || '',
-                config = ifSet(cat, self.previewSettings, defaultPreviewSettings[cat]), caption = self.slug(fname),
-                footer = foot || self._renderFileFooter(caption, size, config.width, isError);
+                config = ifSet(cat, self.previewSettings, defaultPreviewSettings[cat]), Caption = self.slug(fname),
+                footer = foot || self._renderFileFooter(Caption, size, config.width, isError);
             ind = ind || previewId.slice(previewId.lastIndexOf('-') + 1);
             tmplt = self._parseFilePreviewIcon(tmplt, fname);
             if (cat === 'text' || cat === 'html') {
                 sText = cat === 'text' ? htmlEncode(data) : data;
-                content = tmplt.replace(/\{previewId}/g, previewId).replace(/\{caption}/g, caption)
+                content = tmplt.replace(/\{previewId}/g, previewId).replace(/\{Caption}/g, Caption)
                     .replace(/\{width}/g, config.width).replace(/\{height}/g, config.height)
                     .replace(/\{frameClass}/g, css).replace(/\{cat}/g, ftype)
                     .replace(/\{footer}/g, footer).replace(/\{fileindex}/g, ind)
                     .replace(/\{data}/g, sText).replace(/\{template}/g, cat);
             } else {
-                content = tmplt.replace(/\{previewId}/g, previewId).replace(/\{caption}/g, caption)
+                content = tmplt.replace(/\{previewId}/g, previewId).replace(/\{Caption}/g, Caption)
                     .replace(/\{frameClass}/g, css).replace(/\{type}/g, ftype).replace(/\{fileindex}/g, ind)
                     .replace(/\{width}/g, config.width).replace(/\{height}/g, config.height)
                     .replace(/\{footer}/g, footer).replace(/\{data}/g, data).replace(/\{template}/g, cat);
@@ -2113,7 +2113,7 @@
             if (!this.showPreview) {
                 return;
             }
-            var self = this, cat = self._parseFileType(file), fname = file ? file.name : '', caption = self.slug(fname),
+            var self = this, cat = self._parseFileType(file), fname = file ? file.name : '', Caption = self.slug(fname),
                 types = self.allowedPreviewTypes, mimes = self.allowedPreviewMimeTypes, $preview = self.$preview,
                 chkTypes = types && types.indexOf(cat) >= 0, $previewLive = $preview.find('.file-live-thumbs'),
                 iData = (cat === 'text' || cat === 'html' || cat === 'image') ? theFile.target.result : data, content,
@@ -2129,7 +2129,7 @@
                 content = self._generatePreviewTemplate(cat, iData, fname, file.type, previewId, false, file.size);
                 self._clearDefaultPreview();
                 $previewLive.append("\n" + content);
-                self._validateImage(i, previewId, caption, file.type);
+                self._validateImage(i, previewId, Caption, file.type);
             } else {
                 self._previewDefault(file, previewId);
             }
@@ -2187,7 +2187,7 @@
                     return;
                 }
                 var node = ctr + i, previewId = previewInitId + "-" + node, isText, isImage, file = files[i],
-                    caption = self.slug(file.name), fileSize = (file.size || 0) / 1000, checkFile, fileExtExpr = '',
+                    Caption = self.slug(file.name), fileSize = (file.size || 0) / 1000, checkFile, fileExtExpr = '',
                     previewData = objUrl.createObjectURL(file), fileCount = 0, j, msg, typ, chk,
                     fileTypes = self.allowedFileTypes, strTypes = isEmpty(fileTypes) ? '' : fileTypes.join(', '),
                     fileExt = self.allowedFileExtensions, strExt = isEmpty(fileExt) ? '' : fileExt.join(', ');
@@ -2196,7 +2196,7 @@
                 }
                 fileSize = fileSize.toFixed(2);
                 if (self.maxFileSize > 0 && fileSize > self.maxFileSize) {
-                    msg = self.msgSizeTooLarge.replace('{name}', caption)
+                    msg = self.msgSizeTooLarge.replace('{name}', Caption)
                         .replace('{size}', fileSize)
                         .replace('{maxSize}', self.maxFileSize);
                     self.isError = throwError(msg, file, previewId, i);
@@ -2206,20 +2206,20 @@
                     for (j = 0; j < fileTypes.length; j += 1) {
                         typ = fileTypes[j];
                         checkFile = settings[typ];
-                        chk = (checkFile !== undefined && checkFile(file.type, caption));
+                        chk = (checkFile !== undefined && checkFile(file.type, Caption));
                         fileCount += isEmpty(chk) ? 0 : chk.length;
                     }
                     if (fileCount === 0) {
-                        msg = self.msgInvalidFileType.replace('{name}', caption).replace('{types}', strTypes);
+                        msg = self.msgInvalidFileType.replace('{name}', Caption).replace('{types}', strTypes);
                         self.isError = throwError(msg, file, previewId, i);
                         return;
                     }
                 }
                 if (fileCount === 0 && !isEmpty(fileExt) && isArray(fileExt) && !isEmpty(fileExtExpr)) {
-                    chk = compare(caption, fileExtExpr);
+                    chk = compare(Caption, fileExtExpr);
                     fileCount += isEmpty(chk) ? 0 : chk.length;
                     if (fileCount === 0) {
-                        msg = self.msgInvalidFileExtension.replace('{name}', caption).replace('{extensions}',
+                        msg = self.msgInvalidFileExtension.replace('{name}', Caption).replace('{extensions}',
                             strExt);
                         self.isError = throwError(msg, file, previewId, i);
                         return;
@@ -2246,7 +2246,7 @@
                     $status.html(msgLoading.replace('{index}', i + 1).replace('{files}', numFiles));
                     $container.addClass('file-thumb-loading');
                     reader.onerror = function (evt) {
-                        self._errorHandler(evt, caption);
+                        self._errorHandler(evt, Caption);
                     };
                     reader.onload = function (theFile) {
                         self._previewFile(i, file, theFile, previewId, previewData);
@@ -2254,7 +2254,7 @@
                     };
                     reader.onloadend = function () {
                         msg = msgProgress.replace('{index}', i + 1).replace('{files}', numFiles)
-                            .replace('{percent}', 50).replace('{name}', caption);
+                            .replace('{percent}', 50).replace('{name}', Caption);
                         setTimeout(function () {
                             $status.html(msg);
                             self._updateFileDetails(numFiles);
@@ -2266,7 +2266,7 @@
                         if (data.lengthComputable) {
                             var fact = (data.loaded / data.total) * 100, progress = Math.ceil(fact);
                             msg = msgProgress.replace('{index}', i + 1).replace('{files}', numFiles)
-                                .replace('{percent}', progress).replace('{name}', caption);
+                                .replace('{percent}', progress).replace('{name}', Caption);
                             setTimeout(function () {
                                 $status.html(msg);
                             }, 100);
@@ -2275,10 +2275,10 @@
                     isText = ifSet('text', settings, defaultFileTypeSettings.text);
                     isImage = ifSet('image', settings, defaultFileTypeSettings.image);
 
-                    if (isText(file.type, caption)) {
+                    if (isText(file.type, Caption)) {
                         reader.readAsText(file, self.textEncoding);
                     } else {
-                        if (isImage(file.type, caption)) {
+                        if (isImage(file.type, Caption)) {
                             reader.readAsDataURL(file);
                         } else {
                             reader.readAsArrayBuffer(file);
@@ -2307,7 +2307,7 @@
             if (self.isError) {
                 self.$previewContainer.removeClass('file-thumb-loading');
                 self.$previewStatus.html('');
-                self.$captionContainer.find('.kv-caption-icon').hide();
+                self.$captionContainer.find('.kv-Caption-icon').hide();
             } else {
                 self._showFileIcon();
             }
@@ -2569,7 +2569,7 @@
             }
             self.$caption.html(out);
             self.$caption.attr('title', title);
-            self.$captionContainer.find('.file-caption-ellipsis').attr('title', title);
+            self.$captionContainer.find('.file-Caption-ellipsis').attr('title', title);
         },
         _createContainer: function () {
             var self = this, $container = $(document.createElement("div"))
@@ -2594,13 +2594,13 @@
                 preview = !self.showPreview ? '' : self._getLayoutTemplate('preview')
                     .replace(/\{class}/g, self.previewClass)
                     .replace(/\{dropClass}/g, dropCss),
-                css = self.isDisabled ? self.captionClass + ' file-caption-disabled' : self.captionClass,
-                caption = self.captionTemplate.replace(/\{class}/g, css + ' kv-fileinput-caption');
+                css = self.isDisabled ? self.captionClass + ' file-Caption-disabled' : self.captionClass,
+                Caption = self.captionTemplate.replace(/\{class}/g, css + ' kv-fileinput-Caption');
             return self.mainTemplate.replace(/\{class}/g, self.mainClass +
                 (!self.showBrowse && self.showCaption ? ' no-browse' : ''))
                 .replace(/\{preview}/g, preview)
                 .replace(/\{close}/g, close)
-                .replace(/\{caption}/g, caption)
+                .replace(/\{Caption}/g, Caption)
                 .replace(/\{upload}/g, self._renderButton('upload'))
                 .replace(/\{remove}/g, self._renderButton('remove'))
                 .replace(/\{cancel}/g, self._renderButton('cancel'))
@@ -2653,7 +2653,7 @@
             return '<div class="file-thumb-progress hide">' + this.progressTemplate.replace(/\{percent}/g,
                     '0') + '</div>';
         },
-        _renderFileFooter: function (caption, size, width, isError) {
+        _renderFileFooter: function (Caption, size, width, isError) {
             var self = this, config = self.fileActionSettings, rem = config.showRemove, drg = config.showDrag,
                 upl = config.showUpload, zoom = config.showZoom, out, template = self._getLayoutTemplate('footer'),
                 indicator = isError ? config.indicatorError : config.indicatorNew,
@@ -2661,13 +2661,13 @@
             size = self._getSize(size);
             if (self.isUploadable) {
                 out = template.replace(/\{actions}/g, self._renderFileActions(upl, rem, zoom, drg, false, false, false))
-                    .replace(/\{caption}/g, caption).replace(/\{size}/g, size).replace(/\{width}/g, width)
+                    .replace(/\{Caption}/g, Caption).replace(/\{size}/g, size).replace(/\{width}/g, width)
                     .replace(/\{progress}/g, self._renderThumbProgress()).replace(/\{indicator}/g, indicator)
                     .replace(/\{indicatorTitle}/g, title);
             } else {
                 out = template.replace(/\{actions}/g,
                     self._renderFileActions(false, false, zoom, drg, false, false, false))
-                    .replace(/\{caption}/g, caption).replace(/\{size}/g, size).replace(/\{width}/g, width)
+                    .replace(/\{Caption}/g, Caption).replace(/\{size}/g, size).replace(/\{width}/g, width)
                     .replace(/\{progress}/g, '').replace(/\{indicator}/g, indicator)
                     .replace(/\{indicatorTitle}/g, title);
             }
@@ -2785,7 +2785,7 @@
                     n = (self.autoReplace && len > self.maxFileCount) ? len : total;
                     msg = self.msgFilesTooMany.replace('{m}', self.maxFileCount).replace('{n}', n);
                     self.isError = throwError(msg, null, null, null);
-                    self.$captionContainer.find('.kv-caption-icon').hide();
+                    self.$captionContainer.find('.kv-Caption-icon').hide();
                     self._setCaption('', true);
                     self.$container.removeClass('file-input-new file-input-ajax-new');
                     return;
@@ -2962,7 +2962,7 @@
             }
             if (self.$container.find('.file-preview-frame').length === 0) {
                 if (!self._initCaption()) {
-                    self.$captionContainer.find('.kv-caption-icon').hide();
+                    self.$captionContainer.find('.kv-Caption-icon').hide();
                 }
             }
             self._hideFileIcon();
@@ -2990,7 +2990,7 @@
             self.isDisabled = true;
             self._raise('filedisabled');
             self.$element.attr('disabled', 'disabled');
-            self.$container.find(".kv-fileinput-caption").addClass("file-caption-disabled");
+            self.$container.find(".kv-fileinput-Caption").addClass("file-Caption-disabled");
             self.$container.find(".btn-file, .fileinput-remove, .fileinput-upload, .file-preview-frame button").attr(
                 "disabled",
                 true);
@@ -3002,7 +3002,7 @@
             self.isDisabled = false;
             self._raise('fileenabled');
             self.$element.removeAttr('disabled');
-            self.$container.find(".kv-fileinput-caption").removeClass("file-caption-disabled");
+            self.$container.find(".kv-fileinput-Caption").removeClass("file-Caption-disabled");
             self.$container.find(
                 ".btn-file, .fileinput-remove, .fileinput-upload, .file-preview-frame button").removeAttr("disabled");
             self._initDragDrop();
@@ -3122,7 +3122,7 @@
         autoReplace: false,
         previewClass: '',
         captionClass: '',
-        mainClass: 'file-caption-main',
+        mainClass: 'file-Caption-main',
         mainTemplate: null,
         purifyHtml: true,
         fileSizeGetter: null,

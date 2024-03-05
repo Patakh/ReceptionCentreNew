@@ -1,0 +1,495 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.DataAppealSelect
+@{
+    ViewBag.Title = "Обращение";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #text-appeal.long{
+        cursor: pointer;
+    }
+    #text-appeal:hover.clip {
+        color: #007bff;
+    }
+    .clip {
+        white-space: nowrap; /* Запрещаем перенос строк */
+        overflow: hidden; /* Обрезаем все, что не помещается в область */
+        text-overflow: ellipsis; /* Добавляем многоточие */
+    }
+
+    .text-black-60 {
+        color: rgba(0,0,0,.6) !important;
+    }
+    .font-125 {
+        font-size: 1.25rem;
+        font-weight:400;
+    }
+</style>
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+@Html.MvcSiteMap().SiteMapPath()
+
+<div class="row">
+    <input type="hidden" value="@Model.out_data_appeal_id" class="_glAppealId" />
+    <div class="col-lg-9">
+        <div class="card-box">
+            <div class="row">
+                <div class="col-md-6"> 
+                <h5 class="text-black-60 font-125"><i class="ti-files vertical-middle m-r-5"></i>Обращение 
+                    @if (User.IsInRole("superadmin") || User.IsInRole("admin") || Model.out_spr_employees_id == ViewBag.SprEmployeesId)
+                    {
+                        if (Model.out_status_name != "Исполнено")
+                        {
+                            <button type="button" class="btn btn-success" style="padding:1px 6px;" id="btn_edit_appeal">
+                                <i class="ion-edit"></i>
+                            </button>
+                        }
+                    }
+                    </h5>
+                </div>
+                <div class="col-md-6 text-right">                   
+                    <strong class=""><span class="@(Model.out_status_name.ToString() == "Исполнено" ? "text-success" : Model.out_status_name.ToString() == "Ошибка" ? "text-danger" : Model.out_status_name.ToString() == "Прекращено" ? "text-mfc" : "text-warning" )">@(Model.out_status_name)</span></strong>
+                    @{int d = 0; }
+                    @if (Model.out_date_execution == null)
+                    {
+                        d = (Model.out_date_regulation - DateTime.Now).Value.Days;
+                       <span class="h3 font-500 @(d < 0 ? "text-danger" : "text-custom")">@d</span>
+                    }
+                    else
+                    {
+                        d = (DateTime.Now - Model.out_date_execution).Value.Days + 1;
+                        <span class="h3 font-500 text-success">@d</span>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <p>
+                        <span class="text-muted font-12">Номер </span><br />
+                        <span class="text-danger">#@Model.out_number_appeal</span>
+                    </p>
+                    <p class="clip">
+                        <span class="text-muted font-12">МФЦ </span><br />
+                        <span> <img src="/Content/images/logo.png" height="15" style="opacity:0.6" /> @Model.out_mfc_name </span>
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p>
+                        <span class="text-muted font-12">Дата и время </span><br />
+                        <i class="fa fa-calendar m-r-5"></i> @Model.out_date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.out_date_add.Value.ToShortTimeString()
+                    </p>
+                    <p>
+                        <span class="text-muted font-12">Номер дела в МФЦ </span><br />
+                        @if (Model.out_case_number != null)
+                        {
+                            string[] n = Model.out_case_number.Split(' ');
+                            foreach (var item in n)
+                            {
+                                if (item.Length != 0)
+                                {
+                                    <a href="http://192.168.34.9:81/Case?CaseId=@item.Replace("#","")" target="_blank">@item</a>
+                                }
+                            }
+                        }
+                    </p>
+                </div>
+                <div class="col-md-4">
+                    <p>
+                        <span class="text-muted font-12">Регламентная дата </span><br />
+                        <span><i class="fa fa-calendar m-r-5"></i>@Model.out_date_regulation.Value.ToShortDateString() </span>
+                    </p>                    
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    @*<h5 class="text-black-60 font-125"><i class="ti-pencil-alt vertical-middle m-r-5"></i>Текст обращения </h5>*@
+                    <p class="font-13">
+                        <div id="text-appeal" class="@(Model.out_text_appeal.Length > 115? "clip long":"") ">@Model.out_text_appeal</div>
+                    </p>
+                </div>
+            </div>            
+        </div>
+
+        <div class="card-box">            
+            <ul class="nav nav-pills m-b-15" id="pills-tab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#stages" role="tab" aria-controls="stages" aria-selected="true">Этапы</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#notes" role="tab" aria-controls="notes" aria-selected="false">Примечания</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#notification" role="tab" aria-controls="notification" aria-selected="false">Оповещения</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="pills-changeLogs-tab" data-toggle="pill" href="#changeLogs" role="tab" aria-controls="changeLogs" aria-selected="false">История изменений</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <!-- Этапы -->
+                <div class="tab-pane fade show active" id="stages" role="tabpanel" aria-labelledby="pills-home-tab">
+
+                    @Html.Action("PartialTableRouteStages", "Appeal", new { appealId = Model.out_data_appeal_id })
+                </div>
+                <!-- Примечания -->
+                <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="pills-profile-tab">
+
+
+                </div>
+                <!-- Оповещание -->
+                <div class="tab-pane fade" id="notification" role="tabpanel" aria-labelledby="pills-contact-tab">
+                    <ul class="nav nav-icons" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link py-0 active" data-toggle="pill" href="#notification-calls">
+                                <i class="md md-call"></i>
+                                <small>Звонки</small>
+                                <pre class="badge">@ViewBag.CallCount</pre>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-0" data-toggle="pill" href="#notification-files">
+                                <i class="fa fa-file-text"></i>
+                                <small>Файлы</small>
+                                <pre class="badge">@ViewBag.FileCount</pre>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link py-0" data-toggle="pill" href="#notification-messages">
+                                <i class="md md-email"></i>
+                                <small>Письма</small>
+                                <pre class="badge">@ViewBag.EmailCount</pre>
+                            </a>
+                        </li>
+                        @*<li class="nav-item">
+                    <a class="nav-link py-0" data-toggle="pill" href="#notification-sms">
+                        <i class="md md-message"></i>
+                        <small>СМС</small>
+                        <pre class="badge">0</pre>
+                    </a>
+                </li>*@
+                    </ul>
+                    <div class="tab-content py-2 bx-shadow-none">
+                        <div id="notification-calls" class="tab-pane case-tab-pane notification-calls fade show active">
+
+                        </div>
+
+                        <div id="notification-files" class="tab-pane notification-sms fade">
+                        </div>
+
+                        <div id="notification-messages" class="tab-pane notification-messages fade">
+                        </div>
+
+                        <div id="notification-sms" class="tab-pane notification-sms fade">
+                        </div>
+                    </div>
+                </div>
+                <!-- История изменений -->
+                <div class="tab-pane fade" id="changeLogs" role="tabpanel" aria-labelledby="pills-changeLogs-tab">...</div>
+            </div>
+            
+        </div>
+
+    </div>
+    <div class="col-lg-3">
+        <div class="row">            
+            <div class="col-md-12">
+                <div class="card-box">
+                    <h4><i class="md md-person vertical-middle m-r-5 m-b-10 font" style="font-size:32px"></i>Заявитель</h4>
+                    <p class="font-13"><strong>ФИО:</strong><span class="m-l-10"> <br />@Model.out_applicant_name</span></p>
+                    <p class="font-13"><strong>Телефон:</strong> <span class="m-l-10"><br />@Model.out_phone_number</span></p>
+                    <p class="font-13"><strong>Email:</strong> <span class="m-l-10"><br />@Model.out_email_</span></p>
+                    <br />
+                    <p class="font-13"><strong>Категория: </strong> <br />@Model.out_category</p>
+                    <p class="font-13"><strong>Тип: </strong> <br />@Model.out_type</p>
+                    <p class="font-13"><strong>Предмет: </strong> <br />@Model.out_subject_treatment</p>
+                    <p class="font-13"><strong>Сложность: </strong> <br />@Model.out_type_difficulty</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('a[href="#notification-calls"]').click();
+
+            $('#text-appeal').click(function () {
+                if ($(this).hasClass("long")) {
+                    if ($(this).hasClass("clip")) {
+                        $(this).removeClass("clip");
+                    }
+                    else {
+                        $(this).addClass("clip");
+                    }
+                }                
+            });
+        });
+
+        var filteringCall = $('#callsTable');
+        filteringCall.footable();
+        $('#filter_count').text($('#callsTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#tr_count').text($('#callsTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextCalls').keyup(function (evt) {
+            evt.preventDefault();
+            filteringCall.trigger('footable_filter', { filter: $(this).val() });
+            $('#callsTable #filter_count').text($('#callsTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+        
+
+    </script>
+
+    <script>
+        function printStatement(url, params) {
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: params,
+                success: function (data) {
+                    $(data).printThis({
+                        debug: false,
+                        importCSS: true,
+                        importStyle: true,
+                        printContainer: true,
+                        loadCSS: "",
+                        pageTitle: "",
+                        removeInline: false,
+                        printDelay: 333,
+                        header: null,
+                        formValues: true
+                    });
+                }
+            });
+        }
+
+        $('a[href="#notes"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCommentts", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notes').html(data);
+                }
+            });
+        });
+
+        $('a[href="#changeLogs"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableChangeLogs", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#changeLogs').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-messages"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableEmails", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-messages').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-calls"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCalls", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-calls').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-sms"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableSms", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-sms').html(data);
+                }
+            });
+        });
+
+        $('a[href="#notification-files"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableFiles", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#notification-files').html(data);
+                }
+            });
+        });
+
+        $('#btn_edit_appeal').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("EditAppeal", "Appeal")',
+                data: { appealId: '@Model.out_data_appeal_id' },
+                success: function (data) {
+                    $('#newModal').modal('show');
+                    $('#newModal').html(data);
+                }
+            });
+        });
+
+        $('a[href="#templateTabPillContainer"]').click(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableEmployeesMessageTemplate", "Appeal")',
+                success: function (data) {
+                    $('#templateTabPillContainer').html(data);
+                }
+            });
+        });
+    </script>
+
+    <script>
+    //---Комментарии----
+        $(document).on('click', '#notes ul li button i.md-delete', function () {
+            var commentId = $(this).closest('li').data('commenttId');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCommentDelete", "Appeal")',
+                data: { commentId: commentId },
+                success: function (data) {
+                    successDelete();
+                    $('#notes').html(data);
+                    console.log("delete");
+                }
+            })
+        });
+
+        $(document).on('click', '#notes ul li button i.md-replay', function () {
+            var commentId = $(this).closest('li').data('commenttId');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCommentRecovery", "Appeal")',
+                data: { commentId: commentId },
+                success: function (data) {
+                    $('#notes').html(data);
+                    console.log("recovery");
+                }
+
+            })
+        });
+
+        $(document).on('click', '#notes ul li button i.md-mode-edit', function (e) {
+            var commentId = $(this).closest('li').data('commenttId');
+            var edit_commentt = $(this).closest('li').data('commentt');
+            $('#notes ul li').removeClass('edit');
+            $(this).closest('li').addClass('edit');
+            $('#addCommentsForm').find('[name="id"]').val(commentId);
+            $('#addCommentsForm').find('[name="commentt"]').val(edit_commentt).css('border', '1px dashed green');
+            $('#addCommentsForm').find('[type="submit"]').html("Изменить <i class='fa fa-edit m-l-5'></i>");
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", false);
+        });
+
+        $(document).on('click', '#notes ul li button i.md-clear', function (e) {
+            var commentId = "00000000-0000-0000-0000-000000000000";
+            $('#notes ul li').removeClass('edit');
+            $('#addCommentsForm').find('[name="id"]').val(commentId);
+            $('#addCommentsForm').find('[name="commentt"]').val('').css('border', '1px solid #E3E3E3');
+            $('#addCommentsForm').find('[type="submit"]').html("Добавить <i class='fa fa-paper-plane m-l-5'></i>");
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
+        });
+
+        $(document).on('click', '.btn_play', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '@Url.Action("Play_Audio", "Call")',
+            type: 'Post',
+            data: { id: id },
+            success: function (data) {
+                $('#appeal_play_content').html(data);
+                $('#appeal_play_content audio').trigger("play");
+            }
+        });
+        });
+
+        if ('@Model.out_phone_number' != '' && '@Model.out_phone_number' != 'null' && '@Model.out_phone_number' != null) {
+            $(document).on('click', '#btnCallModalFromAppeal', function () {
+                @{
+                    string a = ""; string b="";
+                    if (Model.out_phone_number!= null)
+                    {
+                        a = @Model.out_phone_number.Replace(")", "").Replace("(", "").Replace("-", "").Replace("+7 ", "8").Replace("+7", "8").Replace(" ", "").Replace("+3", "8");
+                        b = @Model.out_number_appeal;
+                    }
+                 }
+                var d = '@b';
+                console.log(@a + "-" + d);
+                onCallModalBtnClick('@a', d);
+        });
+        };
+
+        $('#AddRouteStageForm').validate();
+
+        
+        $(document).on('click', '[data-pic]', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            var button = $(this);
+            $('button.current').removeClass('current');
+            button.addClass('current');
+            string_byte = null;
+            var fileId = button.data('pic');
+            var options = button.data('picOption');
+            var type = button.data('type');
+            _type_ext = type.toLowerCase();
+
+            $.ajax({
+                url: '../Common/GetFile',
+                type: 'POST',
+                async: false,
+                data: { id: fileId },
+                success: function (data) {
+                    string_byte = data;
+                    _type_ext = type.toLowerCase();
+                    $.fancybox.close();
+                    if (type.toLowerCase() == '.pdf') {
+                        $.fancybox.open(
+                            {
+                                type: 'iframe',
+                                src: 'data:application/pdf;base64,' + data,
+                                opts: {
+                                    caption: "<div class='fs-12'>" +
+                                        "<strong>Имя</strong>: " + options['name'] + "</br>" +
+                                        "<strong>Размер</strong>: " + Math.round(options['size'] / 1042).toFixed(0) + " кБ</br>" +
+                                        "<strong>Тип</strong>: " + options['type'] + "</br>" +
+                                        "<strong>Сотрудник</strong>: " + options['fio'] + "</br>" +
+                                        "<strong>Дата</strong>: " + options['date'] + "</br></div>"
+                                }
+                            });
+                    }
+                    else {
+                        $.fancybox.open(
+                            {
+                                src: 'data:image/png;base64,' + data,
+                                opts: {
+                                    caption: "<div class='fs-12'>" +
+                                        "<strong>Имя</strong>: " + options['name'] + "</br>" +
+                                        "<strong>Размер</strong>: " + Math.round(options['size'] / 1042).toFixed(0) + " кБ</br>" +
+                                        "<strong>Тип</strong>: " + options['type'] + "</br>" +
+                                        "<strong>Сотрудник</strong>: " + options['fio'] + "</br>" +
+                                        "<strong>Дата</strong>: " + options['date'] + "</br></div>"
+                                }
+                            });
+                    }
+                }
+            });
+        });
+    </script>
+
+}

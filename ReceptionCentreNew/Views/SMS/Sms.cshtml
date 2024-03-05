@@ -1,0 +1,76 @@
+﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_message>
+@{
+    ViewBag.Title = "СМС";
+}
+<script src="~/Content/plugins/select2/js/select2.full.min.js"></script>
+
+@Html.MvcSiteMap().SiteMapPath()
+
+<div class="card-box m-t-10 p-t-10 p-b-10">
+    @using (Ajax.BeginForm("PartialTableSms", "Sms", null, new AjaxOptions { UpdateTargetId = "messageTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
+    {
+        <div class="collapse in" id="collapseExample" style="">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group form-group-sm form-actions m-b-0">
+                        <div class="row p-l-r-10">
+                            <div class="col-md-4 m-b-10">
+                                <label class="font-12 text-muted p-t-0 m-b-0">Сотрудник</label>
+                                @Html.DropDownList("sprEmployeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                            </div>
+                            <div class="col-md-4 m-b-10">
+                                <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
+                                @Html.DropDownList("period", new SelectList(new List<SelectListItem>
+                                                                   { new SelectListItem {Text = "Сегодня", Value = "1"},
+                                                                       new SelectListItem {Text = "Неделя", Value = "2"},
+                                                                       new SelectListItem {Text = "Месяц", Value = "3"},
+                                                                       new SelectListItem {Text = "Год", Value = "4"},
+                                                                   }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                            </div>
+                            <div class="col-md-4 m-b-10">
+                                <label class="font-12 text-muted p-t-0 m-b-0">Тип</label>
+                                @Html.DropDownList("type", new SelectList(new List<SelectListItem>
+                                                                   { new SelectListItem {Text = "Входящие", Value = "2"},
+                                                                       new SelectListItem {Text = "Исходящие", Value = "1"}
+                                                                   }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="m-t-10 m-b-10" />
+        </div>
+
+
+        <div class="row">
+            <a href="#" class="collapse-toggle__ctr collapse-toggle__ctr_utility col-sm-4" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                <!-- Collapsed state -->
+                <span class="collapse-toggle__state _collapsed">
+                    <i class="ti-arrow-circle-down"></i>
+                    <span class="collapse-toggle__state-title collapse-toggle__state-title_utility">Развернуть фильтр</span>
+                </span> <!-- Active (open) state -->
+                <span class="collapse-toggle__state _active">
+                    <i class="ti-arrow-circle-up"></i>
+                    <span class="collapse-toggle__state-title collapse-toggle__state-title_utility">Свернуть фильтр</span>
+                </span>
+            </a>
+            <div class="col-sm-8 action-btns text-right">
+                <button type="submit" class="btn btn-default waves-effect waves-light btn-sm">
+                    <i class="ion-ios7-search m-r-5"></i>
+                    Найти
+                </button>
+            </div>
+        </div>
+    }
+</div>
+<div id="messageTableContainer">
+    <div class="alert alert-default">
+        <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Воспользуйтесь поиском для отображения.</span>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $(".select2").select2();
+    });
+</script>
+

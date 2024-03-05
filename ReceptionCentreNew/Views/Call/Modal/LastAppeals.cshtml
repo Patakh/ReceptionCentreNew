@@ -1,0 +1,84 @@
+﻿<ul class="card-header p-0 nav nav-tabs nav-fill">
+    <li class="nav-item">
+        <a href="#recentCases" data-toggle="tab" aria-expanded="true" class="nav-link active">Последние обращения</a>
+    </li>
+    <li class="nav-item">
+        <a href="#recentCalls" data-toggle="tab" aria-expanded="false" class="nav-link">Последние звонки</a>
+    </li>
+</ul>
+<div class="card-body">
+    <div class="tab-content">
+        <div class="tab-pane active" id="recentCases">
+            <div class="table-responsive">
+                <table class="table table-td-sm table-vertical-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="pt-0 border-top-0">№</th>
+                            <th class="pt-0 border-top-0">Дата</th>
+                            <th class="pt-0 border-top-0">Обращение</th>
+                            <th class="pt-0 border-top-0">Сотрудник</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int i = 0; }
+                        @foreach (ReceptionCentreNew.Domain.Concrete.data_appeal item in ViewBag.LastAppeals)
+                        {
+                            <tr>
+                                <td>@(++i)</td>
+                                <td>@item.date_add.Value.ToShortDateString() <br /> <small class="d-block text-muted">@item.date_add.Value.ToShortTimeString()</small></td>
+                                <td><small class="case-text text-truncate" data-content="@item.text_appeal"> 
+                                    @Html.ActionLink(item.text_appeal, "AppealInfo", "Appeal", new { number= item.number_appeal }, new {@target= "_blank"} )                                        
+                                    </small></td>
+                                <td class="text-nowrap">
+                                    <span class="text-truncate">@item.employees_name_add</span>
+                                    <span data-status="@item.spr_status_id" class="label @(item.spr_status_id == 1 ? "label-success" : item.spr_status_id == 0 ? "label-warning" : item.spr_status_id == 2 ? "label-danger" : item.spr_status_id == 3 ? "label-info" : "label-default" ) label-sm">@item.spr_status.status_name</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="recentCalls">
+            <div class="table-responsive">
+                <table class="table table-td-sm table-vertical-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="pt-0 border-top-0">№</th>
+                            <th class="pt-0 border-top-0">Дата</th>
+                            <th class="text-nowrap pt-0 border-top-0">Продол-сть</th>
+                            <th class="pt-0 border-top-0">Сотрудник</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{int j = 0; }
+                        @foreach (ReceptionCentreNew.Domain.Concrete.data_appeal_call item in ViewBag.LastCalls)
+                        {
+                            <tr>
+                                <td>@(++j)</td>
+                                <td class="text-nowrap">
+                                    @item.date_call.Value.ToShortDateString()
+                                    <small class="d-block text-muted">@item.date_call.Value.ToShortTimeString()</small>
+                                </td>
+                                <td>@item.time_talk</td>
+                                <td class="text-nowrap">
+                                    <span class="d-block">@item.employees_name_add</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+    $('.case-text').popover({
+      trigger: 'hover',
+      container: '.call-modal',
+      placement: 'bottom'
+    });
+  });
+</script>

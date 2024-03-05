@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ReceptionCentreNew.Data.Context.App.Table;
+﻿namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Шаблоны сообщений по сотрудникам
@@ -14,7 +11,7 @@ public partial class SprEmployeesMessageTemplate
     public Guid Id { get; set; }
 
     /// <summary>
-    /// связь с сотрудником?spr_employees  id
+    /// связь с сотрудником?SprEmployees  Id
     /// </summary>
     public Guid SprEmployeesId { get; set; }
 

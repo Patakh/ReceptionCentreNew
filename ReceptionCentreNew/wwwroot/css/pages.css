@@ -100,7 +100,7 @@
 }
 /* Multiple */
 .ms-container {
-  background: transparent url('../images/multiple-arrow.png') no-repeat 50% 50%;
+  background: transparent url('../img/multiple-arrow.png') no-repeat 50% 50%;
 }
 .ms-container .ms-list {
   box-shadow: none;
@@ -1987,13 +1987,13 @@
    Accounts pages
 ============= */
 .account-pages {
-  background: url("../images/agsquare.png");
+  background: url("../img/agsquare.png");
   position: absolute;
   height: 100%;
   width: 100%;
 }
 .login_background {
-    background: url('../../images/support.jpg') no-repeat center;
+    background: url('../../img/support.jpg') no-repeat center;
     position: absolute;
     background-size: cover;
     height: 100%;

@@ -1,0 +1,211 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+
+
+    @if (Model.DataAppealFileList.Any())
+    {
+        <div class="input-group">
+            <div class="input-group-prepend align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+            </div>
+            <input type="text" id="searchTextFiles" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            <div class="input-group-append align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon2">
+                    <button id="showRemoves" type="button" class="btn btn-link waves-effect waves-light"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") font-18" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+                </span>
+            </div>
+            <div class="input-group-append align-items-right">
+                @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
+                {
+                    using (Ajax.BeginForm("PartialModalAddFile", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                    {
+                        <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i></button>
+                    }
+                }
+            </div>
+
+        </div>
+        <table id="filesTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="7" data-limit-navigation="5">
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().file_name)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().file_size)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().date_add)</th>
+                    <th class="text-right p-r-20-important" data-sort-ignore="true"></th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.DataAppealFileList)
+                {
+                    <tr data-file-id="@item.id">
+                        <td class="number-row p-l-20-important">
+                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                        </td>
+                        <td>
+                            <div style="max-width:200px" class="clip" title="@item.file_name@item.file_ext">@item.file_name@item.file_ext</div>
+                        </td>
+                        <td class="text-right">
+                            @(item.file_size / 1024) Кб
+                        </td>
+                        <td>
+                            @Html.DisplayFor(i => item.date_add)
+                        </td>
+                        <td class="actions" style="text-align:right">
+                            @if (item.file_ext.ToLower() == ".mp3" || item.file_ext.ToLower() == ".wav")
+                            {
+                                <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.id" @*data-toggle="modal" data-target="#audio_modal"*@>
+                                    <i class="md md-play-circle-outline"></i>
+                                </button>
+                            }
+                            @if (item.file_ext.ToLower() == ".jpg" || item.file_ext.ToLower() == ".jpeg" || item.file_ext.ToLower() == ".png" || item.file_ext.ToLower() == ".pdf" || item.file_ext.ToLower() == ".bmp")
+                            {
+                                <button type="button" class="btn btn-link m-r-5" data-type="@item.file_ext" data-pic="@item.id" data-pic-option='{"name": "@item.file_name", "fio": "@item.employees_name_add", "date": "@item.date_add", "size": "@item.file_size", "type": "@item.file_ext.ToUpper()"}' style="font-size: 22px;margin-right: 5px;line-height: 22px;" data-pic="@item.id" data-info-id="@item.data_appeal_id">
+                                    <i class="ion ion-eye"></i>
+                                </button>
+                            }
+                            @if (item.spr_employees_id == Model.EmployeeId)
+                            {
+                                if (item.is_remove != true)
+                                {
+                                    <button class="on-default remove-row btn btn-link m-r-5"><i class="ion-trash-b"></i></button>
+                                }
+                                else
+                                {
+                                    <button class="on-default recovery-row btn btn-link m-r-5" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                }
+                            }
+                            <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "employees_fio": "@item.employees_name_add", "date_add": "@item.date_add"}'>
+                                <i class="ion-ios7-information-outline"></i>
+                            </button>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="3" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="3">
+                        @if (Model.DataAppealFileList.Count() > 7)
+                        {
+                            <div class="text-right">
+                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6 text-right">
+                @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
+                {
+                    using (Ajax.BeginForm("PartialModalAddFile", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                    {
+                        <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i> Добавить файл</button>
+                    }
+                }
+            </div>
+        </div>
+        
+        <div class="alert-no-record">
+            <span><i class="icon-info"></i> Нет данных.</span>
+        </div>
+    }
+    <div id="appeal_play_file_content">
+
+    </div>
+    
+    <script>
+    $(function () {
+
+        $('a[href="#notification-files"]').find('.badge').text(@Model.DataAppealFileListCount);
+
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                            "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>"+
+                       "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
+        });
+
+        $(document).ready(function () {
+            var filtering = $('#filesTable');
+            filtering.footable();
+            $('#filesTable #filter_count').text($('#filesTable.footable tbody tr:not(.footable-filtered)').length);
+            $('#filesTable #tr_count').text($('#filesTable.footable tbody tr').length);
+
+            // Search input
+            $('#searchTextFiles').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#filesTable #filter_count').text($('#filesTable.footable tbody tr:not(.footable-filtered)').length);
+            });
+        });
+
+    @*$('#searchTextFiles').change(function () {
+        $.ajax({
+            url: '@Url.Action("PartialTableFiles", "Appeal")',
+            type: 'Post',
+            data: { search: $(this).val(), appealId: '@Model.DataAppealId' },
+            success: function (data) {
+                $('#filePillContainer').html(data);
+            }
+        });
+    });*@
+
+        $('#files #showRemoves').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableFiles", "Appeal")',
+            data: { isRemove: '@(!ViewBag.IsRemove)', appealId: '@Model.DataAppealId' },
+            success: function (data) {
+                $('#files').html(data);
+            }
+        });
+    });
+
+    $('#files table td button.recovery-row').click(function () {
+        var fileId = $(this).closest('tr').data('fileId');
+        var paramObject = {
+            url: '@Url.Action("SubmitFileRecovery", "Appeal")',
+            params: { fileId: fileId },
+            onSuccess: function (data) {
+                $('#files').html(data);
+            }
+        }
+        removeRecovery(paramObject);
+    });
+
+        $('#files table td button.remove-row').click(function () {
+        var fileId = $(this).closest('tr').data('fileId');
+        var param = { fileId: fileId, appealId: '@Model.DataAppealId', attach: false };
+        var action = '@Url.Action("SubmitFileDelete", "Appeal")';
+        var _div = 'filePillContainer';
+        removeData(action, param, _div);
+    });
+
+    $('.btn_play').click(function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '@Url.Action("Play_Audio_File", "Common")',
+            type: 'Post',
+            data: { id: id },
+            success: function (data) {
+                $('#appeal_play_file_content').html(data);
+                $('#appeal_play_file_content audio').trigger("play");
+            }
+        });
+    });
+    </script>

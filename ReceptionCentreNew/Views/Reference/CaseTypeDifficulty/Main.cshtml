@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "Сложность обращения";
+}
+
+@Html.MvcSiteMap().SiteMapPath()
+<!-- Сложность обращения -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div id="caseTypeDifficultyContainer">
+    @*@Html.Action("PartialTableCaseTypeDifficulty", "Reference")*@
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $(".select2").select2();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableCaseTypeDifficulty", "Reference")',
+                success: function (data) {
+                    $('#caseTypeDifficultyContainer').html(data);
+                }
+            })
+        });
+    </script>
+    <!--Сложность обращения-->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

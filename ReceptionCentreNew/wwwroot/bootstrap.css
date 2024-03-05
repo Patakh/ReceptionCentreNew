@@ -2251,7 +2251,7 @@ pre code {
 table {
   background-color: transparent;
 }
-caption {
+Caption {
   padding-top: 8px;
   padding-bottom: 8px;
   color: #777;
@@ -2280,10 +2280,10 @@ th {
   vertical-align: bottom;
   border-bottom: 2px solid #ddd;
 }
-.table > caption + thead > tr:first-child > th,
+.table > Caption + thead > tr:first-child > th,
 .table > colgroup + thead > tr:first-child > th,
 .table > thead:first-child > tr:first-child > th,
-.table > caption + thead > tr:first-child > td,
+.table > Caption + thead > tr:first-child > td,
 .table > colgroup + thead > tr:first-child > td,
 .table > thead:first-child > tr:first-child > td {
   border-top: 0;
@@ -5020,7 +5020,7 @@ a.thumbnail:focus,
 a.thumbnail.active {
   border-color: #337ab7;
 }
-.thumbnail .caption {
+.thumbnail .Caption {
   padding: 9px;
   color: #333;
 }
@@ -5523,9 +5523,9 @@ button.list-group-item-danger.active:focus {
 .panel > .panel-collapse > .table {
   margin-bottom: 0;
 }
-.panel > .table caption,
-.panel > .table-responsive > .table caption,
-.panel > .panel-collapse > .table caption {
+.panel > .table Caption,
+.panel > .table-responsive > .table Caption,
+.panel > .panel-collapse > .table Caption {
   padding-right: 15px;
   padding-left: 15px;
 }
@@ -6416,7 +6416,7 @@ button.close {
   margin: 0;
   background-color: #fff;
 }
-.carousel-caption {
+.carousel-Caption {
   position: absolute;
   right: 15%;
   bottom: 20px;
@@ -6428,7 +6428,7 @@ button.close {
   text-align: center;
   text-shadow: 0 1px 2px rgba(0, 0, 0, .6);
 }
-.carousel-caption .btn {
+.carousel-Caption .btn {
   text-shadow: none;
 }
 @media screen and (min-width: 768px) {
@@ -6449,7 +6449,7 @@ button.close {
   .carousel-control .icon-next {
     margin-right: -10px;
   }
-  .carousel-caption {
+  .carousel-Caption {
     right: 20%;
     left: 20%;
     padding-bottom: 30px;

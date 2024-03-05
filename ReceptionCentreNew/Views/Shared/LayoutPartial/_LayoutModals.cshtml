@@ -1,0 +1,208 @@
+﻿<div Id="newModal" class="modal" role="dialog" ria-labelledby="myLargeModalLabel" aria-hidden="true"></div>
+
+<div Id="newModalOver" class="modal" role="dialog" ria-labelledby="myLargeModalLabel" aria-hidden="true">
+</div>
+
+<!-- Модальное окно "Исходящий Звонок" -->
+<div Id="call_modal" class="modal-wrapper modal-demo call-modal">
+    <button type="button" class="close" onclick="Custombox.modal.close();">
+        <span>&times;</span><span class="sr-only">Закрыть</span>
+    </button>
+    <h4 class="custom-modal-title">Исходящий звонок</h4>
+    <div class="custom-modal-text"></div>
+</div>
+
+<!-- Модальное окно "Входящий Звонок" -->
+<div Id="incoming-call_modal" class="modal-wrapper modal-demo call-modal">
+    <button type="button" class="close" onclick="Custombox.modal.close();">
+        <span>&times;</span><span class="sr-only">Закрыть</span>
+    </button>
+    <h4 class="custom-modal-title">Входящий звонок</h4>
+    <div class="custom-modal-text"></div>
+</div>
+
+<!-- Шаблон звонка -->
+<template Id="call-modal-template">
+    <div class="row flex-shrink-0 mt-2 m-b-30">
+        <div class="col-lg-4 col-xxl-auto call-modal-col animated fadeInLeft">
+            <div class="card h-100" Id="call-user-info">
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xxl-5 mx-auto top-center">
+        </div>
+
+        <div class="col-lg-4 col-xxl-auto call-modal-col animated fadeInRight">
+            <div class="card h-100" Id="call-last-appeals">
+            </div>
+        </div>
+    </div>
+
+    <div class="row flex-grow-1">
+        <div class="col-lg-4 col-xxl-auto call-modal-col animated fadeInLeft">
+            <div class="card h-100">
+                <ul class="card-header p-0 nav nav-tabs nav-fill" style="min-height:55px;">
+                    <li class="nav-item">
+                        <a href="#new-appeal" data-toggle="tab" aria-expanded="true" class="nav-link active">Новое обращение</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#appeal-commentts" data-toggle="tab" aria-expanded="false" class="nav-link">Комментарии</a>
+                    </li>
+                </ul>
+                <div class="card-body custom-scrollbar">
+                    <div class="tab-content">
+                        <div class="tab-pane active" Id="new-appeal">
+                            <div class="" Id="call-new-appeal">
+                            </div>
+                        </div>
+                        <div class="tab-pane" Id="appeal-commentts">
+                            <div class="" Id="call-appeal-commentts">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xxl-5 call-modal-col animated fadeInUp">
+            <div class="card h-100">
+                <ul class="card-header p-0 nav nav-tabs nav-fill" style="min-height:55px;">
+                    <li class="nav-item">
+                        <a href="#questions" data-toggle="tab" aria-expanded="true" class="nav-link active">Вопрос-ответ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#consultations" data-toggle="tab" aria-expanded="false" class="nav-link">Консультация</a>
+                    </li>
+                </ul>
+                <div class="card-body  custom-scrollbar">
+                    <div class="tab-content">
+                        <div class="tab-pane active" Id="questions">
+                            <div class="" Id="call-questions">
+                            </div>
+                        </div>
+                        <div class="tab-pane" Id="consultations">
+                            <div class="" Id="call-consultations">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-xxl-auto call-modal-col animated fadeInRight">
+            <div class="card h-100" Id="call-survey">
+            </div>
+        </div>
+    </div>
+</template>
+
+<template Id="dialpad-template">
+    <div class="card p-4 align-items-center h-100">
+        <div class="call-screen mb-4">
+            <input type="tel" Id="call_number" class="call-number" name="tel" maxlength="11" value="">
+            <button Id="btn_backspace" type="button" class="btn btn-link text-white font-18 waves-effect waves-light d-none">
+                <i class="md md-backspace"></i>
+            </button>
+        </div>
+        <div class="dialpad">
+            <div class="row mb-4">
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        1
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        2
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        3
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        4
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        5
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        6
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-4">
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        7
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        8
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        9
+                    </button>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        *
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        0
+                    </button>
+                </div>
+                <div class="col-4">
+                    <button type="button" class="btn btn-outline-light btn-icon-lg rounded-circle waves-effect waves-light">
+                        #
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button Id="btnCall" class="btn btn-success btn-icon-lg rounded-circle mt-auto mb-2 waves-effect waves-light">
+            <i class="md md-call"></i>
+        </button>
+    </div>
+</template>
+
+<template Id="call-info-template">
+    <div class="card call-info animated fadeInDown">
+        <h2 class="h1 mt-0 btn-defaultmb-3 text-white" Id="call-phone-number">8</h2>
+        @*<time class="font-18">00:02:14</time>*@
+        <div class="d-flex my-4">
+            <button type="button" class="btn btn-white rounded-circle font-18 mr-3 waves-effect waves-light" data-toggle="tooltip" data-container=".call-modal" data-placement="bottom" title="Выключить микрофон">
+                <i class="md md-mic-off"></i>
+            </button>
+            <button type="button" class="btn btn-white rounded-circle font-18 waves-effect waves-light" data-toggle="tooltip" data-container=".call-modal" data-placement="bottom" title="Выключить звук">
+                <i class="md md-volume-off"></i>
+            </button>
+        </div>
+        <button class="btn btn-pinterest w-lg btn-rounded mt-auto waves-effect waves-light finished-call">
+            <span class="btn-label"><i class="md md-close"></i></span>
+            Закрыть
+        </button>
+    </div>
+</template>
+
+
+<div Id="custom-modal" class="modal-demo">
+</div>
+
+<div Id="myModal" class="modal fade bs-example-modal-lg" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" style="display: none;" data-backdrop="static" data-keyboard="false">
+</div>

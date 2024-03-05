@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReceptionCentreNew.Data.Context.App.Table;
+namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Системные ошибки
@@ -29,7 +29,7 @@ public partial class DataSystemErrors
     public string EmployeesName { get; set; } = null!;
 
     /// <summary>
-    /// сотрудник, связь с spr_employees id
+    /// сотрудник, связь с SprEmployees id
     /// </summary>
     public Guid SprEmployeesId { get; set; }
 

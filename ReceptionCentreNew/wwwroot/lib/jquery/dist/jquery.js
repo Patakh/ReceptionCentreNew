@@ -4953,7 +4953,7 @@ var wrapMap = {
 	_default: [ 0, "", "" ]
 };
 
-wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
+wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.Caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
 // Support: IE <=9 only
@@ -6682,7 +6682,7 @@ function finalPropName( name ) {
 var
 
 	// Swappable if display is none or starts with table
-	// except "table", "table-cell", or "table-caption"
+	// except "table", "table-cell", or "table-Caption"
 	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rcustomProp = /^--/,

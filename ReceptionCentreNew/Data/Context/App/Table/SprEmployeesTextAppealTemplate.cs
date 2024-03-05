@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ReceptionCentreNew.Data.Context.App.Table;
+﻿namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Обращения по сотрудникам
@@ -14,7 +11,7 @@ public partial class SprEmployeesTextAppealTemplate
     public Guid Id { get; set; }
 
     /// <summary>
-    /// связь с сотрудником?spr_employees  id
+    /// связь с сотрудником?SprEmployees  id
     /// </summary>
     public Guid SprEmployeesId { get; set; }
 

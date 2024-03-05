@@ -683,22 +683,22 @@
     };
 
     Dropzone.prototype.updateTotalUploadProgress = function() {
-      var activeFiles, file, totalBytes, totalBytesSent, totalUploadProgress, _i, _len, _ref;
-      totalBytesSent = 0;
-      totalBytes = 0;
+      var activeFiles, file, totalbytes, totalbytesSent, totalUploadProgress, _i, _len, _ref;
+      totalbytesSent = 0;
+      totalbytes = 0;
       activeFiles = this.getActiveFiles();
       if (activeFiles.length) {
         _ref = this.getActiveFiles();
         for (_i = 0, _len = _ref.length; _i < _len; _i++) {
           file = _ref[_i];
-          totalBytesSent += file.upload.bytesSent;
-          totalBytes += file.upload.total;
+          totalbytesSent += file.upload.bytesSent;
+          totalbytes += file.upload.total;
         }
-        totalUploadProgress = 100 * totalBytesSent / totalBytes;
+        totalUploadProgress = 100 * totalbytesSent / totalbytes;
       } else {
         totalUploadProgress = 100;
       }
-      return this.emit("totaluploadprogress", totalUploadProgress, totalBytes, totalBytesSent);
+      return this.emit("totaluploadprogress", totalUploadProgress, totalbytes, totalbytesSent);
     };
 
     Dropzone.prototype._getParamName = function(n) {

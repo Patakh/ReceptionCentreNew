@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -8,19 +8,131 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="obj\**" />
+    <Compile Remove="Views\Account\**" />
+    <Compile Remove="Views\Api\**" />
+    <Compile Remove="Views\Appeal\**" />
+    <Compile Remove="Views\CallBack\**" />
+    <Compile Remove="Views\Call\**" />
+    <Compile Remove="Views\Common\**" />
+    <Compile Remove="Views\Email\**" />
+    <Compile Remove="Views\Manage\**" />
+    <Compile Remove="Views\Notification\**" />
+    <Compile Remove="Views\Question\**" />
+    <Compile Remove="Views\Reference\**" />
+    <Compile Remove="Views\Report\**" />
+    <Compile Remove="Views\SMS\**" />
+    <Compile Remove="Views\Socket\**" />
+    <Compile Remove="Views\Sources\**" />
+    <Compile Remove="Views\Statistics\**" />
+    <Compile Remove="Views\System\**" />
+    <Content Remove="obj\**" />
+    <Content Remove="Views\Account\**" />
+    <Content Remove="Views\Api\**" />
+    <Content Remove="Views\Appeal\**" />
+    <Content Remove="Views\CallBack\**" />
+    <Content Remove="Views\Call\**" />
+    <Content Remove="Views\Common\**" />
+    <Content Remove="Views\Email\**" />
+    <Content Remove="Views\Manage\**" />
+    <Content Remove="Views\Notification\**" />
+    <Content Remove="Views\Question\**" />
+    <Content Remove="Views\Reference\**" />
+    <Content Remove="Views\Report\**" />
+    <Content Remove="Views\SMS\**" />
+    <Content Remove="Views\Socket\**" />
+    <Content Remove="Views\Sources\**" />
+    <Content Remove="Views\Statistics\**" />
+    <Content Remove="Views\System\**" />
+    <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="Views\Account\**" />
+    <EmbeddedResource Remove="Views\Api\**" />
+    <EmbeddedResource Remove="Views\Appeal\**" />
+    <EmbeddedResource Remove="Views\CallBack\**" />
+    <EmbeddedResource Remove="Views\Call\**" />
+    <EmbeddedResource Remove="Views\Common\**" />
+    <EmbeddedResource Remove="Views\Email\**" />
+    <EmbeddedResource Remove="Views\Manage\**" />
+    <EmbeddedResource Remove="Views\Notification\**" />
+    <EmbeddedResource Remove="Views\Question\**" />
+    <EmbeddedResource Remove="Views\Reference\**" />
+    <EmbeddedResource Remove="Views\Report\**" />
+    <EmbeddedResource Remove="Views\SMS\**" />
+    <EmbeddedResource Remove="Views\Socket\**" />
+    <EmbeddedResource Remove="Views\Sources\**" />
+    <EmbeddedResource Remove="Views\Statistics\**" />
+    <EmbeddedResource Remove="Views\System\**" />
+    <None Remove="obj\**" />
+    <None Remove="Views\Account\**" />
+    <None Remove="Views\Api\**" />
+    <None Remove="Views\Appeal\**" />
+    <None Remove="Views\CallBack\**" />
+    <None Remove="Views\Call\**" />
+    <None Remove="Views\Common\**" />
+    <None Remove="Views\Email\**" />
+    <None Remove="Views\Manage\**" />
+    <None Remove="Views\Notification\**" />
+    <None Remove="Views\Question\**" />
+    <None Remove="Views\Reference\**" />
+    <None Remove="Views\Report\**" />
+    <None Remove="Views\SMS\**" />
+    <None Remove="Views\Socket\**" />
+    <None Remove="Views\Sources\**" />
+    <None Remove="Views\Statistics\**" />
+    <None Remove="Views\System\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="7.0.9" />
+    <PackageReference Include="FluentFTP" Version="49.0.2" />
+    <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
+    <PackageReference Include="OpenPop.NET" Version="2.0.6.1120" />
+    <PackageReference Include="System.Composition" Version="8.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.0-preview.1.24080.9" />
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\Api\" />
+    <Folder Include="Migrations\" />
+    <Folder Include="TransformWebConfig\transformed\Views\" />
+    <Folder Include="Views\Shared\Components\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Properties\PublishProfiles\.8085.pubxml.user" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml.user" />
+    <None Include="Properties\PublishProfiles\FolderProfile1.pubxml.user" />
+    <None Include="Properties\PublishProfiles\Server.pubxml.user" />
+    <None Include="Properties\serviceDependencies.local.json.user" />
+    <None Include="Views\Home\Index.cshtml" />
+    <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Shared\LayoutPartial\_FooterPartial.cshtml" />
+    <None Include="Views\Shared\LayoutPartial\_LayoutModals.cshtml" />
+    <None Include="Views\Shared\Template\Pdf.cshtml" />
+    <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_LoginPartial.cshtml" />
+    <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+    <None Include="wwwroot\js\admin\admin-layout.js" />
   </ItemGroup>
 
 </Project>

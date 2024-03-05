@@ -1,0 +1,106 @@
+﻿
+@{
+    ViewBag.Title = "Входящие";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+@Html.MvcSiteMap().SiteMapPath()
+
+<div class="card-box p-3">
+
+    @using (Ajax.BeginForm("PartialTableSources", "Sources", null, new AjaxOptions { UpdateTargetId = "sourcesTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
+    {
+        <input type="hidden" name="action_" id="action_" value="2" />
+        <div id="collapseExample" class="collapse show">
+            <div class="row p-l-r-10">     
+                <div class="form-group col-sm-3">
+                    <label class="font-12 text-muted p-t-0 m-b-0">Источник</label>
+                    @Html.DropDownList("sources", new SelectList(new List<SelectListItem>
+                                               { new SelectListItem {Text = "Звонок", Value = "1"},
+                                                   new SelectListItem {Text = "E-mail", Value = "2"},
+                                                   new SelectListItem {Text = "Смс", Value = "3"},
+                                                   new SelectListItem {Text = "Файл", Value = "4"},
+                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                </div>
+                <div class="form-group col-sm-3">
+                    <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
+                    @Html.DropDownList("period", new SelectList(new List<SelectListItem>
+                                               { new SelectListItem {Text = "Сегодня", Value = "1"},
+                                                   new SelectListItem {Text = "Неделя", Value = "2"},
+                                                   new SelectListItem {Text = "Месяц", Value = "3"},
+                                                   new SelectListItem {Text = "Год", Value = "4"},
+                                               }, "Value", "Text", 1), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                </div>
+               
+                <div class="form-group col-sm-3">
+                    <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
+                    @Html.DropDownList("is_connected", new SelectList(new List<SelectListItem>
+                                       { new SelectListItem {Text = "Да", Value = "1"},
+                                           new SelectListItem {Text = "Нет", Value = "2" }
+                                       }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                </div>
+            </div>
+        </div>
+
+        <div class="row align-items-center">
+            <div class="col">
+                <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
+                    <i class="ti-arrow-circle-up font-18 vertical-middle mr-1 collapse-state-active"></i>
+                    <span class="hide-phone vertical-middle collapse-state-active">Свернуть поиск</span>
+                    <i class="ti-arrow-circle-down font-18 vertical-middle mr-1 collapse-state-collapsed"></i>
+                    <span class="hide-phone vertical-middle collapse-state-collapsed">Развернуть поиск</span>
+                </button>
+            </div>
+            <div class="col text-right">
+                <button id="button_find_sources" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+            </div>
+        </div>
+    }
+
+</div>
+<div id="sourcesTableContainer">
+    
+</div>
+@section scripts {
+    <script>
+    $(document).ready(function () {
+        $(".select2").select2();
+        $('#button_find_sources').click();        
+    });
+        $(document).on('change', '#searchTextSources', function () {
+        var action = $('#action_').val();
+        var sources = $('#sources').val();
+        var sprEmployeeId = $('#sprEmployeeId').val();
+        var period = $('#period').val();
+        var is_connected = $('#is_connected').val();
+             $.ajax({
+                 url: '@Url.Action("PartialTableSources", "Sources")',
+                 type: 'POST',
+                 data: { search: $(this).val(), action_: action, sources: sources, period: period, sprEmployeeId: sprEmployeeId, is_connected: is_connected },
+                 success: function (data) {
+                     $('#sourcesTableContainer').html(data);
+                     $('#searchTextSources').focus();
+                     var tmpStr = $('#searchTextSources').val();
+                     $('#searchTextSources').val('');
+                     $('#searchTextSources').val(tmpStr);
+                 }
+             });
+        });
+        $(document).on('click', '#sourcesTable .btn-audio',function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("Play_Audio", "Call")',
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $('#sources_play_content').html(data);
+                    $('#sources_play_content audio').trigger("play");
+                }
+            });
+        })
+    </script>
+    <!-- Все звонки -->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

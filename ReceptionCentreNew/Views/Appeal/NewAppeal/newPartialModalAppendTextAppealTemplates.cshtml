@@ -1,0 +1,82 @@
+﻿
+@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_employees_text_appeal_template>
+
+<script>
+    $(document).ready(function () {
+        $('.slimscroll-route').slimScroll({
+            height: '500px',
+            position: 'right',
+            size: "5px",
+            color: '#98a6ad',
+            wheelStep: 20
+        });
+
+        // Добавляем возможность выбора строки в таблице
+        $('.route-table tr:not(.thead-row)').click(function () {
+            if ($(this).is('.active')) {
+                $(this).removeClass('active').removeClass('unfocused');
+                $(this).siblings('tr:not(.thead-row)').removeClass('active').removeClass('unfocused');
+            } else {
+                $(this).siblings('tr:not(.thead-row)').removeClass('active').addClass('unfocused');
+                $(this).removeClass('unfocused').addClass('active');
+            }
+        });
+
+        $('#newTemplateTable tr').click(function () {
+            var template = $(this).data('text');
+            $('#newModalOver').modal('hide');
+            $('#newModal #text_appeal').val(template);
+        });
+
+    });
+</script>
+
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Выбор шаблона</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+            <div class="modal-body">
+                <div class="table-responsive mb-4 slimscroll-route">
+                    @if (Model.Any())
+                    {
+                        <table class="table route-table table-hover table-vertical-middle" id="newTemplateTable">
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr data-template-id="@item.id" data-text="@item.text_appeal">
+                                        <td>
+                                            @item.text_appeal
+                                        </td>
+                                        <td class="check text-right" style="width:50px;">
+                                            <i class="ion-checkmark-circled"></i>
+                                        </td>
+                                        <td class="text-right" style="width:50px;">
+                                            @using (Ajax.BeginForm("SubmitNewTextAppealTemplateDelete", "Appeal", new { FormMethod = "POST", templateId = item.id }, new AjaxOptions { UpdateTargetId = "myModalOver", OnSuccess = "successDelete();" }, new { @class = "form-submit" }))
+                                            {
+                                                <button class="on-default remove-row btn btn-link"><i class="ion-trash-b"></i></button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <div class="alert alert-warning">
+                            <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Шаблоны не найдены</span>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel waves-effect waves-light cancel_play" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+                @*<button type="button" id="templateAppend" class="btn btn-success waves-effect waves-light btn-block-xs cancel_play"> Выбрать <i class="fa fa-check m-l-5"></i></button>*@
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->

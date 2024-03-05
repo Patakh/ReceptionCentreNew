@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ReceptionCentreNew.Data.Context.App.Table;
+namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Связь ролей и сотрудников
@@ -14,12 +14,12 @@ public partial class SprEmployeesRoleJoin
     public Guid Id { get; set; }
 
     /// <summary>
-    /// связь с пользователями, spr_employees id
+    /// связь с пользователями, SprEmployees id
     /// </summary>
     public Guid SprEmployeesId { get; set; }
 
     /// <summary>
-    /// связь с ролью, spr_employees_role id
+    /// связь с ролью, SprEmployeesRole id
     /// </summary>
     public int SprEmployeesRoleId { get; set; }
 
