@@ -1,0 +1,34 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.spr_employees_department
+<script>
+    $(document).ready(function () {
+        $(".select2-nosearch").select2();
+        $('#EditDepartmentForm').validate();
+    });
+</script>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Изменение отдела</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @using (Ajax.BeginForm("SubmitDepartmentSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "departmentsPillContainer", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditDepartmentForm", @class = "form-horizontal" }))
+            {
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        @Html.LabelFor(model => model.department_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <div class="col-md-6">
+                            @Html.TextBoxFor(model => model.department_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.department_name) } })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="submit" form="EditDepartmentForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

@@ -1,0 +1,301 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+<link href="~/Content/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
+<style>
+    .conversation-list .ctext-wrap i {
+        display: initial !important;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: bold;
+        position: relative;
+    }
+    .conversation-list li {
+        margin-bottom: 10px;
+    }
+    .conversation-list .odd .ctext-wrap {
+        background: #f4f8fb;
+        border-radius: 3px;
+        display: inline-block;
+        padding: 12px;
+        position: relative;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        color: #212529;
+    }
+        .conversation-list .odd .ctext-wrap:after {
+            border-color: rgba(238, 238, 242, 0) !important;
+            border-left-color: #f4f8fb !important;
+            border-top-color: #f4f8fb !important;
+            left: 100% !important;
+            margin-right: -1px;
+        }
+        .conversation-list .odd .ctext-wrap time {
+            color: rgba(0,0,0,.6) !important;
+        }
+
+        #notes ul li.edit {
+        border: 1px dashed green;
+    }
+
+        #notes ul li.edit button.this-edit, #notes ul li button.this-cancel {
+            display: none;
+        }
+
+        #notes ul li.edit button.this-cancel {
+            display: block;
+        }
+
+    #addCommentsForm textarea.form-control {
+        min-height: 35px;
+        height: 35px;
+        overflow: hidden;
+    }
+    /*---Multiselect---*/
+    .btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .btn-default.focus, .btn-default:active, .btn-default:focus, .btn-default:hover, .open > .dropdown-toggle.btn-default {
+        background: none !important;
+        border: none !important;
+        color: #62a3ff !important;
+    }
+    .multiselect-container.dropdown-menu.show{
+        width:350px;
+    }
+    .multiselect-container > li > a > label > input[type=checkbox] {
+         margin-bottom: -1px; 
+    }
+    .multiselect-container > li.multiselect-group label {
+        color: rgba(0,0,0,.6) !important;
+    }
+    .multiselect-container > li > a {
+        color: #212529!important;
+    }
+    #person-selected-count.badge {
+        position: relative;
+        top: 5px;
+        padding: 0px;
+        font-size: 9px;
+    }
+</style>
+<!-- Комментарии -->
+<div id="commentts">
+    @if (@Model.DataAppealCommenttList.Any())
+    {
+        <div class="chat-conversation case-tab-pane">
+            <ul class="conversation-list custom-scrollbar mb-4">
+                @foreach (var item in Model.DataAppealCommenttList)
+                {
+                    if (item.spr_employees_id == Model.EmployeeId)
+                    {
+                        <li class="clearfix odd data_services_commentt" data-commentt-id="@item.id" data-commentt="@item.commentt">
+                            <div class="chat-avatar">
+                                <img src="~/Content/img/user_image.jpg" alt="Female">
+                            </div>
+                            <div class="conversation-text">
+                                <div class="ctext-wrap">
+                                    <div class="d-flex justify-content-between font-11">
+                                        <time class="mr-3"><i class="fa fa-calendar m-r-5"></i> @item.date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.date_add.Value.ToShortTimeString()</time>
+                                        <b>Я</b>
+                                    </div>
+                                    @if (item.is_remove != true)
+                                    {
+                                        <p>@item.commentt</p>
+                                        <div class="ctext-actions">
+                                            <button class="btn btn-link scale-hover this-delete" type="button"><i class="md md-delete"></i></button>
+                                            <button class="btn btn-link scale-hover this-edit" type="button"><i class="md md-mode-edit"></i></button>
+                                            <button class="btn btn-link scale-hover this-cancel" type="button"><i class="md md-clear"></i></button>
+                                            <button class="btn btn-link scale-hover this-email" type="button"><i class="md md-email"></i></button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p><i style="color:#505461; font-style:italic">Примечание было удалено</i></p>
+                                        <div class="ctext-actions">
+                                            <button class="btn btn-link scale-hover" type="button"><i class="md md-replay"></i></button>
+                                        </div>
+                                    }
+                                    <div class="text-right">
+                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        {
+                                            if (recipient.read_date != null)
+                                            {
+                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-user m-r-5 text-danger" title="@recipient.spr_employees.employees_name"></i>
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="clearfix" data-commentt-id="@item.id">
+                            <div class="chat-avatar">
+                                <img src="~/Content/img/user_image.jpg" alt="male">
+                            </div>
+                            <div class="conversation-text">
+                                <div class="ctext-wrap">
+                                    <div class="d-flex justify-content-between font-11">
+                                        <b>@Html.DisplayFor(i => item.employees_name_add)</b>
+                                        <time class="ml-3 text-muted"><i class="fa fa-calendar m-r-5"></i> @item.date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.date_add.Value.ToShortTimeString()</time>
+                                    </div>
+                                    @if (item.is_remove != true)
+                                    {
+                                        <p>@item.commentt</p>
+                                    }
+                                    else
+                                    {
+                                        <p><i style="color:#505461; font-style:italic"> Примечание было удалено</i></p>
+                                    }
+                                    <div class="text-left">
+                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        {
+                                            if (recipient.read_date != null)
+                                            {
+                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-user m-r-5 text-success" title="@recipient.spr_employees.employees_name"></i>
+                                            }
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span><i class="icon-info"></i> Нет примечаний</span>
+        </div>
+    }
+    @using (Ajax.BeginForm("SubmitCommentSave", "Appeal", null, new AjaxOptions { UpdateTargetId = "notes" }, new { @id = "addCommentsForm", @class = "" }))
+    {
+        @Html.Hidden("id", Guid.Empty)
+        @Html.Hidden("spr_employees_id", Model.EmployeeId)
+        @Html.Hidden("data_appeal_id", Model.DataAppealId)
+        <div class="chat-bottom">
+            <div class="row">
+                <div class="form-group col">
+                    <div class="position-relative">
+                        <div class="btn-group dropup textarea-icon" style=" position: absolute; right: 55px; width:20px; bottom:-5px;">
+                            <button type="button" class="btn btn-link text-custom waves-effect waves-light font-18" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="ion-compose text-secondary"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right custom-scrollbar p-0">
+                                @foreach (var x in ViewBag.SprEmployeesMessageTemplates)
+                                {
+                                    <a class="dropdown-item templates" href="#">@x.Text</a>
+                                    <div class="dropdown-divider"></div>
+                                }
+                                <div class="btn-group textarea-icon show">
+                                    <button type="button" id="btnAddEmployeeMessageTemplateForm" class="btn btn-link text-custom waves-effect waves-light">
+                                        <i class="ion-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <textarea class="form-control p-r-30" id="commentt" name="commentt" placeholder="Сообщение..."></textarea>
+                        
+                        <div class="btn-group dropup textarea-icon noclose" style="position: absolute; right: 35px; width:20px; bottom: -4px;">
+                            @Html.DropDownList("recipients", ViewBag.SprEmployees as SelectList, new Dictionary<string, object> { { "class", "btn btn-link text-custom waves-effect waves-light font-18 noclose" }, { "multiple", "multiple" } })                            
+                        </div>
+
+                        <button type="submit" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
+                            <i class="fa fa-send"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<!-- Initialize the plugin: -->
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#recipients').multiselect({
+            maxHeight: 300,
+            templates: {
+                button: '<button type="button" class="multiselect btn btn-link waves-effect waves-light font-18" data-toggle="dropdown"><i class="md md-person text-secondary"></i><span class="badge" id="person-selected-count"></span></button>',                
+            },
+            buttonTitle: function (options, select) {
+                $('#person-selected-count').text(options.length);
+                var labels = [];
+                options.each(function () {
+                    labels.push($(this).text());
+                });
+                return labels.join(', ');
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(".select2").select2();
+    });
+
+    var textarea = document.querySelector('textarea');
+
+    textarea.addEventListener('keyup', function () {
+        if (this.scrollTop > 0) {
+            this.style.height = this.scrollHeight + "px";
+        }
+        else {
+            this.style.height = this.scrollHeight-10 + "px";
+        }
+    });
+
+    
+    $(function () {
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Редактировал</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                    "</div>";
+            },
+            html: true,
+            placement: "left"
+        });        
+    });
+
+    $('#addCommentsForm').find('[name="commentt"]').keyup(function () {
+        if (!$.trim(this.value)) {
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
+        }
+        else {
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", false);
+        }
+    });
+
+    $('#addCommentsForm').find('a.templates').click(function () {
+        $('#addCommentsForm').find('[name="commentt"]').val($(this).text());
+        if (!$.trim($('#addCommentsForm').find('[name="commentt"]').val())) {
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
+        }
+        else {
+            $('#addCommentsForm').find('[type="submit"]').prop("disabled", false);
+        }
+    });
+
+    $('#btnAddEmployeeMessageTemplateForm').click(function () {
+        $.ajax({
+            url: 'PartialTableEmployeesMessageTemplate',
+            data: { number:'@ViewBag.AppealNumber'},
+            success: function (data) {
+                $('#newModal').modal('show').html(data);
+            }
+        });
+    });
+</script>

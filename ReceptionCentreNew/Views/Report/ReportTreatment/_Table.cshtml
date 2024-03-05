@@ -1,0 +1,214 @@
+﻿@model ReceptionCentreNew.Models.ReportViewModel
+    @{ 
+        int e, m, c, o, q, s;
+        int sum;
+        int total_e = @Model.ReportTreatmentList.Sum(ss => ss.out_count_earth);
+        int total_s = @Model.ReportTreatmentList.Sum(ss => ss.out_count_social);
+        int total_m = @Model.ReportTreatmentList.Sum(ss => ss.out_count_migratory);
+        int total_c = @Model.ReportTreatmentList.Sum(ss => ss.out_count_commercial);
+        int total_q = @Model.ReportTreatmentList.Sum(ss => ss.out_count_quality);
+        int total_o = @Model.ReportTreatmentList.Sum(ss => ss.out_count_other);
+        int totalSum = total_e + total_m + total_c + total_o + total_q + total_s;
+    }
+<style>
+    .footable > thead > tr > th > span.footable-sort-indicator {
+        display: initial;
+    }
+    .clip {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+<div id="printable">
+    <div class="report_head" style="display:none;">
+        <table width="100%">
+            <tr valing="top"><td colspan="3"><div class="report_name">Отчет по предмету обращения</div></td></tr>
+            <tr>
+                <td>
+                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                </td>
+                <td valign="top" width="60%">
+                    <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
+                </td>
+                <td valign="top"><div class="text-right">Распечатал(a): @ViewBag.PrintEmployee <br /> @DateTime.Now.ToShortDateString()</div></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr>
+                <td>Период: <b>@ViewBag.Period</b></td>
+            </tr>
+        </table>
+
+        <!-- page 1 start-->
+        <div class="page">
+            @if (Model.ReportTreatmentList.Any())
+            {
+                <table class="table text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><b>№</b></th>
+                            <th class="text-center"><b>Наименование МФЦ</b></th>
+                            <th class="text-center"><b>Земельные</b></th>
+                            <th class="text-center"><b>Социальные</b></th>
+                            <th class="text-center"><b>Миграционные</b></th>
+                            <th class="text-center"><b>Коммерческие</b></th>
+                            <th class="text-center"><b>Качество</b></th>
+                            <th class="text-center"><b>Другие</b></th>
+                            <th class="text-center"><b>Всего</b></th>
+                        </tr>
+
+                    </thead>
+                    <tbody>                        
+                        @foreach (var item in Model.ReportTreatmentList)
+                        {
+                            {
+                                e = item.out_count_earth;
+                                s = item.out_count_social;
+                                m = item.out_count_migratory;
+                                c = item.out_count_commercial;
+                                q = item.out_count_quality;
+                                o = item.out_count_other;
+                                sum = e + m + c + o + q + s;
+                            }
+                            <tr>
+                                <td>@item.out_num</td>
+                                <td class="text-left">@item.out_mfc_name</td>
+                                <td>@item.out_count_earth</td>
+                                <td>@item.out_count_social</td>
+                                <td>@item.out_count_migratory</td>
+                                <td>@item.out_count_commercial</td>
+                                <td>@item.out_count_quality</td>
+                                <td>@item.out_count_other</td>
+                                <td class="text-center"><b>@sum</b></td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="number-row p-l-20-important" style="min-width:50px">
+                            </td>
+                            <td>Итого</td>
+                            <td class="text-center"><b>@total_e</b></td>
+                            <td class="text-center"><b>@total_s</b></td>
+                            <td class="text-center"><b>@total_m</b></td>
+                            <td class="text-center"><b>@total_c</b></td>
+                            <td class="text-center"><b>@total_q</b></td>
+                            <td class="text-center"><b>@total_o</b></td>
+                            <td class="text-center"><b>@totalSum</b></td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert-no-record">
+                    <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- table show-->
+<div>
+    @if (Model.ReportTreatmentList.Any())
+    {
+    <div class="table-responsive">        
+        <table id="reportTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                </div>
+                <input type="text" id="searchTextReport" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            </div>
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:50px">
+                        №
+                    </th>
+                    <th>МФЦ</th>
+                    <th data-type="numeric" class="text-center"><b>Земельные</b></th>
+                    <th data-type="numeric" class="text-center"><b>Социальные</b></th>
+                    <th data-type="numeric" class="text-center"><b>Миграционные</b></th>
+                    <th data-type="numeric" class="text-center"><b>Коммерческие</b></th>
+                    <th data-type="numeric" class="text-center"><b>Качество</b></th>
+                    <th data-type="numeric" class="text-center"><b>Другие</b></th>
+                    <th data-type="numeric" class="text-center">Всего</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ReportTreatmentList)
+                {
+                    {
+                        e = item.out_count_earth;
+                        s = item.out_count_social;
+                        m = item.out_count_migratory;
+                        c = item.out_count_commercial;
+                        q = item.out_count_quality;
+                        o = item.out_count_other;
+                        sum = e + m + c + o + q + s;
+                    }
+                    <tr>
+                        <td class="number-row p-l-20-important">
+                            @item.out_num
+                        </td>
+                        <td><div class="clip" title="@item.out_mfc_name"  style="max-width:250px;"> @item.out_mfc_name </div></td>
+                        <td class="text-center">@item.out_count_earth</td>
+                        <td class="text-center">@item.out_count_social</td>
+                        <td class="text-center">@item.out_count_migratory</td>
+                        <td class="text-center">@item.out_count_commercial</td>
+                        <td class="text-center">@item.out_count_quality</td>
+                        <td class="text-center">@item.out_count_other</td>
+                        <td class="text-center"><b>@sum</b></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:50px">
+
+                    </th>
+                    <th>Итого</th>
+                    <th data-type="numeric" class="text-center">@total_e</th>
+                    <th data-type="numeric" class="text-center">@total_s</th>
+                    <th data-type="numeric" class="text-center">@total_m</th>
+                    <th data-type="numeric" class="text-center">@total_c</th>
+                    <th data-type="numeric" class="text-center">@total_q</th>
+                    <th data-type="numeric" class="text-center">@total_o</th>
+                    <th data-type="numeric" class="text-center">@totalSum</th>
+                </tr>
+                <tr class="foot-row">
+                    <td colspan="4" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="5">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        var filtering = $('#reportTable');
+        filtering.footable();
+        $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+        $('#tr_count').text($('.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextReport').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+        });
+    });
+    </script>

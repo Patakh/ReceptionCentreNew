@@ -1,0 +1,129 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_email>
+
+<script>
+    $(document).ready(function () {
+        $('.slimscroll-route').slimScroll({
+            height: '450px',
+            position: 'right',
+            size: "5px",
+            color: '#6c757d',
+            wheelStep: 20
+        });
+
+        //$('#emailTable tr').click(function () {
+        //    $('#emailTable tr').removeClass('success');
+        //    $(this).addClass('success');
+        //});
+
+        $('button#emailAttach').click(function () {
+            var emailId = $('#emailTable tr.active').data('emailId');
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '@Url.Action("SubmitAttachEmail", "Appeal")',
+                data: { emailId: emailId, appealId: '@ViewBag.AppealId', attach:true },
+                success: function (data) {
+                    $('#newModal').modal('hide');
+                    $('#notification-messages').html(data);
+                    swal("Готово!", "Письмо успешно прикреплено.", "success").then(function () {
+                        //location.reload();
+                    });
+                },
+                error: function (errorData) {
+                    @if (User.IsInRole("superadmin"))
+                    {
+                        @:console.log(errorData.responseText);
+                    }
+                    $.Notification.notify('error', 'right top', 'Ошибка!', 'Произошла ошибка при прикреплении письма.');
+                }
+            });
+        });
+
+        @*$('#searchTextAttachEmails').change(function () {
+        $.ajax({
+            url: '@Url.Action("PartialModalAttachEmail", "Appeal")',
+            type: 'Post',
+            data: { search: $(this).val(), appealId: '@ViewBag.AppealId' },
+            success: function (data) {
+                $('#newModal').html(data);
+            }
+        });
+    });*@
+        $('#AppealSearchEmail').click(function () {
+        $.ajax({
+            url: '@Url.Action("PartialModalAttachEmail", "Appeal")',
+            type: 'Post',
+            data: { search: $('#searchTextAttachEmails').val(), appealId: '@ViewBag.AppealId' },
+            success: function (data) {
+                $('#newModal').html(data);
+            }
+        });
+        });
+    });
+</script>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Прикрепление письма</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-4">
+                <div class="input-group m-t-10 m-b-15">
+                    <input type="text" id="searchTextAttachEmails" class="form-control input-lg" placeholder="Поиск..." value="@ViewBag.SearchAttach">
+                    <span class="input-group-btn">
+                        <button id="AppealSearchEmail" placeholder="Поиск звонка" type="button" class="btn btn-primary btn-lg waves-effect waves-light"><i class="fa fa-search m-r-5"></i> Найти</button>
+                    </span>
+                </div>
+            </div>
+            <div class="table-responsive mb-4 slimscroll-route">
+                @if (Model.Any())
+                {
+                    <table id="emailTable" class="table route-table table-hover table-vertical-middle">
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr data-email-id="@item.id">
+                                    <td>
+                                        @item.email_
+                                    </td>
+                                    <td>
+                                        @item.caption
+                                    </td>
+                                    <td class="check">
+                                        <i class="ion-checkmark-circled"></i>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-default">
+                        <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Писем не найдено</span>
+                    </div>
+                }
+            </div>
+        </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+                <button type="button" id="emailAttach" class="btn btn-success waves-effect waves-light btn-block-xs"> Добавить <i class="fa fa-check m-l-5"></i></button>
+            </div>
+        </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<script>
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row)').click(function () {
+        if ($(this).is('.active')) {
+            $(this).removeClass('active').removeClass('unfocused');
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').removeClass('unfocused');
+        } else {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').addClass('unfocused');
+            $(this).removeClass('unfocused').addClass('active');
+        }
+    });
+</script>

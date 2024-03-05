@@ -1,0 +1,35 @@
+﻿@model  ReceptionCentreNew.Domain.Concrete.spr_employees_text_appeal_template
+    <script>
+        $(document).ready(function () {
+            $('#AddTextAppealTemplate').validate();
+        });        
+    </script>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Добавление шаблона</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-box">
+                @using (Ajax.BeginForm("SubmitNewModalTextAppealTemplateSave", "Appeal", Model, new AjaxOptions { UpdateTargetId = "", OnSuccess = "$('#newModalOver').modal('hide'); successAdd();" }, new { @id = "AddTextAppealTemplate", @class = "form-horizontal" }))
+                {
+                    <div class="form-group form-group-sm">
+                        <div class="row">
+                            @Html.LabelFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "col-md-3 control-label text-right" } })
+                            <div class="col-md-8">
+                                @Html.TextAreaFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.text_appeal) } })
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel waves-effect waves-light cancel_play" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="submit" id="addTemplate" form="AddTextAppealTemplate" class="btn btn-success waves-effect waves-light btn-block-xs cancel_play"> Добавить <i class="fa fa-check m-l-5"></i></button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

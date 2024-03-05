@@ -1,0 +1,136 @@
+﻿@model ReceptionCentreNew.Models.ServicesSubInfo
+
+@*<link href="~/Content/social-networks/custom_style.css" rel="stylesheet" />*@
+
+<span id="back-to-consultations-services-list"><a href="#">< назад</a></span>
+<div><h3 class="h-title">Информация об услуге</h3></div>
+
+<div>
+    @if (Model.Info.Any())
+    {
+        <h4 class="">Описание</h4>
+        @Model.Info.FirstOrDefault().name
+    }
+</div>
+<hr />
+<div>
+    @if (Model.Documents.Any())
+    {
+        <h4 class="">Требуемые документы</h4>
+        <ul>
+            @foreach (var item in Model.Documents)
+            {
+            <li>
+                <div style="margin-bottom:10px;">
+                    @item.name <br />
+                        <span class="label">@item.type</span>
+                        <span class="label">@item.needs</span>
+                </div>
+            </li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.Failure.Any())
+    {
+        <h4 class="">Основания для отказа</h4>
+        <ul>
+            @foreach (var item in Model.Failure)
+            {
+                <li><div>@item.failure_text @item.legal_act  @item.commentt</div></li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.FailureDocuments.Any())
+    {
+        <h4 class="">Основания для отказа приема документов</h4>
+        <ul>
+            @foreach (var item in Model.FailureDocuments)
+            {
+                <li><div>@item.failure_text @item.legal_act @item.commentt</div></li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.Result.Any())
+    {
+        <h4 class="">Результат</h4>
+        <ul>
+            @foreach (var item in Model.Result)
+            {
+                <li>
+                    <div>
+                        @item.name <br />
+                        @if (item.method != null)
+                        {<span>Способ получения</span> <span class="sub-title">@item.method</span>}
+                        <span class="label">Срок хранения в МФЦ <span class="text-info">@item.period_mfc</span> Срок хранения в органе власти <span class="text-info">@item.period_provider</span></span>
+                    </div>
+                </li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.Stop.Any())
+    {
+        <h4 class="">Приостановка услуги</h4>
+        <ul>
+            @foreach (var item in Model.Stop)
+            {
+                <li><div>@item.text @item.week_name @item.count_day @item.commentt</div></li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.Tariff.Any())
+    {
+        <h4 class="">Стоимость и сроки</h4>
+        <ul>
+            @foreach (var item in Model.Tariff)
+            {
+                <li>
+                    <div>
+                        @item.type <span class="text-info">@item.tariff руб.</span> <br />
+                        <span class="label">Обработка <span class="text-info">@item.count_day_processing </span> Исполнение <span class="text-info">@item.count_day_execution</span> Возврат <span class="text-info">@item.count_day_return</span> (ед. изм. <span class="text-info">@item.week</span>)</span> 
+                    </div>
+                </li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.Way.Any())
+    {
+        <h4 class="">Обращение за услугой</h4>
+        <ul>
+            @foreach (var item in Model.Way)
+            {
+                <li><div><span>@item.name_way</span></div></li>
+            }
+        </ul>
+        <hr />
+    }
+</div>
+<div>
+    @if (Model.WayResult.Any())
+    {
+        <h4 class="">Получение результата</h4>
+        <ul>
+            @foreach (var item in Model.WayResult)
+            {
+                <li><div><span>@item.name_way</span></div></li>
+            }
+        </ul>
+    }
+</div>

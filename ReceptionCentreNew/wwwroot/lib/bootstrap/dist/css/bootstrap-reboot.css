@@ -243,11 +243,11 @@ svg {
 }
 
 table {
-  caption-side: bottom;
+  Caption-side: bottom;
   border-collapse: collapse;
 }
 
-caption {
+Caption {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   color: #6c757d;

@@ -1,0 +1,124 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+
+<style>
+    .conversation-list .ctext-wrap {
+        background-color: #6a6c6d;
+    }
+
+        .conversation-list .ctext-wrap:after {
+            border-top-color: #6a6c6d;
+            border-right-color: #6a6c6d;
+        }
+
+        .conversation-list .ctext-wrap i {
+            display: initial !important;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: bold;
+            position: relative;
+        }
+
+
+    #notes ul li.edit {
+        border: 1px dashed green;
+    }
+
+        #notes ul li.edit button.this-edit, #notes ul li button.this-cancel {
+            display: none;
+        }
+
+        #notes ul li.edit button.this-cancel {
+            display: block;
+        }
+</style>
+
+    @if (@Model.DataAppealCommenttList?.Any()??false)
+    {
+        <div class="chat-conversation case-tab-pane">
+            <ul class="conversation-list custom-scrollbar mb-4">
+                @foreach (var item in Model.DataAppealCommenttList)
+                {
+                    if (item.spr_employees_id == Model.EmployeeId)
+                    {
+                        <li class="clearfix odd data_services_commentt" data-commentt-id="@item.id" data-commentt="@item.commentt">
+                            <div class="chat-avatar">
+                                <img src="~/Content/img/user_image.jpg" alt="Female">
+                            </div>
+                            <div class="conversation-text">
+                                <div class="ctext-wrap">
+                                    <div class="d-flex justify-content-between font-12">
+                                        <time class="mr-3">@Html.DisplayFor(i => item.date_add)</time>
+                                        <b>Я</b>
+                                    </div>
+                                    @if (item.is_remove != true)
+                                    {
+                                        <p>@item.commentt</p>
+                                    }
+                                    else
+                                    {
+                                        <p><i style="color:#505461; font-style:italic">Примечание было удалено</i></p>
+                                    }
+                                    <div class="text-right">
+                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        {
+                                            if (recipient.read_date != null)
+                                            {
+                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-user m-r-5 text-danger" title="@recipient.spr_employees.employees_name"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="clearfix" data-commentt-id="@item.id">
+                            <div class="chat-avatar">
+                                <img src="~/Content/img/user_image.jpg" alt="male">
+                            </div>
+                            <div class="conversation-text">
+                                <div class="ctext-wrap">
+                                    <div class="d-flex justify-content-between font-12">
+                                        <b>@Html.DisplayFor(i => item.employees_name_add)</b>
+                                        <time class="ml-3 text-muted">@Html.DisplayFor(i => item.date_add)</time>
+                                    </div>
+                                    @if (item.is_remove != true)
+                                    {
+                                        <p>@item.commentt</p>
+                                    }
+                                    else
+                                    {
+                                        <p><i style="color:#505461; font-style:italic"> Примечание было удалено</i></p>
+                                    }
+                                    <div class="text-left">
+                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        {
+                                            if (recipient.read_date != null)
+                                            {
+                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-user m-r-5 text-success" title="@recipient.spr_employees.employees_name"></i>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span><i class="icon-info"></i> Нет примечаний</span>
+        </div>
+    }

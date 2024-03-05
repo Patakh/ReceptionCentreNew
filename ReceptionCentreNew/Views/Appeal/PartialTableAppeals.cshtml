@@ -1,0 +1,166 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+
+<!-- Все обращения -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<style>
+    .clip {
+        white-space: nowrap; /* Запрещаем перенос строк */
+        overflow: hidden; /* Обрезаем все, что не помещается в область */
+        text-overflow: ellipsis; /* Добавляем многоточие */
+    }
+
+    .p-l-r-0 {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+    .text-muted {
+        color: #6c757d !important;
+    }
+    .font-500{
+        font-weight:500;
+    }
+    .font-15{
+        font-size:15px;
+    }
+</style>
+
+<div class="card-box p-0 m-t-20 m-b-20">
+    <div class="table-responsive">
+        <div class="input-group">
+            <div class="input-group-prepend align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+            </div>
+            <input type="text" id="searchTextAppeals" class="form-control pl-0 border-0" value="@ViewBag.Search" autofocus placeholder="Поиск обращений" aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            <div class="input-group-append align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
+            </div>
+        </div>
+        <table id="appealsTable" class="footable table cases-table table-hover table-vertical-middle" data-page-size="10" data-limit-navigation="5">
+            <tbody>
+                @if (Model.DataAppealSelectList.Any())
+                {
+
+                    foreach (var item in Model.DataAppealSelectList.OrderByDescending(o => o.out_date_add))
+                    {
+                <tr data-number-appeal="@item.out_number_appeal" @*onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.out_number_appeal})')"*@>
+                    <td class="text-center p-r-0">
+                        <h3 data-tooltip="@item.out_category"><i class="@(item.out_category=="Жалоба"?"md md-report-problem text-danger":item.out_category=="Предложение"?"md md-chat text-success":item.out_category=="Вопрос"?"md md-help text-custom":item.out_category=="Отзыв"?"md md-rate-review text-info":item.out_category=="Оповещение"?"md md-announcement text-warning":"")"></i></h3>
+                    </td>
+                    <td>
+                        <span>#@item.out_number_appeal</span><br />
+                        <span class=""><i class="fa fa-calendar m-r-5"></i>@item.out_date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.out_date_add.Value.ToShortTimeString()</span><br />
+                        @if (item.out_mfc_name != null)
+                        {
+                            <div class="clip" style="max-width:185px;" data-tooltip="@item.out_mfc_name"><img src="/Content/images/logo.png" height="15" style="opacity:0.6"> @item.out_mfc_name</div>
+                        }
+                        @*<span class="text-muted font-12">@(item.out_case_number != null ? '#' + item.out_case_number.Trim('#') : "")</span>*@
+                        @if (item.out_case_number != null)
+                        {
+                            if (item.out_case_number != null)
+                            {
+                                string[] n = item.out_case_number.Split(' ');
+                                foreach (var cases in n)
+                                {
+                                    if (cases.Length != 0)
+                                    {
+                                        <a class="" href="http://192.168.34.9:81/Case?CaseId=@cases.Replace("#","")" target="_blank">@cases.Replace("#", "")</a>
+                                    }
+                                }
+                            }
+                        }
+                    </td>
+                    <td>
+                        <b class="case-text m-b-5" style="font-size:15px" title="@item.out_text_appeal" data-tooltip="@item.out_text_appeal">
+                            @(item.out_text_appeal.Length > 230 ? item.out_text_appeal.Substring(0, 230) + "..." : item.out_text_appeal)
+                        </b>
+                        <span class="text-muted"><i class="md md-person"></i> @(item.out_applicant_name?.ToString())</span>
+                        @if (item.out_phone_number != null)
+                        {<span class="text-muted"> <i class="md md-call"></i> @(item.out_phone_number)</span>}
+                        @if (item.out_email_ != null)
+                        {<span class="text-muted"> <span style="top:-1px;">&#64;</span> @(item.out_email_?.ToString() ?? "-")</span>}
+                    </td>
+
+                    <td>
+                        @{int d = 0; TimeSpan tms = (item.out_date_regulation - DateTime.Now).Value;}
+                        @if (item.out_date_execution != null)
+                        { }
+                        else
+                        {
+                            d = (item.out_date_regulation - DateTime.Now).Value.Days;
+                            <div class="text-nowrap m-b-5" data-tooltip="Регламентная дата"><i class="fa fa-calendar m-r-5"></i>@item.out_date_regulation.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.out_date_regulation.Value.ToShortTimeString()</div>                            
+                            if (d < 0)
+                            {
+                                <span class="text-nowrap" data-tooltip="Просрочка"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span><br />
+                            }
+                            else
+                            {
+                                <span class="text-nowrap" data-tooltip="Время до просрочки"><i class="md  md-av-timer m-r-5"></i><span>@(tms.Days) дн. @(tms.Hours) ч. @(tms.Minutes) мин.</span></span><br />
+                            }
+
+                        }
+                    </td>
+                    <td class="p-l-r-0" @*style="max-width:200px; min-width:180px;"*@>
+                        
+                        <span data-tooltip="@item.out_employees_name" class="font-12 label @(item.out_status_name.ToString() == "Исполнено" ? "label-success" : item.out_status_name.ToString() == "Ошибка" ? "label-danger" : item.out_status_name.ToString() == "Прекращено" ? "label-mfc" : item.out_status_name.ToString() == "На исполнении" ? "label-warning" : "label-default") ">@Html.DisplayFor(m => item.out_status_name)</span>
+                        @if (item.out_date_execution == null)
+                        {
+                            <div style="height:5px;"></div>
+                            <span data-tooltip="@item.out_employees_name_current" class="text-nowrap @(item.out_stage_name_current.ToString() == "Исполнено" ? "label label-success":"")">@item.out_stage_name_current</span>
+                        }
+                    </td>
+                    <td style="max-width:55px; min-width:50px"><i class=" d-block h1 text-primary ti-angle-right"></i></td>
+                </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td width="10"></td>
+                        <td><span><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span></td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>
+                    </td>
+                    <td colspan="5">
+                        <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
+                            @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableAppeals", "Appeal", new { page = x.CurrentPage, search = ViewBag.Search, sprEmployeeId = ViewBag.SprEmployeesId, sprTypeId = ViewBag.SprTypeId, sprTypeDifficultyId = ViewBag.SprTypeDifficultyId, sprSubjectId = ViewBag.SprSubjectId, sprStatusId = ViewBag.SprStatusId, sprCategoryId = ViewBag.SprCategoryId, period = ViewBag.Period }, new AjaxOptions { UpdateTargetId = "appealsTableContainer" }))
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('[data-tooltip]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltip');
+                return "<div class='text-left'>" +
+                    tooltipInfo
+                "</div>";
+            },
+            html: true,
+            placement: "top"
+        });
+    });
+    $('#appealsTable tbody tr').click(function () {
+        $this = $(this);
+        $number = $this.data("numberAppeal");
+        $.ajax({
+            url: 'AppealInfo',
+            type: 'POST',
+            data: { number: $number, modal: true },
+            success: function (data) {
+                $('#newModal').modal('show').html(data);
+            }
+        })
+    });
+</script>
+

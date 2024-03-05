@@ -1153,7 +1153,7 @@ body[class*=navbar-bottom] .content {
 }
 
 .layout-boxed {
-    background: url(../images/backgrounds/boxed_bg.png) repeat;
+    background: url(../img/backgrounds/boxed_bg.png) repeat;
 }
 
     .layout-boxed > .navbar {
@@ -1188,7 +1188,7 @@ body[class*=navbar-bottom] .content {
 
 @media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi) {
     .layout-boxed {
-        background: url(../images/backgrounds/boxed_bg_retina.png) repeat;
+        background: url(../img/backgrounds/boxed_bg_retina.png) repeat;
     }
 }
 
@@ -3218,7 +3218,7 @@ label.switchery-xs {
     width: 1px !important;
 }
 
-.select2-result-repository {
+.select2-result-_repository {
     padding-top: 7px;
     padding-bottom: 7px;
 }
@@ -11823,7 +11823,7 @@ body.stop-scrolling {
         line-height: 1.6666667;
     }
 
-.ui-selectmenu-images .ui-menu-item > span {
+.ui-selectmenu-img .ui-menu-item > span {
     display: inline-block;
     margin-right: 10px;
     border-radius: 2px;
@@ -11833,24 +11833,24 @@ body.stop-scrolling {
     float: left;
 }
 
-.ui-selectmenu-images .demo-img-amazon {
-    background: url(../images/brands/amazon.png) no-repeat;
+.ui-selectmenu-img .demo-img-amazon {
+    background: url(../img/brands/amazon.png) no-repeat;
 }
 
-.ui-selectmenu-images .demo-img-youtube {
-    background: url(../images/brands/youtube.png) no-repeat;
+.ui-selectmenu-img .demo-img-youtube {
+    background: url(../img/brands/youtube.png) no-repeat;
 }
 
-.ui-selectmenu-images .demo-img-twitter {
-    background: url(../images/brands/twitter.png) no-repeat;
+.ui-selectmenu-img .demo-img-twitter {
+    background: url(../img/brands/twitter.png) no-repeat;
 }
 
-.ui-selectmenu-images .demo-img-bing {
-    background: url(../images/brands/bing.png) no-repeat;
+.ui-selectmenu-img .demo-img-bing {
+    background: url(../img/brands/bing.png) no-repeat;
 }
 
-.ui-selectmenu-images .demo-img-spotify {
-    background: url(../images/brands/spotify.png) no-repeat;
+.ui-selectmenu-img .demo-img-spotify {
+    background: url(../img/brands/spotify.png) no-repeat;
 }
 
 .ui-slider {
@@ -15023,21 +15023,21 @@ a.plupload_disabled, a.plupload_disabled:focus, a.plupload_disabled:hover {
         display: block;
     }
 
-.file-caption-name {
+.file-Caption-name {
     display: inline-block;
     overflow: hidden;
     word-break: break-all;
 }
 
-    .file-caption-name .glyphicon, .file-caption-name [class*=icon-] {
+    .file-Caption-name .glyphicon, .file-Caption-name [class*=icon-] {
         margin-right: 7px;
     }
 
-.file-input-new .file-caption-name {
+.file-input-new .file-Caption-name {
     color: #999;
 }
 
-    .file-input-new .file-caption-name > .glyphicon, .file-input-new .file-caption-name > [class*=icon-] {
+    .file-input-new .file-Caption-name > .glyphicon, .file-input-new .file-Caption-name > [class*=icon-] {
         display: none;
     }
 
@@ -15065,12 +15065,12 @@ a.plupload_disabled, a.plupload_disabled:focus, a.plupload_disabled:hover {
     text-align: left;
 }
 
-.file-caption-disabled {
+.file-Caption-disabled {
     background-color: #fafafa;
     cursor: not-allowed;
 }
 
-    .file-caption-disabled .file-caption-name {
+    .file-Caption-disabled .file-Caption-name {
         color: #ccc;
     }
 
@@ -15229,7 +15229,7 @@ a.plupload_disabled, a.plupload_disabled:focus, a.plupload_disabled:hover {
     display: none;
 }
 
-.file-input-ajax-new .file-caption-name > .glyphicon, .file-input-ajax-new .file-caption-name > [class*=icon-], .file-input-ajax-new .fileinput-remove, .file-input-ajax-new .fileinput-remove-button, .file-input-ajax-new .fileinput-upload-button {
+.file-input-ajax-new .file-Caption-name > .glyphicon, .file-input-ajax-new .file-Caption-name > [class*=icon-], .file-input-ajax-new .fileinput-remove, .file-input-ajax-new .fileinput-remove-button, .file-input-ajax-new .fileinput-upload-button {
     display: none;
 }
 
@@ -15246,7 +15246,7 @@ a.plupload_disabled, a.plupload_disabled:focus, a.plupload_disabled:hover {
     float: right;
 }
 
-.file-footer-caption {
+.file-footer-Caption {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -19860,7 +19860,7 @@ thead .htCollapseButton {
 }
 
 .login-cover {
-    background: url(../images/login_cover.jpg) no-repeat;
+    background: url(../img/login_cover.jpg) no-repeat;
     background-size: cover;
 }
 

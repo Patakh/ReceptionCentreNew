@@ -280,7 +280,7 @@ and dependencies (minified).
 				autoScrollOnFocus:"input,textarea,select,button,datalist,keygen,a[tabindex],area,object,[contenteditable='true']",
 				/*
 				auto-update scrollbars on content, element or viewport resize 
-				should be true for fluid layouts/elements, adding/removing content dynamically, hiding/showing elements, content with images etc. 
+				should be true for fluid layouts/elements, adding/removing content dynamically, hiding/showing elements, content with img etc. 
 				values: boolean
 				*/
 				updateOnContentResize:true,
@@ -492,7 +492,7 @@ and dependencies (minified).
 						
 						if(d && o.callbacks.onCreate && typeof o.callbacks.onCreate==="function"){o.callbacks.onCreate.call(this);} /* callbacks: onCreate */
 						
-						$("#mCSB_"+d.idx+"_container img:not(."+classes[2]+")").addClass(classes[2]); /* flag loaded images */
+						$("#mCSB_"+d.idx+"_container img:not(."+classes[2]+")").addClass(classes[2]); /* flag loaded img */
 						
 						methods.update.call(null,$this); /* call the update method */
 					
@@ -787,7 +787,7 @@ and dependencies (minified).
 						
 						/* remove plugin markup */
 						scrollbar.remove(); /* remove scrollbar(s) first (those can be either inside or outside plugin's inner wrapper) */
-						mCSB_container.find("img."+classes[2]).removeClass(classes[2]); /* remove loaded images flag */
+						mCSB_container.find("img."+classes[2]).removeClass(classes[2]); /* remove loaded img flag */
 						mCustomScrollBox.replaceWith(mCSB_container.contents()); /* replace plugin's inner wrapper with the original content */
 						/* remove plugin classes from the element and add destroy class */
 						$this.removeClass(pluginNS+" _"+pluginPfx+"_"+d.idx+" "+classes[6]+" "+classes[7]+" "+classes[5]+" "+classes[3]).addClass(classes[4]);

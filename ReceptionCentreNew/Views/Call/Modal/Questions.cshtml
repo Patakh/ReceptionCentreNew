@@ -1,0 +1,25 @@
+﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_question>
+
+<form>
+    <div class="accordion" id="accordion">
+        @{int i = 0; int j = 0; }
+        @foreach (var item in Model)
+        {
+            <div>
+                @{i++;}
+                <div id="heading-@{@i}" class="accordion-head">
+                    <div class="checkbox checkbox-success checkbox-single">
+                        <input type="checkbox" name="questions_id" value="@item.id">
+                    </div>
+                    <a href="#collapse-@{@i}" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-@{@i}">
+                        @item.question
+                    </a>
+                </div>
+                <div id="collapse-@{@i}" class="accordion-content collapse" aria-labelledby="heading-@{@i}" data-parent="#accordion">
+                    @Html.Raw(item.answer)
+                </div>
+                @{j++;}
+            </div>
+        }
+    </div>
+</form>

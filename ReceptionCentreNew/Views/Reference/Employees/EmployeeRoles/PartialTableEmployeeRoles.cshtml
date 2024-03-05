@@ -1,0 +1,87 @@
+﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Список ролей</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-box p-0">
+                <div class="row">
+                    <div class="col-sm-10">
+
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="text-right">
+                            @using (Ajax.BeginForm("PartialModalAddEmployeeRole", "Reference", new { employeeId = ViewBag.EmployeeId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                            {
+                                <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                @if (Model.SprEmployeesRoleJoin.Any())
+                {
+                    <div class="table">
+                        <table id="employeesRoleTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">                            
+                            <thead>
+                                <tr>
+                                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                                    <th>@Html.DisplayNameFor(model => model.SprEmployeesRoleJoin.First().spr_employees_role_id)</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.SprEmployeesRoleJoin)
+                                {
+                                    <tr data-employee-role-id="@item.id">
+                                        <td class="number-row p-l-20-important">
+                                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(i => item.spr_employees_role.commentt)
+                                        </td>
+                                        <td class="actions text-right">
+                                            @if (User.IsInRole("superadmin"))
+                                            {
+                                                <button class="btn btn-link remove-row"><i class="ion-trash-b"></i></button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>                            
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert-no-record">
+                        <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Закрыть</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    <script>
+        $(document).ready(function () {
+            var filteringRole = $('#employeesRoleTable');
+            filteringRole.footable();            
+        });
+
+    $('#employeeRolesContainer table td button.remove-row').click(function () {
+        var employeeRoleId = $(this).closest('tr').data('employeeRoleId');
+        removeData('@Url.Action("SubmitEmployeeRoleDelete", "Reference")', { employeeRoleId: employeeRoleId }, function (data) { $('#employeeRolesContainer').html(data); });
+    });
+
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+        $(this).siblings('tr:not(.thead-row)').removeClass('active');
+        $(this).addClass('active');
+    });
+    </script>
+

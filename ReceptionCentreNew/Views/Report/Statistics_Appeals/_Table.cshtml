@@ -1,0 +1,111 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+<style>
+    .table {
+    font-size:14px;
+    }
+</style>
+<div id="printable">
+    <div class="report_head" style="display:none;">
+        <table width="100%">
+            <tr valing="top"><td colspan="3"><div class="report_name">Количество обращений</div></td></tr>
+            <tr>
+                <td>
+                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                </td>
+                <td valign="top" width="60%">
+                    <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
+                </td>
+                <td valign="top"><div class="text-right">Распечатал(a): @ViewBag.PrintEmployee <br /> @DateTime.Now.ToShortDateString()</div></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr>
+                <td>Период: <b>@ViewBag.Period</b></td>
+                <td>Сотрудник: <b>@ViewBag.Employee</b></td>
+            </tr>
+        </table>
+    </div>
+    <!-- page 1 start-->
+    <div class="page">
+        @if (Model.DataAppealSelectList.Any())
+        {
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th class="text-left"><b>Наименование</b></th>
+                        <th class="text-center" style="width:40mm"><b>Количество</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-left"><b>Статусы</b></td>
+                        <td></td>
+                    </tr>
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_status_name))
+                    {
+                        <tr>
+                            <td class="text-left">@item.Key</td>
+                            <td>@item.Count()</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="text-left"><b>Типы</b></td>
+                        <td></td>
+                    </tr>
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_type))
+                    {
+                        <tr>
+                            <td class="text-left">@item.Key</td>
+                            <td>@item.Count()</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="text-left"><b>Типы сложности</b></td>
+                        <td></td>
+                    </tr>
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_type_difficulty))
+                    {
+                        <tr>
+                            <td class="text-left">@item.Key</td>
+                            <td>@item.Count()</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="text-left"><b>Предмет обращения</b></td>
+                        <td></td>
+                    </tr>
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_subject_treatment))
+                    {
+                        <tr>
+                            <td class="text-left">@item.Key</td>
+                            <td>@item.Count()</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="text-left"><b>Категория</b></td>
+                        <td></td>
+                    </tr>
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_category))
+                    {
+                        <tr>
+                            <td class="text-left">@item.Key</td>
+                            <td>@item.Count()</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="text-left"><b>Всего</b></td>
+                        <td><b>@Model.DataAppealSelectList.Count()</b></td>
+                    </tr>
+                </tfoot>
+            </table>
+        }
+        else
+        {
+            <div class="alert-no-record">
+                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+            </div>
+        }
+    </div>
+</div>

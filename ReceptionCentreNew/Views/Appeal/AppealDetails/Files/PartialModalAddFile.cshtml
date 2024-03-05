@@ -1,0 +1,66 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_call>
+<link href="~/Content/plugins/dropzone/dist/dropzone.css" rel="stylesheet" />
+<script>
+    $(document).ready(function () {        
+        $('#searchTextAttachCalls').change(function () {
+            $.ajax({
+                url: '@Url.Action("PartialModalAddFile", "Appeal")',
+                type: 'Post',
+                data: { search: $(this).val(), appealId: '@ViewBag.AppealId' },
+                success: function (data) {
+                    $('#newModal').html(data);
+                }
+            });
+        });
+    });
+</script>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Прикрепление файла</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-box p-0 slimscroll-route-container">
+
+                <form class="dropzone dz-clickable has-validation-callback" action="SubmitAddFile" method="post">
+                    <input type="hidden" name="appealId" value="@ViewBag.AppealId">
+                    <input type="file" name="file" style="display:none;">
+                </form>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+            @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = ViewBag.AppealNumber, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('a[href=\"#files\"]').click()" }, new { @id = "backToAppealInfo", @class = "" }))
+            {
+                <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
+            }
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<script src="~/Content/plugins/dropzone/dist/dropzone.js"></script>
+<script>
+        //-------скрипты загрузки файла------------------
+        var folder_id;
+        Dropzone.autoDiscover = false;
+        $("#newModal").find(".dropzone").dropzone({
+            type: 'POST',
+            maxFilesize: 15,
+            dictDefaultMessage: "Перетащите сюда файл для загрузки. Файл будет загружен автоматически",
+            success: function (data, response) {
+                $(data.previewTemplate).addClass('dz-success');
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("PartialTableFiles", "Appeal")',
+                    data: { appealId: '@ViewBag.AppealId'},
+                    success: function (data) {
+                        $('#filePillContainer').html(data);
+                    }
+                });
+            }
+        });
+      
+</script>

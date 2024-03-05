@@ -1,0 +1,157 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_call>
+<script>
+    $(document).ready(function () {
+        $('.slimscroll-route').slimScroll({
+            height: '450px',
+            position: 'right',
+            size: "5px",
+            color: '#6c757d',
+            wheelStep: 20
+        });
+        
+        $('button#callAttach').click(function () {
+            var callId = $('#callTable tr.active').data('callId');
+            $.ajax({
+                type: 'POST',
+                async: false,
+                url: '@Url.Action("SubmitAttachCall", "Appeal")',
+                data: { callId: callId, appealId: '@ViewBag.AppealId', attach: true, modal:true },
+                success: function (data) {
+                    $('#newModal').modal('show').html(data);
+                    $('a[href="#notification"]').click()
+                    swal("Готово!", "Звонок успешно прикреплен.", "success").then(function () {
+                        //location.reload();
+                    });
+                },
+                error: function (errorData) {
+                    @if (User.IsInRole("superadmin"))
+                    {
+                        @:console.log(errorData.responseText);
+                    }
+                    $.Notification.notify('error', 'right top', 'Ошибка!', 'Произошла ошибка при прикреплении звонка.');
+                }
+            });
+        });
+
+        @*$('#searchTextAttachCalls').change(function () {
+            $.ajax({
+                url: '@Url.Action("PartialModalAttachCall", "Appeal")',
+                type: 'Post',
+                data: { search: $(this).val(), appealId: '@ViewBag.AppealId' },
+                success: function (data) {
+                    $('#newModal').html(data);
+                }
+            });
+        });*@
+        $('#AppealSearchCall').click(function () {
+        $.ajax({
+            url: '@Url.Action("PartialModalAttachCall", "Appeal")',
+            type: 'Post',
+            data: { search: $('#searchTextAttachCalls').val(), appealId: '@ViewBag.AppealId' },
+            success: function (data) {
+                $('#newModal').html(data);
+            }
+        });
+        });
+
+        $('.attach_call_btn_play').click(function () {
+            var id = $(this).data('id');
+            console.log(id);
+            $.ajax({
+                url: '@Url.Action("Play_Audio", "Call")',
+                type: 'Post',
+                data: { id: id },
+                success: function (data) {
+                    $('#newModal #play_content').html(data);
+                    $('#newModal #play_content audio').trigger("play");
+                }
+            });
+        })
+
+        $('.cancel_play, .close, #newModal button').click(function () {
+            $('#newModal #play_content audio').trigger("pause");
+        });
+    });
+</script>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Прикрепление звонка</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-4">
+                <div class="input-group m-t-10 m-b-15">
+                    <input type="text" id="searchTextAttachCalls" class="form-control input-lg" placeholder="Поиск..." value="@ViewBag.SearchAttachCall">
+                    <span class="input-group-btn">
+                        <button id="AppealSearchCall" placeholder="Поиск звонка" type="button" class="btn btn-primary btn-lg waves-effect waves-light"><i class="fa fa-search m-r-5"></i> Найти</button>
+                    </span>
+                </div>
+            </div>
+            <div class="table-responsive mb-4 slimscroll-route">
+                @if (Model.Any())
+                {
+                    <table id="callTable" class="table route-table table-hover table-vertical-middle">
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr data-call-id="@item.id">
+                                    <td>
+                                        @item.phone_number
+                                    </td>
+                                    <td>
+                                        @item.time_talk
+                                    </td>
+                                    <td>
+                                        @item.date_call
+                                    </td>
+                                    <td class="text-right">
+                                        @if (item.save_ftp)
+                                        {
+                                            <button type="button" class="attach_call_btn_play btn btn-link btn-audio" data-id="@item.id"><i class="md md-play-circle-outline"></i></button>
+                                        }
+                                    </td>
+                                    <td class="check">
+                                        <i class="ion-checkmark-circled"></i>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <div class="alert alert-default">
+                        <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Звонков не найдено</span>
+                    </div>
+                }
+            </div>
+            <div id="play_content">
+
+            </div>
+            <div class="modal-footer">
+                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = ViewBag.AppealNumber, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('a[href=\"#notification\"]').click()" }, new { @id = "backToAppealInfo", @class = "" }))
+                {
+                    <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
+                }
+                <button type="button" id="callAttach" class="btn btn-primary waves-effect waves-light">Добавить</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row)').click(function () {
+        if ($(this).is('.active')) {
+            $(this).removeClass('active').removeClass('unfocused');
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').removeClass('unfocused');
+        } else {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active').addClass('unfocused');
+            $(this).removeClass('unfocused').addClass('active');
+        }
+    });
+</script>

@@ -1,0 +1,26 @@
+﻿@{
+    ViewBag.Title = "Вопрос-ответ";
+}
+
+@Html.MvcSiteMap().SiteMapPath()
+<!-- Категории обращения -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div id="questionsContainer">
+    @*@Html.Action("PartialTableCaseCategory", "Reference")*@
+</div>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableQuestions", "Reference")',
+                success: function (data) {
+                    $('#questionsContainer').html(data);
+                }
+            })
+        });
+    </script>
+    <!--Категории обращения-->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

@@ -15,15 +15,15 @@
     height: 0;
 }
 
-.kv-hidden, .file-caption-icon, .file-zoom-dialog .modal-header:before, .file-zoom-dialog .modal-header:after, .file-input-new .file-preview, .file-input-new .close, .file-input-new .glyphicon-file, .file-input-new .fileinput-remove-button, .file-input-new .fileinput-upload-button, .file-input-new .no-browse .input-group-btn, .file-input-ajax-new .fileinput-remove-button, .file-input-ajax-new .fileinput-upload-button, .file-input-ajax-new .no-browse .input-group-btn, .hide-content .kv-file-content {
+.kv-hidden, .file-Caption-icon, .file-zoom-dialog .modal-header:before, .file-zoom-dialog .modal-header:after, .file-input-new .file-preview, .file-input-new .close, .file-input-new .glyphicon-file, .file-input-new .fileinput-remove-button, .file-input-new .fileinput-upload-button, .file-input-new .no-browse .input-group-btn, .file-input-ajax-new .fileinput-remove-button, .file-input-ajax-new .fileinput-upload-button, .file-input-ajax-new .no-browse .input-group-btn, .hide-content .kv-file-content {
     display: none;
 }
 
-.btn-file input[type=file], .file-caption-icon, .file-preview .fileinput-remove, .krajee-default .file-thumb-progress, .file-zoom-dialog .btn-navigate, .file-zoom-dialog .floating-buttons {
+.btn-file input[type=file], .file-Caption-icon, .file-preview .fileinput-remove, .krajee-default .file-thumb-progress, .file-zoom-dialog .btn-navigate, .file-zoom-dialog .floating-buttons {
     position: absolute;
 }
 
-.file-loading:before, .btn-file, .file-caption, .file-preview, .krajee-default.file-preview-frame, .krajee-default .file-thumbnail-footer, .file-zoom-dialog .modal-dialog {
+.file-loading:before, .btn-file, .file-Caption, .file-preview, .krajee-default.file-preview-frame, .krajee-default .file-thumbnail-footer, .file-zoom-dialog .modal-dialog {
     position: relative;
 }
 
@@ -48,7 +48,7 @@
     line-height: 10px;
 }
 
-.krajee-default .file-caption-info, .krajee-default .file-size-info {
+.krajee-default .file-Caption-info, .krajee-default .file-size-info {
     display: block;
     white-space: nowrap;
     overflow: hidden;
@@ -138,7 +138,7 @@
     height: 100%;
 }
 
-.file-caption .file-caption-name {
+.file-Caption .file-Caption-name {
     width: 100%;
     margin: 0;
     padding: 0;
@@ -148,15 +148,15 @@
     outline: none;
 }
 
-.file-caption.icon-visible .file-caption-icon {
+.file-Caption.icon-visible .file-Caption-icon {
     display: inline-block;
 }
 
-.file-caption.icon-visible .file-caption-name {
+.file-Caption.icon-visible .file-Caption-name {
     padding-left: 15px;
 }
 
-.file-caption-icon {
+.file-Caption-icon {
     line-height: 1;
     left: 8px;
 }
@@ -174,7 +174,7 @@
     margin: 5px 0;
 }
 
-.file-caption-disabled {
+.file-Caption-disabled {
     background-color: #eee;
     cursor: not-allowed;
     opacity: 1;
@@ -256,7 +256,7 @@
     float: right;
 }
 
-.krajee-default .file-footer-caption {
+.krajee-default .file-footer-Caption {
     display: block;
     text-align: center;
     padding-top: 4px;
@@ -286,7 +286,7 @@
     opacity: 0.8;
 }
 
-.krajee-default .file-preview-frame:not(.file-preview-error) .file-footer-caption:hover {
+.krajee-default .file-preview-frame:not(.file-preview-error) .file-footer-Caption:hover {
     color: #000;
 }
 
@@ -372,7 +372,7 @@
     border-bottom-right-radius: 4px;
 }
 
-.file-caption-main {
+.file-Caption-main {
     width: 100%;
 }
 

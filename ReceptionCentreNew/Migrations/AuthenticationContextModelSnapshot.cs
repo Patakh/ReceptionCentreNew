@@ -164,25 +164,9 @@ namespace ReceptionCentreNew.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("CanTakeAppeal")
-                        .HasColumnType("boolean")
-                        .HasColumnName("can_take_appeal");
-
-                    b.Property<string>("CommenttModify")
-                        .HasColumnType("text")
-                        .HasColumnName("commentt_modify");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("text");
-
-                    b.Property<DateTime?>("DateAdd")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_add");
-
-                    b.Property<DateTime?>("DateModify")
-                        .HasColumnType("timestamp without time zone")
-                        .HasColumnName("date_modify");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -191,34 +175,8 @@ namespace ReceptionCentreNew.Migrations
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
 
-                    b.Property<bool?>("EmployeesActive")
-                        .HasColumnType("boolean")
-                        .HasColumnName("employees_active");
-
-                    b.Property<string>("EmployeesName")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("employees_name");
-
-                    b.Property<string>("EmployeesNameAdd")
-                        .HasColumnType("text")
-                        .HasColumnName("employees_name_add");
-
-                    b.Property<string>("EmployeesNameModify")
-                        .HasColumnType("text")
-                        .HasColumnName("employees_name_modify");
-
-                    b.Property<string>("IpAddressAdd")
-                        .HasColumnType("text")
-                        .HasColumnName("ip_address_add");
-
-                    b.Property<string>("IpAddressModify")
-                        .HasColumnType("text")
-                        .HasColumnName("ip_address_modify");
-
-                    b.Property<bool>("IsRemove")
-                        .HasColumnType("boolean")
-                        .HasColumnName("is_remove");
+                    b.Property<Guid?>("EmployeeId")
+                        .HasColumnType("uuid");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -245,14 +203,6 @@ namespace ReceptionCentreNew.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
-
-                    b.Property<Guid>("SprEmployeesDepartmentId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("spr_employees_department_id");
-
-                    b.Property<Guid>("SprEmployeesJobPosId")
-                        .HasColumnType("uuid")
-                        .HasColumnName("spr_employees_job_pos_id");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("boolean");

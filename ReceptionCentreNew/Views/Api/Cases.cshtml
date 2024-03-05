@@ -1,0 +1,57 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Models.Account_case>
+<div>
+    <span id="back-to-customers"><a href="#">< назад</a></span>
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-td-sm table-vertical-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="pt-0 border-top-0">№</th>
+                        <th class="pt-0 border-top-0">Дата</th>
+                        <th class="pt-0 border-top-0">Дело</th>
+                        <th class="pt-0 border-top-0">Сотрудник</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{int i = 0; }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@(++i)</td>
+                            <td>
+                                <small>@item.date_enter.ToShortDateString()</small>
+                                <span class="label label-sm">@item.status</span>
+                            </td>
+                            <td>
+                                <small class="text-truncate" data-content="@item.services_provider_name"><b>@item.services_provider_name</b></small>
+                                <small class="text-truncate case-text" data-content="@item.services_sub_name">
+                                    <a href="http://192.168.34.9:81/Case?CaseId=@item.data_services_info_id.Replace("#","")" target="_blank">@item.services_sub_name</a>                                    
+                                </small>
+                            </td>
+                            <td class="text-nowrap">
+                                <small class="text-truncate" data-content="@item.mfc_name">@item.mfc_name</small>
+                                <small class="text-truncate" data-content="@item.employees_fio">@item.employees_fio</small>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div>
+            <span><strong><i class="icon-info"></i></strong> Не найдено.</span>
+        </div>
+    }
+</div>
+<script>
+    $(function () {
+    $('.case-text, .text-truncate').popover({
+      trigger: 'hover',
+      container: '.call-modal',
+      placement: 'bottom'
+    });
+  });
+</script>

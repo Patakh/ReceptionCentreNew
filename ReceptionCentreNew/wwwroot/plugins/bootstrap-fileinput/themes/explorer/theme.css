@@ -30,7 +30,7 @@
     font-size: 16px;
 }
 
-.theme-explorer .file-thumb-progress .progress, .theme-explorer .explorer-caption {
+.theme-explorer .file-thumb-progress .progress, .theme-explorer .explorer-Caption {
     display: block;
 }
 
@@ -55,7 +55,7 @@
     margin-top: 5px;
 }
 
-.theme-explorer .explorer-caption {
+.theme-explorer .explorer-Caption {
     color: #777;
 }
 
@@ -139,7 +139,7 @@
         padding-bottom: 4px;
     }
 
-    .theme-explorer .explorer-frame .explorer-caption {
+    .theme-explorer .explorer-frame .explorer-Caption {
         white-space: nowrap;
         text-overflow: ellipsis;
         overflow: hidden;

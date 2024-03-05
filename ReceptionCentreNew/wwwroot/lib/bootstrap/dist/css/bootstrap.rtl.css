@@ -296,11 +296,11 @@ svg {
 }
 
 table {
-  caption-side: bottom;
+  Caption-side: bottom;
   border-collapse: collapse;
 }
 
-caption {
+Caption {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   color: #6c757d;
@@ -609,7 +609,7 @@ progress {
   line-height: 1;
 }
 
-.figure-caption {
+.figure-Caption {
   font-size: 0.875em;
   color: #6c757d;
 }
@@ -1959,7 +1959,7 @@ progress {
   vertical-align: top;
   border-color: #dee2e6;
 }
-.table > :not(caption) > * > * {
+.table > :not(Caption) > * > * {
   padding: 0.5rem 0.5rem;
   background-color: var(--bs-table-bg);
   border-bottom-width: 1px;
@@ -1975,22 +1975,22 @@ progress {
   border-bottom-color: currentColor;
 }
 
-.caption-top {
-  caption-side: top;
+.Caption-top {
+  Caption-side: top;
 }
 
-.table-sm > :not(caption) > * > * {
+.table-sm > :not(Caption) > * > * {
   padding: 0.25rem 0.25rem;
 }
 
-.table-bordered > :not(caption) > * {
+.table-bordered > :not(Caption) > * {
   border-width: 1px 0;
 }
-.table-bordered > :not(caption) > * > * {
+.table-bordered > :not(Caption) > * > * {
   border-width: 0 1px;
 }
 
-.table-borderless > :not(caption) > * > * {
+.table-borderless > :not(Caption) > * > * {
   border-bottom-width: 0;
 }
 
@@ -6089,7 +6089,7 @@ textarea.form-control-lg {
   opacity: 1;
 }
 
-.carousel-caption {
+.carousel-Caption {
   position: absolute;
   left: 15%;
   bottom: 1.25rem;
@@ -6107,7 +6107,7 @@ textarea.form-control-lg {
 .carousel-dark .carousel-indicators [data-bs-target] {
   background-color: #000;
 }
-.carousel-dark .carousel-caption {
+.carousel-dark .carousel-Caption {
   color: #000;
 }
 

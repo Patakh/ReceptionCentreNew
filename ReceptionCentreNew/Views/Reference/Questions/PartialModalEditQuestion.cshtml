@@ -1,0 +1,74 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.spr_question
+<link href="~/Content/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
+<style>
+    .trumbowyg-box {
+        margin: 0px !important;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        $('#answer').trumbowyg({
+            lang: 'ru',
+            btns: [['viewHTML'],
+            ['undo', 'redo'], // Only supported in Blink browsers
+            ['formatting'],
+            ['strong', 'em', 'del'],
+            ['superscript', 'subscript'],
+            ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],
+            ['unorderedList', 'orderedList'],
+            ['horizontalRule'],
+            ['removeformat'],
+            ['fullscreen']
+            ]
+        });        
+    });
+</script> 
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Изменение вопрос-ответ</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            @using (Ajax.BeginForm("SubmitQuestionSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "questionsContainer", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditQuestionForm", @class = "form-horizontal" }))
+            {
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        @Html.LabelFor(model => model.question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.question) } })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <textarea class="input p-t-10 required" rows="10" id="answer" name="answer" placeholder="Ответ" style="height: auto; resize: vertical;">@Model.answer</textarea>
+
+                            @*@Html.LabelFor(model => model.answer, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+        <div class="col-md-8">
+            @Html.TextBoxFor(model => model.answer, new Dictionary<string, object> { { "class", "" }, { "placeholder", Html.DisplayNameFor(model => model.answer) }, { "style", "height: auto; resize: vertical" } })
+        </div>*@
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <div class="row">
+                        @Html.LabelFor(model => model.commentt_modify, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.commentt_modify, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.commentt_modify) } })
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="submit" form="EditQuestionForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+        </div>
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->

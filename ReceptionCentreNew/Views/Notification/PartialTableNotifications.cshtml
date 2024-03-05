@@ -1,0 +1,126 @@
+﻿@model ReceptionCentreNew.Models.NotificationsViewModel
+<style>
+    .not_read {
+        font-weight: bold;
+        color: black !important;
+    }
+</style>
+
+<div class="card-box p-0">
+    @if (Model.NotificationList.Any())
+    {
+        <div class="table-responsive">
+            <div class="input-group">
+                    <div class="input-group-prepend align-items-center">
+                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" id="searchTextNotify" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                </div>
+            <table id="notificationsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">                
+                <tbody>
+                    @foreach (var item in Model.NotificationList)
+                    {
+                        <tr data-notification-id="@item.id" @if (item.is_active == true) { { if (item.is_active == true) { <text> class="not_read" </text> } } }>
+                            <td class="number-row p-l-20-important">
+                                @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                            </td>
+                            <td class="vertical-middle">
+                                <button type="button" data-notify-id="@item.id" data-is_active="@item.is_active" title="Активно/неактивно" class="btn btn-link" style="font-size: 18px;line-height: 18px;">
+                                    @if (item.is_active == true)
+                                    {<i class="text-success ion-ios7-circle-filled"></i>}
+                                    else
+                                    {<i class="text-danger ion-ios7-circle-filled"></i>}
+                                </button>
+                            </td>                            
+                            <td>
+                                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = item.data_appeal.number_appeal, notificationId = item.id, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                {
+                                <button type="submit" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-link">@item.data_appeal.number_appeal</button>
+                                }                                
+                            </td>
+                            <td>
+                                @if (item.data_appeal.spr_mfc != null)
+                                {
+                                    @item.data_appeal.spr_mfc.mfc_name
+                                }
+                                else
+                                {
+                                    <span>-</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="text-clip-cust" title="@Html.DisplayFor(i => item.data_appeal.text_appeal)">@Html.DisplayFor(i => item.data_appeal.text_appeal)</div>
+                            </td>
+                            <td>
+                                <span>@Html.DisplayFor(i => item.spr_notification.notification)</span>
+                            </td>
+                            <td>
+                                <span>@Html.DisplayFor(i => item.date_receipt)</span>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="foot-row">
+                        <td colspan="3" class="text-left">
+                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                        </td>
+                        <td colspan="4">
+                            <div class="text-right">
+                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+        <!-- Все оповещения -->
+        <script>
+        $(document).ready(function () {
+            var filtering = $('#notificationsTable');
+            filtering.footable();
+            $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+            $('#tr_count').text($('.footable tbody tr').length);
+
+            // Search input
+            $('#searchTextNotify').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+            });
+        });
+
+        // Добавляем возможность выбора строки в таблице
+            $('#notificationsTable tr:not(.thead-row, .foot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
+        });
+        $('#notificationsTable tr td button[type="button"]').click(function () {
+        var $this = $(this);
+        var notifyId = $(this).data("notifyId");
+        var is_active = $(this).data("is_active");
+                $.ajax({
+                    url: '@Url.Action("SubmitNoficationSave", "Notification")',
+                    type: 'POST',
+                    data: { notifyId: notifyId },
+                    success: function (data) {
+                        if ($this.children('i').hasClass('text-success')) {
+                            $this.html('<i class="text-danger ion-ios7-circle-filled"></i>');
+                            $this.closest("tr").removeClass("not_read");
+                        }
+                        else {
+                            $this.html('<i class="text-success ion-ios7-circle-filled"></i>');
+                            $this.closest("tr").addClass("not_read");
+                        }
+                    },
+                });
+    });
+        </script>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span>
+        </div>
+    }
+</div>

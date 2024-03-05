@@ -1,0 +1,38 @@
+﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_setting>
+@{
+    ViewBag.Title = "Настройки";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Все настройки -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<div class="row m-t-15 m-b-15">
+    <div class="col-sm-12">
+        @Html.MvcSiteMap().SiteMapPath()
+    </div>
+</div>
+<div id="settings">
+    @Html.Action("PartialTableSettings", "System")
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            var filtering = $('#settingsTable');
+            filtering.footable();
+            $('#settingsTable #filter_count').text($('#settingsTable.footable tbody tr:not(.footable-filtered)').length);
+            $('#settingsTable #tr_count').text($('#settingsTable.footable tbody tr').length);
+
+            // Search input
+            $('#searchTextSettings').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#settingsTable #filter_count').text($('#settingsTable.footable tbody tr:not(.footable-filtered)').length);
+            });
+        });
+    </script>
+
+    <!-- Настройки -->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

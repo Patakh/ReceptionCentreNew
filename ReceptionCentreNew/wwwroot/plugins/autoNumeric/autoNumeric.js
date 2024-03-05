@@ -115,7 +115,7 @@
      */
     function autoCode($this, settings) {
         runCallbacks($this, settings);
-        settings.tagList = ['b', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dfn', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ins', 'kdb', 'label', 'li', 'output', 'p', 'q', 's', 'sample', 'span', 'strong', 'td', 'th', 'u', 'var'];
+        settings.tagList = ['b', 'Caption', 'cite', 'code', 'dd', 'del', 'div', 'dfn', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ins', 'kdb', 'label', 'li', 'output', 'p', 'q', 's', 'sample', 'span', 'strong', 'td', 'th', 'u', 'var'];
         var vmax = settings.vMax.toString().split('.'),
             vmin = (!settings.vMin && settings.vMin !== 0) ? [] : settings.vMin.toString().split('.');
         convertKeyToNumber(settings, 'vMax');
@@ -565,15 +565,15 @@
                     right = right.replace(/^0*(\d)/, '$1');
                 }
             }
-            var new_value = left + right; /** insert zero if has leading dot */
+            var NewValue = left + right; /** insert zero if has leading dot */
             if (settingsClone.aDec) {
-                var m = new_value.match(new RegExp('^' + settingsClone.aNegRegAutoStrip + '\\' + settingsClone.aDec));
+                var m = NewValue.match(new RegExp('^' + settingsClone.aNegRegAutoStrip + '\\' + settingsClone.aDec));
                 if (m) {
                     left = left.replace(m[1], m[1] + '0');
-                    new_value = left + right;
+                    NewValue = left + right;
                 }
             } /** insert zero if number is empty and io.wEmpty == 'zero' */
-            if (settingsClone.wEmpty === 'zero' && (new_value === settingsClone.aNeg || new_value === '')) {
+            if (settingsClone.wEmpty === 'zero' && (NewValue === settingsClone.aNeg || NewValue === '')) {
                 left += '0';
             }
             return [left, right];
@@ -585,14 +585,14 @@
         setValueParts: function (left, right, paste) {
             var settingsClone = this.settingsClone,
                 parts = this.normalizeParts(left, right),
-                new_value = parts.join(''),
+                NewValue = parts.join(''),
                 position = parts[0].length;
-            if (autoCheck(new_value, settingsClone)) {
-                new_value = truncateDecimal(new_value, settingsClone, paste);
-                if (position > new_value.length) {
-                    position = new_value.length;
+            if (autoCheck(NewValue, settingsClone)) {
+                NewValue = truncateDecimal(NewValue, settingsClone, paste);
+                if (position > NewValue.length) {
+                    position = NewValue.length;
                 }
-                this.value = new_value;
+                this.value = NewValue;
                 this.setPosition(position, false);
                 return true;
             }
@@ -912,7 +912,7 @@
                         hasFocus: false,
                         removeBrackets: false,
                         runOnce: false,
-                        tagList: ['b', 'caption', 'cite', 'code', 'dd', 'del', 'div', 'dfn', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ins', 'kdb', 'label', 'li', 'output', 'p', 'q', 's', 'sample', 'span', 'strong', 'td', 'th', 'u', 'var']
+                        tagList: ['b', 'Caption', 'cite', 'code', 'dd', 'del', 'div', 'dfn', 'dt', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ins', 'kdb', 'label', 'li', 'output', 'p', 'q', 's', 'sample', 'span', 'strong', 'td', 'th', 'u', 'var']
                     }); /** Merge defaults, tagData and options */
                     if (settings.aDec === settings.aSep) {
                         $.error("autoNumeric will not function properly when the decimal character aDec: '" + settings.aDec + "' and thousand separator aSep: '" + settings.aSep + "' are the same character");

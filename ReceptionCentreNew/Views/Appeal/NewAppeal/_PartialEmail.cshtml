@@ -1,0 +1,41 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal_email
+@*<form class="form-horizontal" id="newAppealEmailForm">*@
+@if (Model != null)
+{
+    <label class="text-muted m-b-0 m-t-0" for="email">E-mail</label>
+    <div class="input-group">
+        <input type="hidden" name="newEmailId" value="@Model.id" />
+        <input type="text" name="email_caption" class="form-control" value="@Model.caption" />
+        <div class="input-group-append">
+            <button id="clear_email" class="btn btn-info waves-effect waves-light" type="button">
+                <i class="md md-clear"></i>
+            </button>
+        </div>
+    </div>
+}
+else
+{
+    <label class="text-muted m-b-0 m-t-0" for="email">E-mail</label>
+    <div class="input-group">
+        <input type="hidden" name="newEmailId" value="" />
+        <input type="text" name="email_caption" class="form-control" value="" />
+        <div class="input-group-append">
+            <button id="new_email_modal" class="btn btn-success waves-effect waves-light" type="button">
+                <i class="md md-add"></i>
+            </button>
+        </div>
+    </div>
+}
+@*</form>*@
+<script>
+    $('#clear_email').click(function () {
+        $.ajax({
+            url: '@Url.Action("NewAppealEmail", "Appeal")',
+            type: 'POST',
+            data: {},
+            success: function (data) {
+                $('#new_appeal_email').html(data);
+            },
+        });
+    });
+</script>

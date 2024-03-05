@@ -1,0 +1,156 @@
+﻿<div class="left side-menu">
+    <div class="sidebar-inner slimscrollleft">
+        <div Id="sidebar-menu">
+            <ul>
+                <li class="active">
+                    <a href="\" class="waves-effect active">
+                        <i class="ti-home"></i>
+                        <span>Главная </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Appeal" asp-action="Appeals" class="waves-effect ">
+                        <i class="ti-files"></i>
+                        <span>Все обращения </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Sources" asp-action="In" class="waves-effect">
+                        <i class="md md-call-received"></i>
+                        <span>Входящие </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Sources" asp-action="Out" class="waves-effect ">
+                        <i class="md md-call-made"></i>
+                        <span>Исходящие </span>
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Notification" asp-action="Notifications" class="waves-effect ">
+                        <i class="md md-notifications-none"></i>
+                        <span>Уведомления </span>
+                        <span id="menu_input_notification" class="badge badge-mfc">0</span>
+                    </a>
+                </li>
+                <li class="has_sub">
+                    <a href="#" class="waves-effect">
+                        <i class="ti ti-bar-chart"></i>
+                        <span>Статистика</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsCount">
+                                Количество обращений
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsCall">
+                                Количество звонков
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsTreatment">
+                                Предмет обращения
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsCategory">
+                                Категория обращения
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsType">
+                                Тип обращения
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Statistics" asp-action="AppealsTypeDifficulty">
+                                Тип сложности
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="has_sub">
+                    <a href="#" class="waves-effect">
+                        <i class="md md-assignment"></i>
+                        <span>Отчеты</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a asp-controller="Report" asp-action="ReportAppeals">
+                                Реестр обращений
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Report" asp-action="ReportCalls">
+                                Реестр звонков
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Report" asp-action="StatisticsAppeals">
+                                Статистика обращений
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Report" asp-action="StatisticsCalls">
+                                Статистика звонков
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Report" asp-action="ReportCategory">
+                                Отчет по категориям
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Report" asp-action="ReportTreatment">
+                                Отчет по предмету обращения
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a class="waves-effect" asp-controller="Question" asp-action="Questions">
+                        <i class="fa fa-question-circle-o"></i>
+                        <span>Вопрос-ответ </span>
+                    </a>
+                </li>
+                <li class="has_sub">
+                    <a href="#" class="waves-effect">
+                        <i class="ti-agenda"></i>
+                        <span>Справочники</span> <span class="menu-arrow"></span>
+                    </a>
+                    <ul class="list-unstyled">
+                        <li>
+                            <a asp-controller="Reference" asp-action="CaseType">
+                                Тип обращения
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Reference" asp-action="CaseTypeDifficulty">
+                                Сложность обращения
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Reference" asp-action="Employees">
+                                Сотрудники
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Reference" asp-action="Questions">
+                                Вопрос-ответ
+                            </a>
+                        </li>
+                        <li>
+                            <a asp-controller="Reference" asp-action="SurveyQuestions">
+                                Опрос
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

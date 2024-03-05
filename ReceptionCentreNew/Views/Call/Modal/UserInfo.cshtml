@@ -1,0 +1,23 @@
+﻿<h5 class="card-header">Информация о пользователе</h5>
+<div class="card-body custom-scrollbar" style="max-height: 250px;">
+    <div class="contact-card" id="user-info">
+        @*@Html.Action("GetCustomers","Api", new {phone_number = ViewBag.PhoneNumber })*@
+    </div>
+</div>
+
+<script>
+    $(function(){
+        $.ajax({
+            async: true,
+            url: '/Api/GetCustomers',
+            data: { phone_number: '@ViewBag.PhoneNumber' },
+            type: 'POST',
+            beforeSend: function () {
+                $('#user-info').html("... ждите");
+            },
+            success: function (data) {
+                $('#user-info').html(data);
+            }
+        });
+    })
+</script>

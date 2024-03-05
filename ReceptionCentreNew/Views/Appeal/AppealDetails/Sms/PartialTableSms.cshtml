@@ -1,0 +1,134 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+<div class="row m-b-15">
+    <div class="col-sm-6">
+        <h3 class="panel-title">Список сообщений</h3>
+    </div>
+    <div class="col-sm-6 text-right">
+        @using (Ajax.BeginForm("PartialModalAttachSms", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "myModal", OnSuccess = "$('#myModal').modal('show');" }, new { @class = "form-submit" }))
+        {
+            <button type="submit" class="btn btn-inverse waves-effect waves-light btn-sm "> Прикрепить сообщение <i class="glyphicon glyphicon-paperclip m-l-5"></i></button>
+        }        
+    </div>
+</div>
+<div class="card-box p-0">
+    <div class="input-group">
+        <span class="input-group-btn">
+            <button type="button" class="btn waves-effect waves-light btn-link p-l-20-important"><i class="fa fa-search"></i></button>
+        </span>
+        <input type="text" id="searchTextSms" class="text-dark no-border-input" placeholder="Поиск сообщения" value="@ViewBag.SearchSms"><ul class="typeahead dropdown-menu"></ul><ul class="typeahead dropdown-menu"></ul>
+    </div>
+    <hr class="m-0">
+
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important">№</th>
+                    <th>Тип</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().date_message)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().phone_number)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().employees_name_add)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.DataAppealSmsList.Any())
+                {
+                    foreach (var item in Model.DataAppealSmsList)
+                    {
+                        <tr data-sms-id="@item.id">
+                            <td class="number-row p-l-20-important">
+                                @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                            </td>
+                            <td>
+                                @if(item.message_type==2)
+                                {<span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span> }
+                                else
+                                {<span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span> }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.date_message)                              
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.phone_number)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.employees_name_add)
+                            </td>
+                            <td class="actions">
+                                @if (User.IsInRole("superadmin"))
+                                {
+                                    <button type="button" class="on-default link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "employees_fio": "@item.employees_name_add", "date_add": "@item.date_message"}'>
+                                        <i class="ion-ios7-information-outline"></i>
+                                    </button>
+                                    <button class="on-default remove-row link"><i class="ion-trash-b"></i></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td class="number-row p-0" colspan="6">
+                            <div class="alert-no-record">
+                                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет записей</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="row p-t-10 p-l-20-important p-r-20-important p-b-10">
+        <div class="col-sm-6">
+            <div class="dataTables_info" id="datatable_info" role="status" aria-live="polite">Показаны @((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage) из @Model.PageInfo.TotalItems записей</div>
+        </div>
+        <div class="col-sm-6">
+            <div class="dataTables_paginate paging_simple_numbers" id="datatable-editable_paginate">
+                @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableSms", "Appeal", new { page = x.CurrentPage, search = ViewBag.Search, appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "smsPillContainer" }))
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        
+        $('a[href="#smsPillContainer"]').find('.badge').text(@Model.DataAppealSmsListCount);
+
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                            "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>"+
+                       "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
+    });
+    $('#searchTextSms').change(function () {
+        $.ajax({
+            url: '@Url.Action("PartialTableSms", "Appeal")',
+            type: 'Post',
+            data: { search: $(this).val(), appealId: '@Model.DataAppealId' },
+            success: function (data) {
+                $('#smsPillContainer').html(data);
+            }
+        });
+    });
+
+    $('#smsPillContainer table td button.remove-row').click(function () {
+        var smsId = $(this).closest('tr').data('smsId');
+        var param = { smsId: smsId, appealId: '@Model.DataAppealId', attach: false };
+        var action = '@Url.Action("SubmitAttachSms", "Appeal")';
+        var _div = 'smsPillContainer';        
+        reAttachData(action, param, _div);
+    });
+
+    
+
+</script>

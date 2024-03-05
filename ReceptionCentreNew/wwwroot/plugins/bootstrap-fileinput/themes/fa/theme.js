@@ -26,7 +26,7 @@
             indicatorLoading: '<i class="fa fa-hourglass text-muted"></i>'
         },
         layoutTemplates: {
-            fileIcon: '<i class="fa fa-file kv-caption-icon"></i> '
+            fileIcon: '<i class="fa fa-file kv-Caption-icon"></i> '
         },
         previewZoomButtonIcons: {
             prev: '<i class="fa fa-caret-left fa-lg"></i>',

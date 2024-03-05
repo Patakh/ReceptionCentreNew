@@ -1,0 +1,90 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.Data_callback>
+<style>
+    .card-name {
+        width: 95%;
+        display: block;
+    }
+    @@media (min-width: 992px) {
+        .modal-lg {
+            max-width: 990px;
+            margin: 0.75rem auto;
+        }
+    }
+
+    .modal-body {
+        padding: 20px 0px 0px 0px !important;
+        max-height: 710px;
+    }
+
+        .modal-body > .row {
+            margin: 0px;
+        }
+
+    .card-box {
+        box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.3);
+        padding: 15px;
+    }
+    #callBackTable tbody tr {
+        cursor:pointer;
+    }
+</style>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Обратные звонки</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body custom-scrollbar">
+            <small class="p-l-r-10">Всего активных: @Model.Where(w => w.date_order >= DateTime.Now.AddMonths(-3)).Count(), за месяц: @Model.Where(w => w.date_order >= DateTime.Now.AddMonths(-1).Date).Count(), за неделю: @Model.Where(w => w.date_order >= DateTime.Now.AddDays(-7).Date).Count(), за день: @Model.Where(w => w.date_order >= DateTime.Now.Date).Count()</small>
+                <table id="callBackTable" class="table table-vertical-middle table-hover">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Телефон</th>
+                            <th></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Any())
+                        {
+                            foreach (var item in Model.OrderBy(o => o.date_order).ThenByDescending(t => t.count_try).Where(w => w.date_order >= DateTime.Now.AddMonths(-3)))
+                            {
+                        <tr>
+                            <td onclick="CallBackCustomer('@item.id','@item.customer_fio','@item.phone_number')">@item.date_order.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                            <td onclick="CallBackCustomer('@item.id','@item.customer_fio','@item.phone_number')">
+                                <div class="text-nowrap">@item.phone_number</div>
+                                <span class="d-block">
+                                    <span class="font-14 mr-1 text-muted text-truncate card-name" style="width:120px" title="@item.customer_fio">@item.customer_fio</span>
+                                </span>
+                            </td>
+                            <td onclick="CallBackCustomer('@item.id','@item.customer_fio','@item.phone_number')" width="50px">
+                                <div>
+                                    <i class="fa fa-phone text-mfc_red"></i>@if (@item.Data_callback_calls.Any())
+                                    {
+                                        <span class="badge badge-mfc_red" style="position: relative; margin-top: -20px; margin-left:-5px; padding: 3px 4px;">@item.Data_callback_calls.Count()</span>
+                                    }
+                                </div>
+                            </td>
+                            <td onclick="CallBackClose('@item.id')" class="text-center">
+                                <button title="Закрыть заявку" class="btn btn-link close-callback scale-hover"><i class="md md-close text-mfc_red"></i></button>
+                            </td>
+                        </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="3"> нет данных</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+</div>

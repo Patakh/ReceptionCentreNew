@@ -1,8 +1,199 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using ReceptionCentreNew.Controllers
+@{
+    ViewBag.Title = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
+<style>
+    .c3-text {
+    font-size:14px;
+    }
+    .c3-grid line {
+        
+    }
+    #missed-block.dropdown, #missed-block.dropleft, #missed-block.dropright, #missed-block.dropup {
+        position: initial;
+        cursor: pointer;
+    }
+</style>
+<div class="row mt-2">
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <div class="widget-panel widget-style-2 bg-white">
+            <i class="md md-call text-primary"></i>
+            <h2 class="m-0 text-dark counter font-600" Id="CallsInDay">0</h2>
+            <div class="text-muted m-t-5">Звонков сегодня (записано <span Id="CallsInDayAnswer">0</span>)</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <div class="widget-panel widget-style-2 bg-white">
+            <i class="md md-event-note text-info"></i>
+            <h2 class="m-0 text-dark counter font-600" Id="CallsInWeek">0</h2>
+            <div class="text-muted m-t-5">Звонков за неделю</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <div class="widget-panel widget-style-2 bg-white">
+            <i class="fa fa-calendar text-info"></i>
+            <h2 class="m-0 text-dark counter font-600" Id="CallsInMonth">0</h2>
+            <div class="text-muted m-t-5">Звонков за месяц</div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-6 col-xl-3">
+        <div class="widget-panel widget-style-2 bg-white">
+            <div class="dropdown" Id="missed-block">
+                <i class="md md-phone-missed text-danger dropdown-toggle" Id="missed-call-icon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></i>
+                <div class="dropdown-menu" aria-labelledby="missed-call-icon" Id="missed-call-list">
+                </div>
+            </div>
+            <h2 class="m-0 text-dark counter font-600" Id="CallsInDayMissed">0</h2>
+
+            <div class="text-muted m-t-5">Пропущенных звонков</div>
+        </div>
+    </div>
 </div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="text-dark header-title m-t-0">Статистика звонков за неделю</h4>
+            <div Id="chart-calls-in-week" style="height: 300px;"></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="text-dark header-title m-t-0">Статистика звонков за год</h4>
+            <div Id="chart-calls-in-year" style="height: 300px;"></div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="text-dark header-title m-t-0">Жалобы за неделю</h4>
+            <div style="height:300px;">
+                <div Id="chart-claim-in-week" style="height: 300px;"></div>
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card-box">
+            <h4 class="text-dark header-title m-t-0">Жалобы за год</h4>
+            <div Id="chart-claim-in-year" style="height: 300px;"></div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card-box">
+            <h4 class="text-dark header-title m-t-0">Жалобы и оповещения по МФЦ за месяц</h4>
+            <div Id="chart-claim-for-mfc" style="height: 300px;"></div>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+    <script src="~/new_design/plugins/Charts/js/c3.js"></script>
+    <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
+    <script> 
+        $.ajax({
+                async: true,
+                url: '@Url.Action(nameof(StatisticsController.GetChartInWeek), nameof(StatisticsController).Replace("Controller",""))',
+                type: 'POST',
+            success: function (data) {
+                var jsonn = JSON.parse(data);
+                GenerateChart('#chart-calls-in-week', jsonn, 'bar', { "OutCountIncoming": "Входящие", "OutCountOutgoing": "Исходящие" }, ['OutCountIncoming', 'OutCountOutgoing'], "Дни недели", "", false);
+                 }
+        });
+
+        $.ajax({
+                async: true, 
+                url: '@Url.Action(nameof(StatisticsController.GetChartInYear), nameof(StatisticsController).Replace("Controller", ""))',
+                type: 'POST',
+            success: function (data) {
+                var jsonn = JSON.parse(data);
+                GenerateChart('#chart-calls-in-year', jsonn, 'bar', { "OutCountIncoming": "Входящие", "OutCountOutgoing": "Исходящие" }, ['OutCountIncoming', 'OutCountOutgoing'], "Месяца", "", false);
+                }
+        });
+        
+
+        $.ajax({
+                async: true, 
+            url: '@Url.Action(nameof(StatisticsController.GetChartClaimInWeek), nameof(StatisticsController).Replace("Controller", ""))',
+            type: 'POST',
+            success: function (data) {
+                var jsonn = JSON.parse(data);
+                GenerateChart('#chart-claim-in-week', jsonn, 'bar', { "OutCountClaim": "Жалобы" }, ['OutCountClaim'], "Дни недели", "", false);
+                 }
+        });
+
+        $.ajax({
+                async: true,
+            url: '@Url.Action(nameof(StatisticsController.GetChartClaimInYear), nameof(StatisticsController).Replace("Controller", ""))',
+            type: 'POST',
+            success: function (data) {
+                var jsonn = JSON.parse(data);
+                GenerateChart('#chart-claim-in-year', jsonn, 'bar', { "OutCountClaim": "Жалобы" }, ['OutCountClaim'], "Месяца", "", false);
+                 }
+        });
+
+        $.ajax({
+                async: true,
+            url: '@Url.Action(nameof(StatisticsController.GetChartClaimForMfc), nameof(StatisticsController).Replace("Controller", ""))', 
+            type: 'POST',
+            success: function (data) {
+                var jsonn = JSON.parse(data);
+                GenerateChart('#chart-claim-for-mfc', jsonn, 'bar', { "OutCountClaim": "Жалобы", "OutCountNotify": "Оповещения" }, ['OutCountClaim', 'OutCountNotify'], "МФЦ", "", false);
+                 }
+        });
+
+        $.ajax({
+                async: true, 
+            url: '@Url.Action(nameof(CommonController.GetCallsParameters), nameof(CommonController).Replace("Controller", ""))',
+                type: 'POST',
+                success: function (data) {
+                    $('#CallsInDay').text(data.CallsInDay);
+                    $('#CallsInDayAnswer').text(data.CallsInDayAnswer);
+                    $('#CallsInDayMissed').text(data.CallsInDayMissed);
+                    $('#CallsInWeek').text(data.CallsInWeek);
+                    $('#CallsInMonth').text(data.CallsInMonth);
+                    $('#missed-call-list').empty();
+                    $.each(data.CallsInDayMissedList, function (index, item) {                        
+                        $('#missed-call-list').append('<span class="dropdown-item" onclick="onCallModalBtnClick(\''+ item+'\')">'+ item +'</span>');
+                    })                    
+                }
+        });
+
+
+        $(document).ready(function () {
+            console.log('@ViewBag.IncomingCollFromJitsi');
+            if ('@ViewBag.IncomingCollFromJitsi' != '') {
+                showIncomingCallAlert('@ViewBag.IncomingCollFromJitsi');
+            }
+        });
+         
+        var chart;
+        function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
+            if (transform != true) {
+                chart = c3.generate({
+                    bindto: element, 
+                    zoom: { enabled: false },
+                    data: {
+                        json: data,
+                        type: type_chart,
+                        labels: true,
+                        names: names,
+                        keys: { x: "OutDate", value: key_values },
+                    },
+                    axis: {
+                        x: { type: 'category', label: { text: edizmX, position: 'outer-right' } },
+                        y: { label: { text: edizmY, position: 'outer-top' } },
+                        rotated: rotate
+                    },
+                    grid: { x: { show: false }, y: { show: true } },                    
+                });
+            }
+            else {
+                chart.transform(type_chart);
+            }
+        }
+    </script>
+}

@@ -26,7 +26,7 @@
             '    <div class="kv-fileinput-error"></div>\n' +
             '    </div>\n' +
             '</div>',
-            footer: '<td class="file-details-cell"><div class="explorer-caption" title="{caption}">{caption}</div> ' +
+            footer: '<td class="file-details-cell"><div class="explorer-Caption" title="{Caption}">{Caption}</div> ' +
             '{size}{progress}</td><td class="file-actions-cell">{indicator} {actions}</td>',
             actions: '{drag}\n' +
             '<div class="file-actions">\n' +
@@ -39,7 +39,7 @@
         },
         previewMarkupTags: {
             tagBefore1: teTagBef + '>' + teContent,
-            tagBefore2: teTagBef + ' title="{caption}">' + teContent,
+            tagBefore2: teTagBef + ' title="{Caption}">' + teContent,
             tagAfter: '</td>\n{footer}</tr>\n'
         },
         previewSettings: {

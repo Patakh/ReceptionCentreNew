@@ -1,0 +1,113 @@
+﻿@model ReceptionCentreNew.Models.CallsViewModel
+<link href="~/Content/new_design/plugins/datatables/datatable.custom.css" rel="stylesheet" />
+<div id="printable">
+    <div class="report_head" style="display:none;">
+        <table width="100%">
+            <tr valing="top"><td colspan="3"><div class="report_name">Реестр звонков</div></td></tr>
+            <tr>
+                <td>
+                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                </td>
+                <td valign="top" width="60%">
+                    <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
+                </td>
+                <td valign="top"><div class="text-right">Распечатал(a): @ViewBag.PrintEmployee <br /> @DateTime.Now.ToShortDateString()</div></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr>
+                <td>Период: <b>@ViewBag.Period</b></td>
+                <td>Сотрудник: <b>@ViewBag.Employee</b></td>
+                <td>Тип: <b>@ViewBag.Type</b></td>
+                <td>Прикрепленные: <b>@ViewBag.IsConnected</b></td>
+                <td> </td>
+            </tr>
+        </table>
+        <!-- page 1 start-->
+        <div class="page">
+            @if (Model.CallList.Any())
+            {
+                <table class="table text-center">
+                    <thead>
+                        <tr>
+                            <th class="text-center"><b>№</b></th>
+                            <th class="text-center"><b>Телефон</b></th>
+                            <th class="text-center"><b>Тип</b></th>
+                            <th class="text-center"><b>Номер обращения</b></th>
+                            <th class="text-center"><b>Дата</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ int i = 1;}
+                        @foreach (var item in Model.CallList)
+                        {
+                            <tr>
+                                <td>@(i++)</td>
+                                <td>@item.out_phone_number</td>
+                                <td>@(item.out_call_type == 2 ? "Входящие" : "Исходящие") </td>
+                                <td class="text-left">@item.out_number_appeal</td>
+                                <td>@item.out_date_call</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert-no-record">
+                    <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- table show-->
+<div class="card-box p-0 m-t-20 m-b-20">
+    @if (Model.CallList.Any())
+    {
+        <div class="input-group">
+            <div class="input-group-prepend align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+            </div>
+            <input type="text" id="searchTextReports" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+        </div>
+        <table id="datatable" class="table table-striped" style="margin-top: 0 !important">
+            <thead>
+                <tr>
+                    <th class="text-center"><b>№</b></th>
+                    <th class="text-center"><b>Телефон</b></th>
+                    <th class="text-center"><b>Тип</b></th>
+                    <th class="text-center"><b>Номер обращения</b></th>
+                    <th class="text-center"><b>Дата</b></th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ int i = 1;}
+                @foreach (var item in Model.CallList)
+                {
+                <tr>
+                    <td data-type="numeric" class="text-right">@(i++)</td>
+                    <td>@item.out_phone_number</td>
+                    <td>@(item.out_call_type == 2 ? "Входящие" : "Исходящие") </td>
+                    <td class="text-left">@item.out_number_appeal</td>
+                    <td>@item.out_date_call.Value.ToString("yyyy.MM.dd HH:mm")</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+        </div>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        var oTable = $('#datatable').DataTable({ dom: 't<"row m-t-10 p-l-20-important p-b-10 m-r-15"<"col-sm-4"i><"col-sm-8"p>>' });
+        $('#searchTextReports').keyup(function () {
+            oTable.search($(this).val()).draw();
+        });
+    });
+</script>

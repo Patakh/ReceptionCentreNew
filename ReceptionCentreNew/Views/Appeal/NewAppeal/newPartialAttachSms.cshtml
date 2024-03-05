@@ -1,0 +1,75 @@
+﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_message>
+
+<script>
+    $(document).ready(function () {
+        $('.slimscroll-route').slimScroll({
+            height: '100%',
+            position: 'right',
+            size: "5px",
+            color: '#98a6ad',
+            wheelStep: 20
+        });
+
+        $('#newSmsTable tr').click(function () {
+            $('#newSmsTable tr').removeClass('success');
+            $(this).addClass('success');
+        });
+        
+        $('#searchNewTextAttachSms').change(function () {
+        $.ajax({
+            url: '@Url.Action("newPartialAttachSms", "Appeal")',
+            type: 'Post',
+            data: { search: $(this).val() },
+            success: function (data) {
+                $('#newSmsTabContainer').html(data);
+            }
+        });
+    });
+    });
+</script>
+
+
+
+<div class="card-box p-0 slimscroll-route-container">
+    <div class="input-group">
+        <span class="input-group-btn">
+            <button type="button" class="btn waves-effect waves-light btn-link p-l-20-important"><i class="fa fa-search"></i></button>
+        </span>
+        <input type="text" id="searchNewTextAttachSms" class="text-dark no-border-input" placeholder="Поиск письма" value="@ViewBag.SearchNewAttachSms"><ul class="typeahead dropdown-menu"></ul><ul class="typeahead dropdown-menu"></ul>
+    </div>
+    <hr class="m-0">
+    <div class="slimscroll-route">
+        @if (Model.Any())
+        {
+            <table class="table table-striped table-hover m-b-0" id="newSmsTable">
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr data-sms-id="@item.id">
+                            <td>
+                                @item.phone_number
+                            </td>
+                            <td>
+                                @item.text_message
+                            </td>
+                            <td>
+                                @item.date_message
+                            </td>
+                            <td class="text-right">
+                                <i class="fa fa-check-circle font-18 text-muted"></i>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert alert-default">
+                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Сообщений не найдено</span>
+            </div>
+        }
+    </div>
+</div>
+
+

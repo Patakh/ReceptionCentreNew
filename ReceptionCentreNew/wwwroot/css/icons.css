@@ -4059,7 +4059,7 @@ File: Icons
 .md-av-timer:before {
   content: "\f0a3";
 }
-.md-closed-caption:before {
+.md-closed-Caption:before {
   content: "\f0a4";
 }
 .md-equalizer:before {
@@ -6762,7 +6762,7 @@ MIT License: https://github.com/driftyco/ionicons
 .ion-icon-social-google-plus,
 .ion-icon-social-google-plus-outline,
 .ion-image,
-.ion-images,
+.ion-img,
 .ion-information,
 .ion-information-circled,
 .ion-ionic,
@@ -7807,7 +7807,7 @@ MIT License: https://github.com/driftyco/ionicons
 .ion-image:before {
   content: "\f147";
 }
-.ion-images:before {
+.ion-img:before {
   content: "\f148";
 }
 .ion-information:before {

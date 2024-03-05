@@ -1,0 +1,255 @@
+﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal
+
+<link href="~/Content/new_design/plugins/bootstrap-fileinput/css/fileinput.min.css" rel="stylesheet" />
+<link href="~/Content/new_design/plugins/bootstrap-fileinput/themes/explorer/theme.min.css" rel="stylesheet" />
+<script src="~/Content/new_design/plugins/bootstrap-fileinput/js/fileinput.min.js"></script>
+<script src="~/Content/new_design/plugins/bootstrap-fileinput/themes/explorer/theme.min.js"></script>
+<script src="~/Content/new_design/plugins/bootstrap-fileinput/js/locales/ru.js"></script>
+
+<script>
+    var $_title = document.title;
+    $(document).ready(function () {
+
+        document.title = "Новое обращение";
+
+        $('#AddNewAppealForm').validate();
+        $('#AddNewAppealForm select.select2, #AddNewAppealForm select.select2-nosearch').select2({
+            language:'ru',
+        });
+        $("#uploadFile").fileinput({
+            theme: "explorer",
+            showUpload: false,
+            maxFileCount: 1,
+            language: 'ru',
+            browseClass: 'btn  bg-custom text-white',
+        });        
+    });
+    
+    $("#newModal").on("hidden.bs.modal", function () {
+        document.title = $_title;
+    });
+
+    $('#create_new_appeal').on('click', function () {
+                if ($('#AddNewAppealForm').valid()) {
+                    var result = true;
+                    var main_form = $('#AddNewAppealForm');
+                    var emailId = $('input[name="newEmailId"]').val();
+                    var callId = $('input[name="newCallId"]').val();
+                    var transferEmployeeId = $('#transferEmployeeId').val();
+                    var routeStageId = $('#routeStageId').val();
+
+                    var fData = new FormData(document.forms.AddNewAppealForm);
+                    fData.append("emailId", emailId);
+                    fData.append("callId", callId);
+                    fData.append("transferEmployeeId", callId);
+                    fData.append("routeStageId", callId);
+                    fData.append("modal", true);
+
+                    if (main_form.valid() && result) {                        
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: '@Url.Action("SubmitNewAppealSave", "Appeal")',
+                    //data: main_form.serialize() + '&emailId=' + emailId + '&callId=' + callId + '&spr_category_id=' + spr_category_id + '&spr_subject_treatment_id=' + spr_subject_treatment_id + '&spr_type_id=' + spr_type_id + '&spr_type_difficulty_id=' + spr_type_difficulty_id,
+                    data: fData,
+                    processData: false, // Не обрабатываем файлы (Don't process the files)
+                    contentType: false, // Так jQuery скажет серверу что это строковой
+                    success: function (data) {
+                        swal({
+                            title: 'Готово!', text: 'Новое обращение успешно создано.', type: 'success'
+                        }).then(function () {
+                            $.blockUI({ message: '<div class="fa fa-spin fa-spinner icon-lg"></div>', overlayCSS: { backgroundColor: "#FFF", cursor: "wait" }, css: { border: 0, padding: 0, backgroundColor: "none" } });
+                            $('#newModal').modal('show').html(data);                            
+                        });
+                    },
+                    error: function (data) {
+                        $.Notification.notify('error', 'top right', 'Ошибка при формировании обращения');
+                    },
+                    complete: function () {
+                        $.unblockUI();
+                    },
+                });
+                result = true;
+            } else {
+                result = false;
+                }
+            }
+    });
+
+    $('#new_call_modal').click(function ()
+    {
+            $.ajax({
+                url: '@Url.Action("newPartialModalAttachCall", "Appeal")',
+                type: 'POST',
+                data: {},
+                success: function (data) {
+                    $('#newModalOver').modal('show');
+                    $('#newModalOver').html(data);
+                },
+            });
+        });
+    
+    $('#new_email_modal').click(function () {
+            $.ajax({
+                url: '@Url.Action("newPartialModalAttachEmail", "Appeal")',
+                type: 'POST',
+                data: {},
+                success: function (data) {
+                    $('#newModalOver').modal('show');
+                    $('#newModalOver').html(data);
+                },
+            });
+        });
+
+        $('#add_text_appeal_template').click(function () {
+            $.ajax({
+                url: '@Url.Action("newPartialModalAddTextAppealTemplate", "Appeal")',
+                type: 'POST',
+                data: {},
+                success: function (data) {
+                    $('#newModalOver').modal('show');
+                    $('#newModalOver').html(data);
+                },
+            });
+    });
+
+    $('#append_text_appeal_template').click(function () {
+            $.ajax({
+                url: '@Url.Action("newPartialModalAppendTextAppealTemplate", "Appeal")',
+                type: 'POST',
+                data: {},
+                success: function (data) {
+                    $('#newModalOver').modal('show');
+                    $('#newModalOver').html(data);
+                },
+            });
+    });
+    $('#routeStageId').change(function () {
+        if ($(this).val() == 5 || $(this).val() == '') {
+            $('#transferEmployeeId').attr('disabled', 'disabled');
+        }
+        else {
+            $('#transferEmployeeId').removeAttr('disabled' );
+        }
+    });
+
+</script>
+
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Новое обращение</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body custom-scrollbar" style="max-height:800px; padding-bottom:0px">
+            <div class="">
+                <div class="col-12">
+
+                    @using (Html.BeginForm("SubmitNewAppealSave", "Appeal", Model, FormMethod.Post, new { @id = "AddNewAppealForm", @class = "form-horizontal" }))
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.applicant_name, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.TextBoxFor(model => model.applicant_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.applicant_name) } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.phone_number, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.TextBoxFor(model => model.phone_number, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.email_, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.TextBoxFor(model => model.email_, new Dictionary<string, object> { { "class", "form-control email" }, { "placeholder", "email" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group ">
+                            <div class="col-md-12">
+                                @Html.LabelFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+
+                                <div class="position-relative">
+                                    @Html.TextAreaFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "form-control required no-resize chat-input" }, { "rows", "3" }, { "placeholder", Html.DisplayNameFor(model => model.text_appeal) } })
+                                    <div class="dropup textarea-icon">
+                                        <button type="button" id="append_text_appeal_template" title="Выбрать шаблон текста" class="btn btn-link default p-0 waves-effect"><i class="md md-create"></i></button>
+                                        <button type="button" id="add_text_appeal_template" title="Добавить шаблон текста" class="btn btn-link default p-0 waves-effect"><i class="md md-add"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.spr_mfc_id, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownListFor(model => model.spr_mfc_id, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.case_number, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.TextBoxFor(model => model.case_number, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.case_number) } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.spr_category_id, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownListFor(model => model.spr_category_id, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.spr_subject_treatment_id, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownListFor(model => model.spr_subject_treatment_id, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.spr_type_id, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownListFor(model => model.spr_type_id, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.spr_type_difficulty_id, new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownListFor(model => model.spr_type_difficulty_id, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                @Html.Label("Файл", new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                <input id="uploadFile" type="file" name="uploadFile">
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6" id="new_appeal_call">
+                                @Html.Action("NewAppealCall", "Appeal", new { callId = ViewBag.CallId })
+                            </div>
+                            <div class="col-md-6" id="new_appeal_email">
+                                @Html.Action("NewAppealEmail", "Appeal", new { emailId = ViewBag.EmailId })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                @Html.Label("Этап", new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownList("routeStageId", ViewBag.RouteStages as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                            <div class="col-md-6">
+                                @Html.Label("Передать сотруднику", new Dictionary<string, object> { { "class", "text-muted m-b-0 m-t-0" } })
+                                @Html.DropDownList("transferEmployeeId", ViewBag.SprTransferEmployees as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" }, {"disabled", "disabled" } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-12 text-right">
+                                <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal">Закрыть</button>
+                                <button id="create_new_appeal" type="button" class="btn btn-primary waves-effect waves-light">Добавить</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+﻿@{
+    ViewBag.Title = "Сотрудники";
+}
+<!-- Сотрудники -->
+<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
+<ul class="nav nav-tabs tabs">
+    <li class="tab">
+        <a href="#employeesPillContainer" data-toggle="tab" aria-expanded="true">Сотрудники</a>
+    </li>
+    <li class="tab">
+        <a href="#jobPosPillContainer" data-toggle="tab" aria-expanded="true">Должности</a>
+    </li>
+    <li class="tab">
+        <a href="#departmentsPillContainer" data-toggle="tab" aria-expanded="true">Отделы</a>
+    </li>
+</ul>
+<div class="tab-content d-block">
+    <div id="employeesPillContainer" class="tab-pane case-tab-pane employees active">
+                
+    </div>
+    <div id="jobPosPillContainer" class="tab-pane case-tab-pane jobPos">
+    </div>
+
+    <div id="departmentsPillContainer" class="tab-pane case-tab-pane departments">
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/Content/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $(".select2").select2();
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableEmployees", "Reference")',
+                success: function (data) {
+                    $('#employeesPillContainer').html(data);
+                }
+            })
+        });
+
+        $('a[href="#jobPosPillContainer"]').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableEmployeeJobPos", "Reference")',
+            success: function (data) {
+                $('#jobPosPillContainer').html(data);
+            }
+        });
+    });
+
+        $('a[href="#employeesPillContainer"]').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableEmployees", "Reference")',
+            success: function (data) {
+                $('#employeesPillContainer').html(data);
+            }
+        });
+        });
+
+    $('a[href="#departmentsPillContainer"]').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableDepartments", "Reference")',
+            success: function (data) {
+                $('#departmentsPillContainer').html(data);
+            }
+        });
+    });
+    </script>
+
+    <!--Сотрудники-->
+    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+}

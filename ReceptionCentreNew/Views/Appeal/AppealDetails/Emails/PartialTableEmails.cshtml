@@ -1,0 +1,117 @@
+﻿@model ReceptionCentreNew.Models.AppealViewModel
+<link href="~/Content/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/Content/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
+<style>
+    .conversation-list .odd .ctext-wrap {
+        background-color: #78c9e6;
+        color: #ffffff;
+    }
+
+        .conversation-list .odd .ctext-wrap:after {
+            border-color: rgba(238, 238, 242, 0) !important;
+            border-left-color: #78c9e6 !important;
+            border-top-color: #78c9e6 !important;
+            left: 100% !important;
+            margin-right: -1px;
+        }
+
+    #addEmailForm textarea.form-control {
+        min-height: 35px;
+        height: 35px;
+        overflow: hidden;
+    }
+</style>
+<div class="chat-conversation case-tab-pane">
+    <ul class="conversation-list custom-scrollbar mb-4">
+        @if (Model.DataAppealEmailList.Any())
+        {
+            foreach (var item in Model.DataAppealEmailList)
+            {
+                <li class="clearfix @(item.email_type==1?"odd":"")">
+                    <div class="chat-avatar">
+                        <img src="/Content/img/user_image.jpg" alt="Я">
+                    </div>
+                    <div class="conversation-text">
+                        <div class="ctext-wrap">
+                            <div class="d-flex justify-content-between font-12">
+                                <time class="mr-3">@item.date_email</time>
+                                <b>@(item.email_type == 1 ? "Я" : item.data_appeal.applicant_name)</b>
+                            </div>
+                            <p><b>@item.caption</b></p>
+                            <p>@item.text_email</p>
+                        </div>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+    <div class="chat-bottom">
+        @using (Ajax.BeginForm("SubmitEmailSave", "Appeal", null, new AjaxOptions { UpdateTargetId = "notification-email" }, new { @id = "addEmailForm", @class = "" }))
+        {
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">A</span>
+                        <input type="text" class="form-control required" style="min-width:250px" name="caption" placeholder="Заголовок сообщения..." />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text" id="basic-addon1">&#64;</span>
+                        <input class="form-control required" style="min-width:250px" type="email" name="email_" placeholder="Адрес электронной почты" value="@ViewBag.Email_" readonly />
+                    </div>
+                </div>
+            </div>
+            <div class="position-relative">
+                <input type="hidden" name="data_appeal_id" value="@Model.DataAppealId" />
+                <input type="hidden" name="employees_name_add" value="@Model.EmployeeId" />
+                <textarea class="form-control p-r-30" id="text_email" name="text_email" placeholder="Сообщение..."></textarea>
+                <button type="submit" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
+                    <i class="fa fa-send"></i>
+                </button>
+            </div>
+
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#addEmailForm').validate();
+    });
+    $(function () {
+        $('a[href="#notification-email"]').find('.badge').text(@Model.DataAppealEmailListCount);
+    });
+
+    var textarea = document.querySelector('#text_email');
+
+    textarea.addEventListener('keyup', function () {
+        if (this.scrollTop > 0) {
+            this.style.height = this.scrollHeight + "px";
+        }
+        else {
+            this.style.height = this.scrollHeight - 10 + "px";
+        }
+    });
+
+    $('#addEmailForm').find('[name="text_email"]').keyup(function () {
+        if (!$.trim(this.value)) {
+            $('#addEmailForm').find('[type="submit"]').prop("disabled", true);
+        }
+        else {
+            $('#addEmailForm').find('[type="submit"]').prop("disabled", false);
+        }
+    });
+
+    $('#btnAddEmployeeMessageTemplateForm').click(function () {
+        if ($('#addEmailForm').valid()) {
+            $.ajax({
+                type: 'POST',
+                url: 'PartialTableEmployeesMessageTemplate',
+                success: function (data) {
+                    $('#newModal').modal('show');
+                    $("#newModal").html(data);
+                }
+            });
+        }
+    });
+</script>

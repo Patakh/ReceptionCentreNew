@@ -338,11 +338,11 @@ SOFTWARE.
         var four_bytes_over = "";
         var value_str = "";
         var length,
-            new_value,
+            NewValue,
             num,
             den;
 
-        if (value_type == "Byte") {
+        if (value_type == "byte") {
             length = raw_value.length;
             if (length <= 4) {
                 value_str = (_pack_byte(raw_value) +
@@ -369,50 +369,50 @@ SOFTWARE.
                 four_bytes_over = _pack_long(raw_value);
             }
         } else if (value_type == "Ascii") {
-            new_value = raw_value + "\x00";
-            length = new_value.length;
+            NewValue = raw_value + "\x00";
+            length = NewValue.length;
             if (length > 4) {
                 value_str = pack(">L", [offset]);
-                four_bytes_over = new_value;
+                four_bytes_over = NewValue;
             } else {
-                value_str = new_value + nStr("\x00", 4 - length);
+                value_str = NewValue + nStr("\x00", 4 - length);
             }
         } else if (value_type == "Rational") {
             if (typeof (raw_value[0]) == "number") {
                 length = 1;
                 num = raw_value[0];
                 den = raw_value[1];
-                new_value = pack(">L", [num]) + pack(">L", [den]);
+                NewValue = pack(">L", [num]) + pack(">L", [den]);
             } else {
                 length = raw_value.length;
-                new_value = "";
+                NewValue = "";
                 for (var n = 0; n < length; n++) {
                     num = raw_value[n][0];
                     den = raw_value[n][1];
-                    new_value += (pack(">L", [num]) +
+                    NewValue += (pack(">L", [num]) +
                         pack(">L", [den]));
                 }
             }
             value_str = pack(">L", [offset]);
-            four_bytes_over = new_value;
+            four_bytes_over = NewValue;
         } else if (value_type == "SRational") {
             if (typeof (raw_value[0]) == "number") {
                 length = 1;
                 num = raw_value[0];
                 den = raw_value[1];
-                new_value = pack(">l", [num]) + pack(">l", [den]);
+                NewValue = pack(">l", [num]) + pack(">l", [den]);
             } else {
                 length = raw_value.length;
-                new_value = "";
+                NewValue = "";
                 for (var n = 0; n < length; n++) {
                     num = raw_value[n][0];
                     den = raw_value[n][1];
-                    new_value += (pack(">l", [num]) +
+                    NewValue += (pack(">l", [num]) +
                         pack(">l", [den]));
                 }
             }
             value_str = pack(">L", [offset]);
-            four_bytes_over = new_value;
+            four_bytes_over = NewValue;
         } else if (value_type == "Undefined") {
             length = raw_value.length;
             if (length > 4) {
@@ -541,7 +541,7 @@ SOFTWARE.
             var value = val[2];
             var pointer;
 
-            if (t == 1) { // BYTE
+            if (t == 1) { // byte
                 if (length > 4) {
                     pointer = unpack(this.endian_mark + "L", value)[0];
                     data = unpack(this.endian_mark + nStr("B", length),
@@ -592,7 +592,7 @@ SOFTWARE.
                             this.tiftag.slice(pointer + 4, pointer + 8))[0]
                             ];
                 }
-            } else if (t == 7) { // UNDEFINED BYTES
+            } else if (t == 7) { // UNDEFINED byteS
                 if (length > 4) {
                     pointer = unpack(this.endian_mark + "L", value)[0];
                     data = this.tiftag.slice(pointer, pointer + length);
@@ -969,7 +969,7 @@ SOFTWARE.
 
 
     var TYPES = {
-        "Byte": 1,
+        "byte": 1,
         "Ascii": 2,
         "Short": 3,
         "Long": 4,
@@ -1063,7 +1063,7 @@ SOFTWARE.
                 'type': 'Long'
             },
             279: {
-                'name': 'StripByteCounts',
+                'name': 'StripbyteCounts',
                 'type': 'Long'
             },
             282: {
@@ -1151,7 +1151,7 @@ SOFTWARE.
                 'type': 'Short'
             },
             325: {
-                'name': 'TileByteCounts',
+                'name': 'TilebyteCounts',
                 'type': 'Short'
             },
             330: {
@@ -1172,7 +1172,7 @@ SOFTWARE.
             },
             336: {
                 'name': 'DotRange',
-                'type': 'Byte'
+                'type': 'byte'
             },
             337: {
                 'name': 'TargetPrinter',
@@ -1200,7 +1200,7 @@ SOFTWARE.
             },
             343: {
                 'name': 'ClipPath',
-                'type': 'Byte'
+                'type': 'byte'
             },
             344: {
                 'name': 'XClipPathUnits',
@@ -1276,7 +1276,7 @@ SOFTWARE.
             },
             700: {
                 'name': 'XMLPacket',
-                'type': 'Byte'
+                'type': 'byte'
             },
             18246: {
                 'name': 'Rating',
@@ -1296,7 +1296,7 @@ SOFTWARE.
             },
             33422: {
                 'name': 'CFAPattern',
-                'type': 'Byte'
+                'type': 'byte'
             },
             33423: {
                 'name': 'BatteryLevel',
@@ -1312,7 +1312,7 @@ SOFTWARE.
             },
             34377: {
                 'name': 'ImageResources',
-                'type': 'Byte'
+                'type': 'byte'
             },
             34665: {
                 'name': 'ExifTag',
@@ -1380,7 +1380,7 @@ SOFTWARE.
             },
             37398: {
                 'name': 'TIFFEPStandardID',
-                'type': 'Byte'
+                'type': 'byte'
             },
             37399: {
                 'name': 'SensingMethod',
@@ -1388,23 +1388,23 @@ SOFTWARE.
             },
             40091: {
                 'name': 'XPTitle',
-                'type': 'Byte'
+                'type': 'byte'
             },
             40092: {
                 'name': 'XPComment',
-                'type': 'Byte'
+                'type': 'byte'
             },
             40093: {
                 'name': 'XPAuthor',
-                'type': 'Byte'
+                'type': 'byte'
             },
             40094: {
                 'name': 'XPKeywords',
-                'type': 'Byte'
+                'type': 'byte'
             },
             40095: {
                 'name': 'XPSubject',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50341: {
                 'name': 'PrintImageMatching',
@@ -1412,11 +1412,11 @@ SOFTWARE.
             },
             50706: {
                 'name': 'DNGVersion',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50707: {
                 'name': 'DNGBackwardVersion',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50708: {
                 'name': 'UniqueCameraModel',
@@ -1424,11 +1424,11 @@ SOFTWARE.
             },
             50709: {
                 'name': 'LocalizedCameraModel',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50710: {
                 'name': 'CFAPlaneColor',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50711: {
                 'name': 'CFALayout',
@@ -1548,7 +1548,7 @@ SOFTWARE.
             },
             50740: {
                 'name': 'DNGPrivateData',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50741: {
                 'name': 'MakerNoteSafety',
@@ -1568,11 +1568,11 @@ SOFTWARE.
             },
             50781: {
                 'name': 'RawDataUniqueID',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50827: {
                 'name': 'OriginalRawFileName',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50828: {
                 'name': 'OriginalRawFileData',
@@ -1608,15 +1608,15 @@ SOFTWARE.
             },
             50931: {
                 'name': 'CameraCalibrationSignature',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50932: {
                 'name': 'ProfileCalibrationSignature',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50934: {
                 'name': 'AsShotProfileName',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50935: {
                 'name': 'NoiseReductionApplied',
@@ -1624,7 +1624,7 @@ SOFTWARE.
             },
             50936: {
                 'name': 'ProfileName',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50937: {
                 'name': 'ProfileHueSatMapDims',
@@ -1648,7 +1648,7 @@ SOFTWARE.
             },
             50942: {
                 'name': 'ProfileCopyright',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50964: {
                 'name': 'ForwardMatrix1',
@@ -1660,19 +1660,19 @@ SOFTWARE.
             },
             50966: {
                 'name': 'PreviewApplicationName',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50967: {
                 'name': 'PreviewApplicationVersion',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50968: {
                 'name': 'PreviewSettingsName',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50969: {
                 'name': 'PreviewSettingsDigest',
-                'type': 'Byte'
+                'type': 'byte'
             },
             50970: {
                 'name': 'PreviewColorSpace',
@@ -2004,7 +2004,7 @@ SOFTWARE.
         'GPS': {
             0: {
                 'name': 'GPSVersionID',
-                'type': 'Byte'
+                'type': 'byte'
             },
             1: {
                 'name': 'GPSLatitudeRef',
@@ -2024,7 +2024,7 @@ SOFTWARE.
             },
             5: {
                 'name': 'GPSAltitudeRef',
-                'type': 'Byte'
+                'type': 'byte'
             },
             6: {
                 'name': 'GPSAltitude',
@@ -2164,7 +2164,7 @@ SOFTWARE.
         Orientation:274,
         SamplesPerPixel:277,
         RowsPerStrip:278,
-        StripByteCounts:279,
+        StripbyteCounts:279,
         XResolution:282,
         YResolution:283,
         PlanarConfiguration:284,
@@ -2186,7 +2186,7 @@ SOFTWARE.
         TileWidth:322,
         TileLength:323,
         TileOffsets:324,
-        TileByteCounts:325,
+        TilebyteCounts:325,
         SubIFDs:330,
         InkSet:332,
         InkNames:333,

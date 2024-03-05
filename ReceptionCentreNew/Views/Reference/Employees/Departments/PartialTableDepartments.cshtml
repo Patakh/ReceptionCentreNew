@@ -1,0 +1,169 @@
+﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+<div class="card-box p-0">
+    <div class="row">
+        <div class="col-sm-10">
+
+        </div>
+        <div class="col-sm-2">
+            <div class="text-right">
+                @using (Ajax.BeginForm("PartialModalAddDepartment", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                {
+                    <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                }
+            </div>
+        </div>
+    </div>
+    @if (Model.SprEmployeesDepartmentList.Any())
+    {
+        <div class="table">
+            <table id="departmentsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                <div class="input-group">
+                    <div class="input-group-prepend align-items-center">
+                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" id="searchTextDepartments" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                    <button id="showDepartmentsRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+                </div>
+                <thead>
+                    <tr>
+                        <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                        <th>@Html.DisplayNameFor(model => model.SprEmployeesDepartmentList.First().department_name)</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.SprEmployeesDepartmentList)
+                    {
+                        <tr data-department-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                            <td class="number-row p-l-20-important">
+                                @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(i => item.department_name)
+                            </td>
+                            <td class="actions text-right">
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"department_name": @Json.Encode(item.department_name), "employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "set_date": "@Html.DisplayFor(i=>item.date_add)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                    <i class="ion-ios7-information-outline"></i>
+                                </button>
+                                @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
+                                {
+                                    if (item.is_remove != true)
+                                    {
+                                        using (Ajax.BeginForm("PartialModalEditDepartment", "Reference", new { departmentId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                        {
+                                            <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
+                                        }
+                                        <button class="remove-row btn btn-link"><i class="ion-trash-b"></i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="recovery-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr class="foot-row">
+                        <td colspan="2" class="text-left">
+                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                        </td>
+                        <td colspan="3">
+                            <div class="text-right">
+                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="alert-no-record">
+            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
+        </div>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        var filtering = $('#departmentsTable');
+        filtering.footable();
+        $('#departmentsTable #filter_count').text($('#departmentsTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#departmentsTable #tr_count').text($('#departmentsTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextDepartments').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#departmentsTable #filter_count').text($('#departmentsTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+    });
+
+     $(function () {
+        $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Наименование</strong>: " + tooltipInfo['department_name'] + "</br>" +
+                    "<hr class='m-t-5 m-b-5'>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
+                    "<hr class='m-t-5 m-b-5'>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                    (tooltipInfo['is_remove'] ?
+                            "<hr class='m-t-5 m-b-5'>" +
+                            "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
+                            "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
+                            "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
+                    "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
+    });
+
+    $('#showDepartmentsRemoves').click(function () {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableDepartments", "Reference")',
+            data: { isRemove: '@(!ViewBag.IsRemove)' },
+            success: function (data) {
+                $('#departmentsPillContainer').html(data);
+            }
+        });
+    });
+
+    $('#departmentsPillContainer table td button.recovery-row').click(function () {
+        var departmentId = $(this).closest('tr').data('departmentId');
+        var paramObject = {
+            url: '@Url.Action("SubmitDepartmentRecovery", "Reference")',
+            params: { departmentId: departmentId },
+            onSuccess: function (data) {
+                $('#departmentsPillContainer').html(data);
+            }
+        }
+        removeRecovery(paramObject);
+    });
+
+    $('#departmentsPillContainer table td button.remove-row').click(function () {
+        var departmentId = $(this).closest('tr').data('departmentId');
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitDepartmentDelete", "Reference")',
+            data: { departmentId: departmentId },
+            success: function (data) {
+                successDelete();
+                $('#departmentsPillContainer').html(data);
+            }
+        });
+    });
+
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+        $(this).siblings('tr:not(.thead-row)').removeClass('active');
+        $(this).addClass('active');
+    });
+        </script>

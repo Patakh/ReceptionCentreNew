@@ -1,0 +1,174 @@
+﻿@model ReceptionCentreNew.Models.ReferenceViewModel
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title mt-0">Список вариантов ответа</h4>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="card-box p-0">
+                <div class="row">
+                    <div class="col-sm-9">
+
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="text-right">
+                            @using (Ajax.BeginForm("PartialModalAddSurveyAnswer", "Reference", new { surveyQuestionId = ViewBag.SurveyQuestionId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                            {
+                                <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.SprSurveyAnswerList.Any())
+                {
+                    <div class="table-responsive">
+                        <table id="SurveyAnswersTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                            <div class="input-group">
+                                <div class="input-group-prepend align-items-center">
+                                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                                </div>
+                                <input type="text" id="searchTextSurveyAnswers" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                                <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="right" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+                            </div>
+                            <tbody>
+                                @foreach (var item in Model.SprSurveyAnswerList)
+                                {
+                                    <tr data-survey-answer-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                                        <td class="number-row p-l-20-important">
+                                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                                        </td>
+                                        <td>
+                                            <span>@Html.DisplayFor(i => item.answer)</span><br>
+                                        </td>
+                                        <td class="actions text-right">
+                                            <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "date_add": "@Html.DisplayFor(i => item.date_add)", "date_modify": "@Html.DisplayFor(i => item.date_modify)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                                <i class="ion-ios7-information-outline"></i>
+                                            </button>
+                                            @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
+                                            {
+                                                if (item.is_remove != true)
+                                                {
+                                                    using (Ajax.BeginForm("PartialModalEditSurveyAnswer", "Reference", new { FormMethod = "POST", surveyAnswerId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                                    {
+                                                        <button class="btn btn-link edit-row"><i class="ion-edit"></i></button>
+                                                    }
+                                                    <button class="btn btn-link remove-row"><i class="ion-trash-b"></i></button>
+                                                }
+                                                else
+                                                {
+                                                    <button class="btn btn-link recovery-row" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="foot-row">
+                                    <td colspan="2" class="text-left">
+                                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                                    </td>
+                                    <td colspan="2">
+                                        <div class="text-right">
+                                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert-no-record">
+                        <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Закрыть</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    <script>
+    $(document).ready(function () {
+        var filtering = $('#SurveyAnswersTable');
+        filtering.footable();
+        $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#SurveyAnswersTable #tr_count').text($('#SurveyAnswersTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextSurveyAnswers').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+    });
+
+     $(function () {
+        $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['date_add'] + "</br>" +
+                    "<hr class='m-t-5 m-b-5'>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['date_modify'] + "</br>" +
+                    "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
+    });
+
+        $('.modal-body #showRemoves').click(function () {
+        var surveyQuestionId = '@ViewBag.SurveyQuestionId';
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableSurveyAnswers", "Reference")',
+            data: { surveyQuestionId:surveyQuestionId, isRemove: '@(!ViewBag.IsRemove)' },
+            success: function (data) {
+                $('#newModal').html(data);
+            }
+        });
+    });
+
+        $('.modal-body table td button.recovery-row').click(function () {
+        var surveyAnswerId = $(this).closest('tr').data('surveyAnswerId');
+        var paramObject = {
+            url: '@Url.Action("SubmitSurveyAnswerRecovery", "Reference")',
+            params: { surveyAnswerId: surveyAnswerId },
+            onSuccess: function (data) {
+                $('#newModal').html(data);
+            }
+        }
+        removeRecovery(paramObject);
+    });
+
+        $('.modal-body table td button.remove-row').click(function () {
+        var surveyAnswerId = $(this).closest('tr').data('surveyAnswerId');
+        console.log(surveyAnswerId);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitSurveyAnswerDelete", "Reference")',
+            data: { surveyAnswerId: surveyAnswerId },
+            success: function (data) {
+                successDelete();
+                $('#newModal').html(data);
+            }
+        });
+    });
+
+
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+        $(this).siblings('tr:not(.thead-row)').removeClass('active');
+        $(this).addClass('active');
+    });
+    </script>
