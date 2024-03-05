@@ -1,9 +1,20 @@
-﻿namespace ReceptionCentreNew.Domain.Models.Entities.Functions;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace ReceptionCentreNew.Domain.Models.Entities.Functions;
 public class StatisticsDataAppealCall
 {
-    public string? OutMonth { get; set; }
+    [Column("out_month")]
+    public int OutMonth { get; set; }
+
+    [Column("out_count_call_incoming")]
     public int OutCountCallIncoming { get; set; }
+
+    [Column("out_count_call_outgoing")]
     public int OutCountCallOutgoing { get; set; }
+
+    [Column("out_count_call_missed")]
     public int OutCountCallMissed { get; set; }
+
+    [Column("out_year")]
     public int OutYear { get; set; }
 }

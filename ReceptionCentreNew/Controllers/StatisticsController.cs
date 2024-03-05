@@ -33,7 +33,7 @@ public class StatisticsController : Controller
     }
     public JsonResult GetChartInWeek()
     {
-        var data = _repository.FuncChartInWeek().OrderBy(o => o.OutDate).Select(s => new { s.OutCountIncoming, s.OutCountOutgoing, OutDate = s.OutDate.ToShortDateString() + " " + s.OutDayWeek });
+        var data = _repository.FuncChartInWeek().OrderBy(o => o.OutDate).Select(s => new { s.OutCountIncoming, s.OutCountOutgoing, OutDate = s.OutDate + " " + s.OutDayWeek });
         return Json(JsonConvert.SerializeObject(data));
     }
 
@@ -69,7 +69,7 @@ public class StatisticsController : Controller
     }
     public JsonResult AppealsCountResult(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId)
     {
-        var data = _repository.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId).OrderBy(o => o.OutMath).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutMonth + "." + s.OutYear });
+        var data = _repository.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId).OrderBy(o => o.OutMonth).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutMonth + "." + s.OutYear });
         return Json(JsonConvert.SerializeObject(data));
     }
 
