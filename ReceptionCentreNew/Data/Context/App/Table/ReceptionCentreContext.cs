@@ -3,7 +3,7 @@
 namespace ReceptionCentreNew.Data.Context.App;
 
 public partial class ReceptionCentreContext : DbContext
-{ 
+{
     public ReceptionCentreContext(DbContextOptions<ReceptionCentreContext> options)
         : base(options)
     {
@@ -173,7 +173,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("data_appeal_pkey");
 
-            entity.ToTable("DataAppeal", tb => tb.HasComment("Обращение"));
+            entity.ToTable("data_appeal", tb => tb.HasComment("Обращение"));
 
             entity.HasIndex(e => e.Id, "data_appeal_idx1").IsUnique();
 
@@ -206,23 +206,23 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.ApplicantName)
                 .HasMaxLength(70)
                 .HasComment("ФИО заявителя")
-                .HasColumnName("ApplicantName");
+                .HasColumnName("applicant_name");
             entity.Property(e => e.CaseNumber)
                 .HasMaxLength(70)
                 .HasComment("номер обращения в МФЦ")
-                .HasColumnName("CaseNumber");
+                .HasColumnName("case_number");
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.CountDay)
                 .HasComment("Время обработки, дни")
-                .HasColumnName("CountDay");
+                .HasColumnName("count_day");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateExecution)
                 .HasComment("дата и время исполнения")
                 .HasColumnType("timestamp without time zone")
@@ -230,7 +230,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.DateRegulation)
                 .HasComment("Регламентный срок")
                 .HasColumnType("timestamp without time zone")
@@ -238,7 +238,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.Email)
                 .HasMaxLength(70)
                 .HasComment("Электронная почта")
-                .HasColumnName("Email");
+                .HasColumnName("email_");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -246,7 +246,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -258,21 +258,21 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.NumberAppeal)
                 .HasMaxLength(30)
                 .HasComment("номер обращения")
-                .HasColumnName("NumberAppeal");
+                .HasColumnName("number_appeal");
             entity.Property(e => e.PhoneNumber)
                 .HasComment("Номер телефона")
                 .HasColumnType("character varying")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.SprCategoryId)
                 .HasComment("Категория")
-                .HasColumnName("SprCategoryId");
+                .HasColumnName("spr_category_id");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprEmployeesIdCurrent)
                 .HasComment("текущий сотрудник")
                 .HasColumnName("spr_employees_id_current");
@@ -281,7 +281,7 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("spr_employees_id_execution");
             entity.Property(e => e.SprMfcId)
                 .HasComment("Наименование мфц")
-                .HasColumnName("SprMfcId");
+                .HasColumnName("spr_mfc_id");
             entity.Property(e => e.SprRoutesStageIdCurrent)
                 .HasDefaultValue(1)
                 .HasComment("текущий этап")
@@ -289,19 +289,19 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.SprStatusId)
                 .HasDefaultValue(0)
                 .HasComment("Статус")
-                .HasColumnName("SprStatusId");
+                .HasColumnName("spr_status_id");
             entity.Property(e => e.SprSubjectTreatmentId)
                 .HasComment("Предмет обращения")
-                .HasColumnName("SprSubjectTreatmentId");
+                .HasColumnName("spr_subject_treatment_id");
             entity.Property(e => e.SprTypeDifficultyId)
                 .HasComment("Сложность")
-                .HasColumnName("SprTypeDifficultyId");
+                .HasColumnName("spr_type_difficulty_id");
             entity.Property(e => e.SprTypeId)
                 .HasComment("Тип")
-                .HasColumnName("SprTypeId");
+                .HasColumnName("spr_type_id");
             entity.Property(e => e.TextAppeal)
                 .HasComment("Текст обращения")
-                .HasColumnName("TextAppeal");
+                .HasColumnName("text_appeal");
 
             entity.HasOne(d => d.SprCategory).WithMany(p => p.DataAppeal)
                 .HasForeignKey(d => d.SprCategoryId)
@@ -352,17 +352,17 @@ public partial class ReceptionCentreContext : DbContext
 
         modelBuilder.Entity<DataAppealCall>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("DataAppealCall_pkey");
+            entity.HasKey(e => e.Id).HasName("data_appeal_call_pkey");
 
-            entity.ToTable("DataAppealCall", tb => tb.HasComment("Звонки"));
+            entity.ToTable("data_appeal_call", tb => tb.HasComment("Звонки"));
 
-            entity.HasIndex(e => e.Id, "DataAppealCall_idx1").IsUnique();
+            entity.HasIndex(e => e.Id, "data_appeal_call_idx1").IsUnique();
 
-            entity.HasIndex(e => e.DataAppealId, "DataAppealCall_idx2");
+            entity.HasIndex(e => e.DataAppealId, "data_appeal_call_idx2");
 
-            entity.HasIndex(e => e.SprEmployeesId, "DataAppealCall_idx3");
+            entity.HasIndex(e => e.SprEmployeesId, "data_appeal_call_idx3");
 
-            entity.HasIndex(e => e.CallType, "DataAppealCall_idx4");
+            entity.HasIndex(e => e.CallType, "data_appeal_call_idx4");
 
             entity.Property(e => e.Id)
                 .HasDefaultValueSql("uuid_generate_v4()")
@@ -370,15 +370,15 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.CallType)
                 .HasComment("тип звонка (1-исходящий 2-входящий)")
-                .HasColumnName("CallType");
+                .HasColumnName("call_type");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateCall)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время звонка")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateCall");
+                .HasColumnName("date_call");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("ФИО сотрудника")
@@ -394,26 +394,26 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(20)
                 .HasComment("Номер телефона")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.SaveFtp)
                 .HasDefaultValue(false)
                 .HasComment("Признак сохранения на ftp")
-                .HasColumnName("SaveFtp");
+                .HasColumnName("save_ftp");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.TimeTalk)
                 .HasMaxLength(10)
                 .HasComment("Время разговора")
-                .HasColumnName("TimeTalk");
+                .HasColumnName("time_talk");
 
             entity.HasOne(d => d.DataAppeal).WithMany(p => p.DataAppealCall)
                 .HasForeignKey(d => d.DataAppealId)
-                .HasConstraintName("DataAppealCall_data_appeal_id_fkey");
+                .HasConstraintName("data_appeal_call_data_appeal_id_fkey");
 
             entity.HasOne(d => d.SprEmployees).WithMany(p => p.DataAppealCall)
                 .HasForeignKey(d => d.SprEmployeesId)
-                .HasConstraintName("DataAppealCall_spr_employees_id_fkey");
+                .HasConstraintName("data_appeal_call_spr_employees_id_fkey");
         });
 
         modelBuilder.Entity<DataAppealCommentt>(entity =>
@@ -434,23 +434,23 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Commentt)
                 .HasComment("Текст примечания")
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -458,7 +458,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -470,10 +470,10 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
 
             entity.HasOne(d => d.DataAppeal).WithMany(p => p.DataAppealCommentt)
                 .HasForeignKey(d => d.DataAppealId)
@@ -490,7 +490,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("data_appeal_commentt_recipients_pkey");
 
-            entity.ToTable("DataAppealCommenttRecipients", tb => tb.HasComment("Получатели примечаний"));
+            entity.ToTable("data_appeal_commentt_recipients", tb => tb.HasComment("Получатели примечаний"));
 
             entity.HasIndex(e => e.Id, "data_appeal_commentt_recipients_idx1").IsUnique();
 
@@ -508,13 +508,13 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.ReadDate)
                 .HasComment("Дата и время прочтения")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("ReadDate");
+                .HasColumnName("read_date");
             entity.Property(e => e.ReadMark)
                 .HasComment("Отметка о прочтении")
                 .HasColumnName("read_mark");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
 
             entity.HasOne(d => d.DataAppealCommentt).WithMany(p => p.DataAppealCommenttRecipients)
                 .HasForeignKey(d => d.DataAppealCommenttId)
@@ -530,7 +530,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("data_appeal_email_pkey");
 
-            entity.ToTable("DataAppealEmail", tb => tb.HasComment("Электронная почта"));
+            entity.ToTable("data_appeal_email", tb => tb.HasComment("Электронная почта"));
 
             entity.HasIndex(e => e.Id, "data_appeal_email_idx1").IsUnique();
 
@@ -551,19 +551,19 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("caption");
             entity.Property(e => e.DataAppealId)
                 .HasComment("id обращения")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateEmail)
                 .HasDefaultValueSql("now()")
                 .HasComment("дата и время письма")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateEmail");
+                .HasColumnName("date_email");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .HasComment("электронная почта")
-                .HasColumnName("Email");
+                .HasColumnName("email_");
             entity.Property(e => e.EmailType)
                 .HasComment("1 исходящий 2 входящий")
-                .HasColumnName("DateEmail");
+                .HasColumnName("email_type");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(50)
                 .HasComment("фио сотрудника")
@@ -574,10 +574,10 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("is_read");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("id сотрудника")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.TextEmail)
                 .HasComment("Текст письма")
-                .HasColumnName("TextEmail");
+                .HasColumnName("text_email");
             entity.Property(e => e.Uids)
                 .HasMaxLength(25)
                 .HasComment("идентификатор сообщения на почте")
@@ -611,19 +611,19 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -631,18 +631,18 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.FileExt)
                 .HasMaxLength(10)
                 .HasComment("расширение файла")
-                .HasColumnName("FileExt");
+                .HasColumnName("file_ext");
             entity.Property(e => e.FileName)
                 .HasMaxLength(255)
                 .HasComment("имя файла")
                 .HasColumnName("file_name");
             entity.Property(e => e.FileSize)
                 .HasComment("размер файла")
-                .HasColumnName("FileSize");
+                .HasColumnName("file_size");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -654,10 +654,10 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
 
             entity.HasOne(d => d.DataAppeal).WithMany(p => p.DataAppealFile)
                 .HasForeignKey(d => d.DataAppealId)
@@ -672,7 +672,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("data_appeal_message_pkey");
 
-            entity.ToTable("DataAppealMessage", tb => tb.HasComment("Сообщения заявителям"));
+            entity.ToTable("data_appeal_message", tb => tb.HasComment("Сообщения заявителям"));
 
             entity.HasIndex(e => e.Id, "data_appeal_message_idx1").IsUnique();
 
@@ -688,29 +688,29 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateMessage)
                 .HasDefaultValueSql("now()")
                 .HasComment("дата и время добавления записи, отправки сообщения")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateMessage");
+                .HasColumnName("date_message");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("фио сотрудника")
                 .HasColumnName("employees_name_add");
             entity.Property(e => e.MessageType)
                 .HasComment("тип сообщения (1-исходящий 2-входящий)")
-                .HasColumnName("MessageType");
+                .HasColumnName("message_type");
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(70)
                 .HasComment("номер телефона")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.TextMessage)
                 .HasComment("текст сообщения")
-                .HasColumnName("TextMessage");
+                .HasColumnName("text_message");
 
             entity.HasOne(d => d.DataAppeal).WithMany(p => p.DataAppealMessage)
                 .HasForeignKey(d => d.DataAppealId)
@@ -746,7 +746,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.Commentt)
                 .HasMaxLength(255)
                 .HasComment("Комментарий")
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.CountDayFact)
                 .HasComment("фактическое количество дней")
                 .HasColumnType("character varying")
@@ -756,7 +756,7 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("count_day_regulation");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateRegulation)
                 .HasComment("Регламентная дата")
                 .HasColumnName("date_regulation");
@@ -770,14 +770,14 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesName)
                 .HasMaxLength(70)
                 .HasComment("фио сотрудника")
-                .HasColumnName("EmployeesName");
+                .HasColumnName("employees_name");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
                 .HasColumnName("employees_name_add");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprRoutesStageId)
                 .HasComment("Этап")
                 .HasColumnName("spr_routes_stage_id");
@@ -823,16 +823,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.DateType)
                 .HasComment("Тип дня, 1 - рабочие день, 0 - (Суббота Воскресенье), 2 (Праздничный день)")
                 .HasColumnName("date_type");
@@ -843,7 +843,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -855,7 +855,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
         });
 
         modelBuilder.Entity<DataCallback>(entity =>
@@ -877,12 +877,12 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CustomerFio)
                 .HasMaxLength(255)
                 .HasComment("Владелец номера телефона")
-                .HasColumnName("CustomerFio");
+                .HasColumnName("customer_fio");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время занесения записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateClose)
                 .HasComment("Дата закрытия")
                 .HasColumnName("date_close");
@@ -901,10 +901,10 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.PhoneNumber)
                 .HasComment("Номер телефона заявителя")
                 .HasColumnType("character varying")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprEmployeesIdClose)
                 .HasComment("Сотрудник закрывший")
                 .HasColumnName("spr_employees_id_close");
@@ -941,11 +941,11 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.DateCall)
                 .HasComment("Дата звонка")
                 .HasColumnType("timestamp(0) without time zone")
-                .HasColumnName("DateCall");
+                .HasColumnName("date_call");
             entity.Property(e => e.DepartmentName)
                 .HasMaxLength(255)
                 .HasComment("МФЦ в котором принят звонок")
-                .HasColumnName("DepartmentName");
+                .HasColumnName("department_name");
             entity.Property(e => e.EmployeeFio)
                 .HasMaxLength(255)
                 .HasComment("Сотрудник принявший звонок")
@@ -953,13 +953,13 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.SaveFtp)
                 .HasDefaultValue(false)
                 .HasComment("Признак сохранения звонка на FTP")
-                .HasColumnName("SaveFtp");
+                .HasColumnName("save_ftp");
             entity.Property(e => e.SprEmployeesDepartmentId)
                 .HasComment("Связь с МФЦ в котором принят звонок")
-                .HasColumnName("SprEmployeesDepartmentId");
+                .HasColumnName("spr_employees_department_id");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Связь с сотрудником принявшем звонок")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
 
             entity.HasOne(d => d.DataCallback).WithMany(p => p.DataCallbackCalls)
                 .HasForeignKey(d => d.DataCallbackId)
@@ -994,24 +994,24 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.Commentt)
                 .HasMaxLength(1500)
                 .HasComment("комментарий")
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.DateChange)
                 .HasDefaultValueSql("now()")
                 .HasComment("дата и время изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateChange");
+                .HasColumnName("date_change");
             entity.Property(e => e.EmployeesName)
                 .HasMaxLength(70)
                 .HasComment("сторудник")
-                .HasColumnName("EmployeesName");
+                .HasColumnName("employees_name");
             entity.Property(e => e.FieldName)
                 .HasMaxLength(70)
                 .HasComment("наименование поля")
-                .HasColumnName("FieldName");
+                .HasColumnName("field_name_");
             entity.Property(e => e.FieldNameBase)
                 .HasComment("наименование поля в базе")
                 .HasColumnType("character varying")
-                .HasColumnName("FieldNameBase");
+                .HasColumnName("field_name_base_");
             entity.Property(e => e.IpAddress)
                 .HasMaxLength(20)
                 .HasComment("ip адрес")
@@ -1019,27 +1019,27 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.NewValue)
                 .HasMaxLength(5000)
                 .HasComment("новое значение")
-                .HasColumnName("NewValue");
+                .HasColumnName("new_value");
             entity.Property(e => e.OldValue)
                 .HasMaxLength(5000)
                 .HasComment("старое значение")
-                .HasColumnName("OldValue");
+                .HasColumnName("old_value");
             entity.Property(e => e.RowId).HasColumnName("row_id");
             entity.Property(e => e.TableName)
                 .HasMaxLength(70)
                 .HasComment("наименование таблицы")
-                .HasColumnName("TableName");
+                .HasColumnName("table_name_");
             entity.Property(e => e.TableNameBase)
                 .HasMaxLength(70)
                 .HasComment("наименование таблицы в базе")
-                .HasColumnName("TableNameBase");
+                .HasColumnName("table_name_base_");
         });
 
         modelBuilder.Entity<DataEmployeesNotification>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("data_employees_notification_pkey");
 
-            entity.ToTable("DataEmployeesNotification", tb => tb.HasComment("Уведомления сотрудником"));
+            entity.ToTable("data_employees_notification", tb => tb.HasComment("Уведомления сотрудником"));
 
             entity.HasIndex(e => e.Id, "data_employees_notification_idx1").IsUnique();
 
@@ -1055,19 +1055,19 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.DataAppealId)
                 .HasComment("Обращение")
-                .HasColumnName("DataAppealId");
+                .HasColumnName("data_appeal_id");
             entity.Property(e => e.DateReceipt)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время поступления")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateReceipt");
+                .HasColumnName("date_receipt");
             entity.Property(e => e.IsActive)
                 .HasDefaultValue(true)
                 .HasComment("Активно/неактивно")
-                .HasColumnName("IsActive");
+                .HasColumnName("is_active");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprNotificationId)
                 .HasComment("Тип уведомления")
                 .HasColumnName("spr_notification_id");
@@ -1119,10 +1119,10 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(20)
                 .HasComment("Номер ответа")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprQuestionId)
                 .HasComment("Справочник консультаций")
                 .HasColumnName("spr_question_id");
@@ -1174,20 +1174,20 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.PhoneNumber)
                 .HasMaxLength(20)
                 .HasComment("Номер телефона")
-                .HasColumnName("PhoneNumber");
+                .HasColumnName("phone_number");
             entity.Property(e => e.Question)
                 .HasMaxLength(255)
                 .HasComment("Текст вопроса")
                 .HasColumnName("question");
             entity.Property(e => e.SprEmployeesId)
                 .HasComment("Сотрудник")
-                .HasColumnName("SprEmployeesId");
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprSurveyAnswerId)
                 .HasComment("Ответ")
                 .HasColumnName("spr_survey_answer_id");
             entity.Property(e => e.SprSurveyQuestionId)
                 .HasComment("Вопрос")
-                .HasColumnName("SprSurveyQuestionId");
+                .HasColumnName("spr_survey_question_id");
 
             entity.HasOne(d => d.SprEmployees).WithMany(p => p.DataSurvey)
                 .HasForeignKey(d => d.SprEmployeesId)
@@ -1221,21 +1221,21 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesName)
                 .HasMaxLength(255)
                 .HasComment("ФИО сотрудника")
-                .HasColumnName("EmployeesName");
+                .HasColumnName("employees_name");
             entity.Property(e => e.ErrorDate)
                 .HasDefaultValueSql("now()")
                 .HasComment("дата ошибки")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("ErrorDate");
+                .HasColumnName("error_date");
             entity.Property(e => e.ErrorInnerException)
                 .HasComment("внутреняя ошибка")
                 .HasColumnName("error_inner_exception");
             entity.Property(e => e.ErrorMessage)
                 .HasComment("текст ошибки")
-                .HasColumnName("ErrorMessage");
+                .HasColumnName("error_message");
             entity.Property(e => e.SprEmployeesId)
-                .HasComment("сотрудник, связь с SprEmployees id")
-                .HasColumnName("SprEmployeesId");
+                .HasComment("сотрудник, связь с spr_employees id")
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.StackTrace)
                 .HasComment("трассировка стека")
                 .HasColumnName("stack_trace");
@@ -1260,16 +1260,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1277,7 +1277,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1289,7 +1289,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.ShortName)
                 .HasMaxLength(10)
                 .HasComment("Краткое сокращение для номера обращения")
@@ -1303,7 +1303,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_pkey");
 
-            entity.ToTable("SprEmployees", tb => tb.HasComment("Сотрудники"));
+            entity.ToTable("spr_employees", tb => tb.HasComment("Сотрудники"));
 
             entity.HasIndex(e => e.Id, "spr_employees_idx1").IsUnique();
 
@@ -1320,31 +1320,31 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CanTakeAppeal)
                 .HasDefaultValue(false)
                 .HasComment("может принимать дела")
-                .HasColumnName("CanTakeAppeal");
+                .HasColumnName("can_take_appeal");
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesActive)
                 .HasComment("Активность сотрудника")
                 .HasColumnName("employees_active");
             entity.Property(e => e.EmployeesLogin)
                 .HasMaxLength(20)
                 .HasComment("Логин сотрудника")
-                .HasColumnName("EmployeesLogin");
+                .HasColumnName("employees_login");
             entity.Property(e => e.EmployeesName)
                 .HasMaxLength(70)
                 .HasComment("ФИО сотрудника")
-                .HasColumnName("EmployeesName");
+                .HasColumnName("employees_name");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1352,11 +1352,11 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.EmployeesPass)
                 .HasMaxLength(255)
                 .HasComment("Пароль")
-                .HasColumnName("EmployeesPass");
+                .HasColumnName("employees_pass");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1368,13 +1368,13 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.SprEmployeesDepartmentId)
                 .HasComment("Отдел")
-                .HasColumnName("SprEmployeesDepartmentId");
+                .HasColumnName("spr_employees_department_id");
             entity.Property(e => e.SprEmployeesJobPosId)
                 .HasComment("Должность")
-                .HasColumnName("SprEmployeesJobPosId");
+                .HasColumnName("spr_employees_job_pos_id");
 
             entity.HasOne(d => d.SprEmployeesDepartment).WithMany(p => p.SprEmployees)
                 .HasForeignKey(d => d.SprEmployeesDepartmentId)
@@ -1391,7 +1391,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_department_pkey");
 
-            entity.ToTable("SprEmployeesDepartment", tb => tb.HasComment("Отдел"));
+            entity.ToTable("spr_employees_department", tb => tb.HasComment("Отдел"));
 
             entity.HasIndex(e => e.Id, "spr_employees_department_idx1").IsUnique();
 
@@ -1402,20 +1402,20 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.DepartmentName)
                 .HasMaxLength(70)
                 .HasComment("Наименование отдела")
-                .HasColumnName("DepartmentName");
+                .HasColumnName("department_name");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1423,7 +1423,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1435,14 +1435,14 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
         });
 
         modelBuilder.Entity<SprEmployeesJobPos>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_job_pos_pkey");
 
-            entity.ToTable("SprEmployeesJobPos", tb => tb.HasComment("Должность"));
+            entity.ToTable("spr_employees_job_pos", tb => tb.HasComment("Должность"));
 
             entity.HasIndex(e => e.Id, "spr_employees_job_pos_idx1").IsUnique();
 
@@ -1453,16 +1453,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1470,7 +1470,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1482,18 +1482,18 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.JobPosName)
                 .HasMaxLength(70)
                 .HasComment("Наименование должности")
-                .HasColumnName("JobPosName");
+                .HasColumnName("job_pos_name");
         });
 
         modelBuilder.Entity<SprEmployeesMessageTemplate>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_massage_temp_pkey");
 
-            entity.ToTable("SprEmployeesMessageTemplate", tb => tb.HasComment("Шаблоны сообщений по сотрудникам"));
+            entity.ToTable("spr_employees_message_template", tb => tb.HasComment("Шаблоны сообщений по сотрудникам"));
 
             entity.HasIndex(e => e.Id, "spr_employees_message_template_idx1").IsUnique();
 
@@ -1506,15 +1506,15 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasComment("дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("дата и время изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("кто добавил запись")
@@ -1522,7 +1522,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(255)
                 .HasComment("кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего запись")
@@ -1534,18 +1534,18 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("признак удаления записи f - не удалена,t - удалена")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.MessageText)
                 .HasMaxLength(1000)
                 .HasComment("текст сообщения")
-                .HasColumnName("MessageText");
+                .HasColumnName("message_text");
             entity.Property(e => e.Sort)
                 .HasDefaultValue(1)
                 .HasComment("Приоритет")
                 .HasColumnName("sort");
             entity.Property(e => e.SprEmployeesId)
-                .HasComment("связь с сотрудником?SprEmployees  id")
-                .HasColumnName("SprEmployeesId");
+                .HasComment("связь с сотрудником?spr_employees  id")
+                .HasColumnName("spr_employees_id");
 
             entity.HasOne(d => d.SprEmployees).WithMany(p => p.SprEmployeesMessageTemplate)
                 .HasForeignKey(d => d.SprEmployeesId)
@@ -1557,7 +1557,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_role_pkey");
 
-            entity.ToTable("SprEmployeesRole", tb => tb.HasComment("Роли"));
+            entity.ToTable("spr_employees_role", tb => tb.HasComment("Роли"));
 
             entity.HasIndex(e => e.Id, "spr_employees_role_idx1").IsUnique();
 
@@ -1567,7 +1567,7 @@ public partial class ReceptionCentreContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.Commentt)
                 .HasMaxLength(255)
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.RoleName)
                 .HasMaxLength(30)
                 .HasComment("наименование роли")
@@ -1578,7 +1578,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_role_join_pkey");
 
-            entity.ToTable("SprEmployeesRoleJoin", tb => tb.HasComment("Связь ролей и сотрудников"));
+            entity.ToTable("spr_employees_role_join", tb => tb.HasComment("Связь ролей и сотрудников"));
 
             entity.HasIndex(e => e.Id, "spr_employees_role_join_idx1").IsUnique();
 
@@ -1595,22 +1595,22 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.Commentt)
                 .HasMaxLength(255)
                 .HasComment("комментарий")
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("дата добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(100)
                 .HasComment("кто добавил запись")
                 .HasColumnName("employees_name_add");
             entity.Property(e => e.SprEmployeesId)
-                .HasComment("связь с пользователями, SprEmployees id")
-                .HasColumnName("SprEmployeesId");
+                .HasComment("связь с пользователями, spr_employees id")
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.SprEmployeesRoleId)
-                .HasComment("связь с ролью, SprEmployeesRole id")
-                .HasColumnName("SprEmployeesRoleId");
+                .HasComment("связь с ролью, spr_employees_role id")
+                .HasColumnName("spr_employees_role_id");
 
             entity.HasOne(d => d.SprEmployees).WithMany(p => p.SprEmployeesRoleJoin)
                 .HasForeignKey(d => d.SprEmployeesId)
@@ -1627,7 +1627,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_employees_text_appeal_template_pkey");
 
-            entity.ToTable("SprEmployeesTextAppealTemplate", tb => tb.HasComment("Обращения по сотрудникам"));
+            entity.ToTable("spr_employees_text_appeal_template", tb => tb.HasComment("Обращения по сотрудникам"));
 
             entity.HasIndex(e => e.Id, "spr_employees_text_appeal_template_idx1").IsUnique();
 
@@ -1640,15 +1640,15 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasComment("дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("дата и время изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("кто добавил запись")
@@ -1656,7 +1656,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(255)
                 .HasComment("кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего запись")
@@ -1668,18 +1668,18 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("признак удаления записи f - не удалена,t - удалена")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.Sort)
                 .HasDefaultValue(1)
                 .HasComment("Приоритет")
                 .HasColumnName("sort");
             entity.Property(e => e.SprEmployeesId)
-                .HasComment("связь с сотрудником?SprEmployees  id")
-                .HasColumnName("SprEmployeesId");
+                .HasComment("связь с сотрудником?spr_employees  id")
+                .HasColumnName("spr_employees_id");
             entity.Property(e => e.TextAppeal)
                 .HasMaxLength(1000)
                 .HasComment("текст обращения")
-                .HasColumnName("TextAppeal");
+                .HasColumnName("text_appeal");
 
             entity.HasOne(d => d.SprEmployees).WithMany(p => p.SprEmployeesTextAppealTemplate)
                 .HasForeignKey(d => d.SprEmployeesId)
@@ -1691,7 +1691,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_mfc_pkey");
 
-            entity.ToTable("SprMfc", tb => tb.HasComment("Справочник мфц"));
+            entity.ToTable("spr_mfc", tb => tb.HasComment("Справочник мфц"));
 
             entity.HasIndex(e => e.Id, "spr_mfc_idx1").IsUnique();
 
@@ -1702,15 +1702,15 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasComment("дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("дата и время изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("кто добавил запись")
@@ -1718,7 +1718,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(255)
                 .HasComment("кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего запись")
@@ -1730,11 +1730,11 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.MfcName)
                 .HasMaxLength(255)
                 .HasComment("нименование мфц")
-                .HasColumnName("MfcName");
+                .HasColumnName("mfc_name");
             entity.Property(e => e.MfcNameSmall)
                 .HasMaxLength(100)
                 .HasComment("краткое наименование мфц")
@@ -1745,7 +1745,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_notification_pkey");
 
-            entity.ToTable("SprNotification", tb => tb.HasComment("Типы уводемлений"));
+            entity.ToTable("spr_notification", tb => tb.HasComment("Типы уводемлений"));
 
             entity.HasIndex(e => e.Id, "spr_notification_idx1").IsUnique();
 
@@ -1763,7 +1763,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_consultation_pkey");
 
-            entity.ToTable("SprQuestion", tb => tb.HasComment("Справочник консультаций"));
+            entity.ToTable("spr_question", tb => tb.HasComment("Справочник консультаций"));
 
             entity.HasIndex(e => e.Id, "spr_consultation_idx1").IsUnique();
 
@@ -1777,16 +1777,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1794,7 +1794,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1806,7 +1806,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.Question)
                 .HasMaxLength(500)
                 .HasComment("Название консультации")
@@ -1869,7 +1869,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_setting_pkey");
 
-            entity.ToTable("SprSetting", tb => tb.HasComment("Настройки"));
+            entity.ToTable("spr_setting", tb => tb.HasComment("Настройки"));
 
             entity.HasIndex(e => e.Id, "spr_setting_idx1").IsUnique();
 
@@ -1882,22 +1882,22 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.Commentt)
                 .HasMaxLength(255)
                 .HasComment("Комментарий")
-                .HasColumnName("Commentt");
+                .HasColumnName("commentt");
             entity.Property(e => e.ParamName)
                 .HasMaxLength(70)
                 .HasComment("Переменная")
-                .HasColumnName("ParamName");
+                .HasColumnName("param_name");
             entity.Property(e => e.ParamValue)
                 .HasMaxLength(255)
                 .HasComment("Значение переменной")
-                .HasColumnName("ParamValue");
+                .HasColumnName("param_value");
         });
 
         modelBuilder.Entity<SprStatus>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("spr_status_pkey");
 
-            entity.ToTable("SprStatus", tb => tb.HasComment("Статусы"));
+            entity.ToTable("spr_status", tb => tb.HasComment("Статусы"));
 
             entity.HasIndex(e => e.Id, "spr_status_idx1").IsUnique();
 
@@ -1908,7 +1908,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.StatusName)
                 .HasMaxLength(30)
                 .HasComment("Наименование статуса")
-                .HasColumnName("StatusName");
+                .HasColumnName("status_name");
         });
 
         modelBuilder.Entity<SprSubjectTreatment>(entity =>
@@ -1926,16 +1926,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -1943,7 +1943,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -1955,7 +1955,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.Sort)
                 .HasComment("Поле для сортировки")
                 .HasColumnName("sort");
@@ -1969,7 +1969,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_survey_answer_pkey");
 
-            entity.ToTable("SprSurveyAnswer", tb => tb.HasComment("Ответы"));
+            entity.ToTable("spr_survey_answer", tb => tb.HasComment("Ответы"));
 
             entity.HasIndex(e => e.Id, "spr_survey_answer_idx1").IsUnique();
 
@@ -1986,16 +1986,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -2003,7 +2003,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -2015,13 +2015,13 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.RecordNumber)
                 .HasComment("Номер")
                 .HasColumnName("record_number");
             entity.Property(e => e.SprSurveyQuestionId)
                 .HasComment("Вопрос")
-                .HasColumnName("SprSurveyQuestionId");
+                .HasColumnName("spr_survey_question_id");
 
             entity.HasOne(d => d.SprSurveyQuestion).WithMany(p => p.SprSurveyAnswer)
                 .HasForeignKey(d => d.SprSurveyQuestionId)
@@ -2033,7 +2033,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_survey_question_pkey");
 
-            entity.ToTable("SprSurveyQuestion", tb => tb.HasComment("Вопросы"));
+            entity.ToTable("spr_survey_question", tb => tb.HasComment("Вопросы"));
 
             entity.HasIndex(e => e.Id, "spr_survey_question_idx1").IsUnique();
 
@@ -2044,16 +2044,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -2061,7 +2061,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -2073,7 +2073,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.Question)
                 .HasMaxLength(255)
                 .HasComment("Текст вопроса")
@@ -2084,7 +2084,7 @@ public partial class ReceptionCentreContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("spr_type_pkey");
 
-            entity.ToTable("SprType", tb => tb.HasComment("Тип"));
+            entity.ToTable("spr_type", tb => tb.HasComment("Тип"));
 
             entity.HasIndex(e => e.Id, "spr_type_idx1").IsUnique();
 
@@ -2095,16 +2095,16 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -2112,7 +2112,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -2124,18 +2124,18 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.TypeName)
                 .HasMaxLength(30)
                 .HasComment("Наименование типа")
-                .HasColumnName("TypeName");
+                .HasColumnName("type_name");
         });
 
         modelBuilder.Entity<SprTypeDifficulty>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("spr_type_difficulty_pkey");
 
-            entity.ToTable("SprTypeDifficulty", tb => tb.HasComment("Тип сложности"));
+            entity.ToTable("spr_type_difficulty", tb => tb.HasComment("Тип сложности"));
 
             entity.HasIndex(e => e.Id, "spr_type_difficulty_idx1").IsUnique();
 
@@ -2146,19 +2146,19 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.CommenttModify)
                 .HasMaxLength(255)
                 .HasComment("Комментарий при изменении")
-                .HasColumnName("CommenttModify");
+                .HasColumnName("commentt_modify");
             entity.Property(e => e.CountDay)
                 .HasComment("Время обработки, дни")
-                .HasColumnName("CountDay");
+                .HasColumnName("count_day");
             entity.Property(e => e.DateAdd)
                 .HasDefaultValueSql("now()")
                 .HasComment("Дата и время добавления записи")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateAdd");
+                .HasColumnName("date_add");
             entity.Property(e => e.DateModify)
                 .HasComment("Дата и время последних изменений")
                 .HasColumnType("timestamp(6) without time zone")
-                .HasColumnName("DateModify");
+                .HasColumnName("date_modify");
             entity.Property(e => e.EmployeesNameAdd)
                 .HasMaxLength(70)
                 .HasComment("Кто добавил запись")
@@ -2166,7 +2166,7 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.EmployeesNameModify)
                 .HasMaxLength(70)
                 .HasComment("Кто изменил запись")
-                .HasColumnName("IpAddressModify");
+                .HasColumnName("employees_name_modify");
             entity.Property(e => e.IpAddressAdd)
                 .HasMaxLength(20)
                 .HasComment("ip адрес добавившего")
@@ -2178,11 +2178,11 @@ public partial class ReceptionCentreContext : DbContext
             entity.Property(e => e.IsRemove)
                 .HasDefaultValue(false)
                 .HasComment("Признак удаления")
-                .HasColumnName("IsRemove");
+                .HasColumnName("is_remove");
             entity.Property(e => e.TypeName)
                 .HasMaxLength(30)
                 .HasComment("Наименование типа сложности")
-                .HasColumnName("TypeName");
+                .HasColumnName("type_name");
         });
 
         OnModelCreatingPartial(modelBuilder);
