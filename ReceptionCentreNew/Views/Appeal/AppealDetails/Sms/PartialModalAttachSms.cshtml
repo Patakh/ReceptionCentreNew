@@ -1,7 +1,7 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_message>
-<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-<script src="~/Scripts/jquery.custom.validate.js"></script>
+﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealMessage>
+<script src="~/js/jQuery/jquery.validate.min.js"></script>
+<script src="~/js/jQuery/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/jQuery/jquery.custom.validate.js"></script>
 <script>
     $(document).ready(function () {
         $('.slimscroll-route').slimScroll({
@@ -76,12 +76,12 @@
                             <tbody>
                                 @foreach (var item in Model)
                                 {
-                                    <tr data-sms-id="@item.id">
+                                    <tr data-sms-id="@item.Id">
                                         <td>
-                                            @item.date_message
+                                            @item.DateMessage
                                         </td>
                                         <td>
-                                            @item.phone_number
+                                            @item.PhoneNumber
                                         </td>
                                         <td class="text-right">
                                             <i class="fa fa-check-circle font-18 text-muted"></i>

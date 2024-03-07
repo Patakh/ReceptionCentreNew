@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using ReceptionCentreNew.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNet.SignalR;
+using Microsoft.AspNetCore.SignalR;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -19,8 +19,8 @@ namespace ReceptionCentreNew.Controllers
         static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
         static SHA1 sha1 = SHA1.Create();
         static Socket listeningSocket;
-        private readonly IHubContext _hubContext;
-        public SocketController(IHubContext hubContext)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public SocketController(IHubContext<NotificationHub> hubContext)
         {
             _hubContext = hubContext;
         }
@@ -124,11 +124,12 @@ namespace ReceptionCentreNew.Controllers
                 return Json(ex.Message);
             }
         }
-        public JsonResult SocketJitsi()
+
+        public IActionResult SocketJitsi()
         {
             if (!serverSocket.IsBound)
             {
-                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 8889));
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 8086));
                 serverSocket.Listen(128);
                 serverSocket.BeginAccept(null, 0, OnAccept, null);
             }

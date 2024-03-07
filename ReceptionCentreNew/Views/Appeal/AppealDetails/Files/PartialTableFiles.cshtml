@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 
 
     @if (Model.DataAppealFileList.Any())
@@ -28,9 +28,9 @@
             <thead>
                 <tr>
                     <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().file_name)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().file_size)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().date_add)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().FileName)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().FileSize)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealFileList.First().DateAdd)</th>
                     <th class="text-right p-r-20-important" data-sort-ignore="true"></th>
 
                 </tr>
@@ -38,35 +38,35 @@
             <tbody>
                 @foreach (var item in Model.DataAppealFileList)
                 {
-                    <tr data-file-id="@item.id">
+                    <tr data-file-id="@item.Id">
                         <td class="number-row p-l-20-important">
                             @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                         </td>
                         <td>
-                            <div style="max-width:200px" class="clip" title="@item.file_name@item.file_ext">@item.file_name@item.file_ext</div>
+                            <div style="max-width:200px" class="clip" title="@item.FileName@item.FileExt">@item.FileName@item.FileExt</div>
                         </td>
                         <td class="text-right">
-                            @(item.file_size / 1024) Кб
+                            @(item.FileSize / 1024) Кб
                         </td>
                         <td>
-                            @Html.DisplayFor(i => item.date_add)
+                            @Html.DisplayFor(i => item.DateAdd)
                         </td>
                         <td class="actions" style="text-align:right">
-                            @if (item.file_ext.ToLower() == ".mp3" || item.file_ext.ToLower() == ".wav")
+                            @if (item.FileExt.ToLower() == ".mp3" || item.FileExt.ToLower() == ".wav")
                             {
-                                <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.id" @*data-toggle="modal" data-target="#audio_modal"*@>
+                                <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.Id" @*data-toggle="modal" data-target="#audio_modal"*@>
                                     <i class="md md-play-circle-outline"></i>
                                 </button>
                             }
-                            @if (item.file_ext.ToLower() == ".jpg" || item.file_ext.ToLower() == ".jpeg" || item.file_ext.ToLower() == ".png" || item.file_ext.ToLower() == ".pdf" || item.file_ext.ToLower() == ".bmp")
+                            @if (item.FileExt.ToLower() == ".jpg" || item.FileExt.ToLower() == ".jpeg" || item.FileExt.ToLower() == ".png" || item.FileExt.ToLower() == ".pdf" || item.FileExt.ToLower() == ".bmp")
                             {
-                                <button type="button" class="btn btn-link m-r-5" data-type="@item.file_ext" data-pic="@item.id" data-pic-option='{"name": "@item.file_name", "fio": "@item.employees_name_add", "date": "@item.date_add", "size": "@item.file_size", "type": "@item.file_ext.ToUpper()"}' style="font-size: 22px;margin-right: 5px;line-height: 22px;" data-pic="@item.id" data-info-id="@item.data_appeal_id">
+                                <button type="button" class="btn btn-link m-r-5" data-type="@item.FileExt" data-pic="@item.Id" data-pic-option='{"name": "@item.FileName", "fio": "@item.EmployeesNameAdd", "date": "@item.DateAdd", "size": "@item.FileSize", "type": "@item.FileExt.ToUpper()"}' style="font-size: 22px;margin-right: 5px;line-height: 22px;" data-pic="@item.Id" data-info-id="@item.DataAppealId">
                                     <i class="ion ion-eye"></i>
                                 </button>
                             }
-                            @if (item.spr_employees_id == Model.EmployeeId)
+                            @if (item.SprEmployeesId == Model.EmployeeId)
                             {
-                                if (item.is_remove != true)
+                                if (item.IsRemove != true)
                                 {
                                     <button class="on-default remove-row btn btn-link m-r-5"><i class="ion-trash-b"></i></button>
                                 }
@@ -75,7 +75,7 @@
                                     <button class="on-default recovery-row btn btn-link m-r-5" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                 }
                             }
-                            <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "employees_fio": "@item.employees_name_add", "date_add": "@item.date_add"}'>
+                            <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "EmployeesFio": "@item.EmployeesNameAdd", "DateAdd": "@item.DateAdd"}'>
                                 <i class="ion-ios7-information-outline"></i>
                             </button>
                         </td>
@@ -132,7 +132,7 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                            "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>"+
+                            "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>"+
                        "</div>";
             },
             html: true,

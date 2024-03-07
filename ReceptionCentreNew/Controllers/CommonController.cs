@@ -22,10 +22,10 @@ namespace ReceptionCentreNew.Controllers
         #region Инициализация Repository
         private IRepository _repository;
         private string? UserName;
-        public CommonController(IRepository repo, UserManager<ApplicationUser> userManager)
+        public CommonController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
-          //  UserName = _repository.SprEmployees.First(s => s.Id == userManager.GetUserAsync(User).Result.EmployeeId.Value).EmployeesName;
+             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
         }
         #endregion
 

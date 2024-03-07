@@ -1,11 +1,11 @@
-﻿@model ReceptionCentreNew.Models.CallsViewModel
+﻿@model  CallsViewModel
 <div id="printable">
     <div class="report_head" style="display:none;">
         <table width="100%">
             <tr valing="top"><td colspan="3"><div class="report_name">Количество звонков</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -37,7 +37,7 @@
                         <td class="text-left"><b>Типы</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.CallList.GroupBy(g => g.out_call_type))
+                    @foreach (var item in Model.CallList.GroupBy(g => g.OutCallType))
                     {
                         <tr>
                             <td class="text-left">@(item.Key == 2 ? "Входящие" : "Исходящие")</td>
@@ -50,11 +50,11 @@
                     </tr>
                     <tr>
                         <td class="text-left">Да</td>
-                        <td>@Model.CallList.Where(w => w.out_number_appeal != null).Count()</td>
+                        <td>@Model.CallList.Where(w => w.OutNumberAppeal != null).Count()</td>
                     </tr>
                     <tr>
                         <td class="text-left">Нет</td>
-                        <td>@Model.CallList.Where(w => w.out_number_appeal == null).Count()</td>
+                        <td>@Model.CallList.Where(w => w.OutNumberAppeal == null).Count()</td>
                     </tr>
                 </tbody>
                 <tfoot>

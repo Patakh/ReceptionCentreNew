@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal_email
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppealEmail
 <script>
     $('#AddEmailForm').validate();
 </script>
@@ -12,31 +12,31 @@
             </button>
         </div>
         <div class="modal-body">
-            @Model.data_appeal
+            @Model.DataAppeal
             @using (Ajax.BeginForm("SubmitEmailSave", "Appeal", Model, new AjaxOptions { UpdateTargetId = "notification-messages", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @id = "AddEmailForm", @class = "form-horizontal" }))
             {
-                <input type="hidden" name="data_appeal_id" value="@Model.data_appeal_id" />
+                <input type="hidden" name="DataAppealId" value="@Model.DataAppealId" />
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.email_, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.Email, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.email_, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.email_) } })
+                            @Html.TextBoxFor(model => model.Email, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Email) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.caption, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.Caption, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.caption, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.caption) } })
+                            @Html.TextBoxFor(model => model.Caption, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Caption) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.text_email, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.TextEmail, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextAreaFor(model => model.text_email, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.text_email) } })
+                            @Html.TextAreaFor(model => model.TextEmail, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TextEmail) } })
                         </div>
                     </div>
                 </div>

@@ -1,12 +1,12 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal_call
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppealCall
 @*<form class="form-horizontal" id="newAppealCallForm">*@
 <div id="newAppealCallForm">
     @if (Model != null)
     {
         <label class="text-muted m-b-0 m-t-0" for="bell">Звонок</label>
         <div class="input-group">
-            <input type="hidden" name="newCallId" value="@Model.id" />
-            <input type="text" name="call_caption" class="form-control" value="Тел: @Model.phone_number, Дата: @Model.date_call" />
+            <input type="hidden" name="newCallId" value="@Model.Id" />
+            <input type="text" name="call_caption" class="form-control" value="Тел: @Model.PhoneNumber, Дата: @Model.DateCall" />
             <div class="input-group-append">
                 <button id="clear_call" class="btn btn-info waves-effect waves-light" type="button">
                     <i class="md md-clear"></i>

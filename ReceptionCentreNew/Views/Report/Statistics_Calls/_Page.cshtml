@@ -1,9 +1,9 @@
-﻿@model ReceptionCentreNew.Models.Report_Parameters
+﻿@model  ReportParameters
 @{
     ViewBag.Title = "Статистика звонков";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/css/print-report.css" rel="stylesheet" />
+<link href="~/new_design/css/print-report.css" rel="stylesheet" />
 @Html.MvcSiteMap().SiteMapPath()
 <div class="card-box">
     <h4>Статистика звонков</h4>
@@ -74,7 +74,7 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
 }
 <script>
 

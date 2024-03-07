@@ -1,4 +1,4 @@
-﻿using ReceptionCentreNew.Domain.Concrete;
+﻿using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Filters;
 using ReceptionCentreNew.Hubs;
 using ReceptionCentreNew.Models;
@@ -23,6 +23,7 @@ public partial class AppealController : Controller
             employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
         Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         ViewBag.SprCategory = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), "Id", "CategoryName");
@@ -225,7 +226,7 @@ public partial class AppealController : Controller
             .Where(w => w.IsRemove != true && w.Id != employee.Id && w.SprEmployeesRoleJoin.FirstOrDefault().SprEmployeesRoleId != 1 && w.SprEmployeesRoleJoin.FirstOrDefault() != null)
             .OrderBy(o => o.SprEmployeesJobPos.JobPosName)
             .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault()?.Id.ToString());
-        ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employee.Id).OrderByDescending(o => o.Sort), "Id", "message_text");
+        ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employee.Id).OrderByDescending(o => o.Sort), "Id", "MessageText");
         return PartialView("AppealDetails/Comments/PartialTableComments", model);
     }
 
@@ -477,7 +478,7 @@ public partial class AppealController : Controller
                 TotalItems = dataEmails.Count()
             },
         };
-        ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employeeId).OrderByDescending(o => o.Sort), "Id", "message_text");
+        ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employeeId).OrderByDescending(o => o.Sort), "Id", "MessageText");
         return PartialView("AppealDetails/Emails/PartialTableEmails", model);
     }
 

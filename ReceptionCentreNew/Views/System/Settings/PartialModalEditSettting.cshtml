@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_setting
+﻿@model ReceptionCentreNew.Data.Context.App.SprSetting
 <script>
     $(document).ready(function () {
         $('#EditSettingsForm').validate();
@@ -17,25 +17,25 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.param_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.ParamName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.param_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.param_name) } })
+                            @Html.TextBoxFor(model => model.ParamName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ParamName) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.param_value, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.ParamValue, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.param_value, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.param_value) } })
+                            @Html.TextBoxFor(model => model.ParamValue, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ParamValue) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.commentt, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.Commentt, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.commentt, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.commentt) } })
+                            @Html.TextBoxFor(model => model.Commentt, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.Commentt) } })
                         </div>
                     </div>
                 </div>

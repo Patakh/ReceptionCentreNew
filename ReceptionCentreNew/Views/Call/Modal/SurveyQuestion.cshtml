@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_survey_question>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.SprSurveyQuestion>
 
 @if (Model.Any())
 {
@@ -23,11 +23,11 @@
                         <div class="slide">
                             <h5 class="question">@item.question</h5>
                             <div class="answers">
-                                @if (item.spr_survey_answer != null)
+                                @if (item.SprSurveyAnswer != null)
                                 {
-                                    foreach (var answer in item.spr_survey_answer)
+                                    foreach (var answer in item.SprSurveyAnswer)
                                     {
-                                        if (answer.is_remove!=true)
+                                        if (answer.IsRemove!=true)
                                         {
                                             <div class="radio radio-info">
                                                 <label>

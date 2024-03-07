@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+﻿@model  EmployeeViewModel
    
 <div class="card-box p-0">
     <div class="row">
@@ -28,44 +28,44 @@
                 <thead>
                     <tr>
                         <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().employees_name)</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().spr_employees_job_pos_id)</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().can_take_appeal)</th>
+                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().EmployeesName)</th>
+                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().SprEmployeesJobPosId)</th>
+                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().CanTakeAppeal)</th>
 
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.SprEmployees)
                     {
-                        <tr data-employee-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                        <tr data-employee-id="@item.id" class="@(item.IsRemove == true ? "danger" : "")">
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.employees_name)
+                                @Html.DisplayFor(i => item.EmployeesName)
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.spr_employees_job_pos.job_pos_name)
+                                @Html.DisplayFor(i => item.SprEmployeesJobPos.JobPosName)
                             </td>
                             <td>
-                                @(item.can_take_appeal == true ? "Да" : "Нет")
+                                @(item.CanTakeAppeal == true ? "Да" : "Нет")
                             </td>
                             <td class="actions vertical-middle-important text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"employees_fio": "@item.employees_name", "employees_login": "@item.employees_login", "employees_fio_add": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "set_date": "@Html.DisplayFor(i => item.date_add)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@item.EmployeesName", "EmployeesLogin": "@item.EmployeesLogin", "employees_fio_add": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "set_date": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
-                                @using (Ajax.BeginForm("PartialTableEmployeeRoles", "Reference", new { employeeId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                @using (Ajax.BeginForm("PartialTableEmployeeRoles", "Reference", new { employeeId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                 {
                                     <button class="on-default btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Роли">
                                         <i class="md md-people-outline"></i>
-                                        <span class="badge badge-xs">@(item.spr_employees_role_join.Any() ? (object)item.spr_employees_role_join.Count : null)</span>
+                                        <span class="badge badge-xs">@(item.SprEmployeesRoleJoin.Any() ? (object)item.SprEmployeesRoleJoin.Count : null)</span>
                                     </button>
                                 }
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
-                                    if (item.is_remove != true)
+                                    if (item.IsRemove != true)
                                     {
-                                        using (Ajax.BeginForm("PartialModalEditEmployee", "Reference", new { employeeId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                        using (Ajax.BeginForm("PartialModalEditEmployee", "Reference", new { employeeId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                         {
                                             <button class="edit-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Изменение"><i class="ion-edit"></i></button>
                                         }
@@ -124,14 +124,14 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>ФИО</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
-                    "<strong>Логин</strong>: " + tooltipInfo['employees_login'] + "</br>" +
+                    "<strong>ФИО</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>Логин</strong>: " + tooltipInfo['EmployeesLogin'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Добавил</strong>: " + tooltipInfo['employees_fio_add'] + "</br>" +
                     "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    (tooltipInfo['is_remove'] ?
+                    (tooltipInfo['IsRemove'] ?
                         "<hr class='m-t-5 m-b-5'>" +
                         "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
                         "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +

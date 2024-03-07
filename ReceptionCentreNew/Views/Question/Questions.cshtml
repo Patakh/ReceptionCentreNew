@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_question>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.SprQuestion>
 @{
     ViewBag.Title = "Вопрос-ответ";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -17,7 +17,7 @@
                             <li class="nav-item">
                                 <a href="#question-tab-@{++i;<text>@i</text>}" data-toggle="tab" aria-expanded="true" class="nav-link @{if (i == 1) { <text>active</text> }}">
                                     <i class="md md-help ml-2 mr-3"></i>
-                                    <span class="d-block">@item.question</span>
+                                    <span class="d-block">@item.Question</span>
                                 </a>
                             </li>
                         }
@@ -30,8 +30,10 @@
                     @foreach (var item in Model)
                     {
                         <div class="tab-pane @{if (j == 0) { <text>active</text> }}" id="question-tab-@{++j;<text>@j</text>}">
-                            @if(item.answer != null)
-                            {@Html.Raw(item.answer)}
+                            @if(item.Answer != null)
+                            {
+                                @Html.Raw(item.Answer)
+                            }
                             else
                             {<p class="text-muted">Нет ответа</p>}
                         </div>

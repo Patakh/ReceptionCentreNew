@@ -1,10 +1,11 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.DataAppealRouteStageNext>
-<script src="~/Scripts/jquery.validate.min.js"></script>
-<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-<script src="~/Scripts/jquery.custom.validate.js"></script>
-<script src="~/Content/plugins/select2/js/select2.min.js" type="text/javascript"></script>
-<script src="~/Content/plugins/notifyjs/dist/notify.min.js"></script>
-<script src="~/Content/plugins/notifications/notify-metro.js"></script>
+﻿@using ReceptionCentreNew.Domain.Models.Entities.Functions
+@model IEnumerable<DataAppealRouteStageNext>
+<script src="~/js/jQuery/jquery.validate.min.js"></script>
+<script src="~/js/jQuery/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/js/jQuery/jquery.custom.validate.js"></script>
+<script src="~/plugins/select2/js/select2.min.js" type="text/javascript"></script>
+<script src="~/plugins/notifyjs/dist/notify.min.js"></script>
+<script src="~/plugins/notifications/notify-metro.js"></script>
 <script>
     $(document).ready(function () {
         $(".select2").select2();
@@ -22,7 +23,7 @@
         });
 
         $('button#nextRouteStage').click(function () {
-            var employeeId = $('.modal-dialog #spr_employees_id').val();
+            var employeeId = $('.modal-dialog #SprEmployeesId').val();
             var routeStageId = $('#routeStagesTable tr.success').data('routeStageId');
             var modal_routes_stage_commentt = $('#modal_routes_stage_commentt').val();
             if ((employeeId != '' && employeeId != undefined && employeeId != null) && (routeStageId != '' && routeStageId != undefined && routeStageId != null))
@@ -64,7 +65,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        @Html.DropDownList("spr_employees_id", ViewBag.Employees as SelectList, "Выберите сотрудника", new Dictionary<string, object> { { "class", "form-control select2" }, { "data-style", "btn-white" } })
+                        @Html.DropDownList("SprEmployeesId", ViewBag.Employees as SelectList, "Выберите сотрудника", new Dictionary<string, object> { { "class", "form-control select2" }, { "data-style", "btn-white" } })
                     </div>
                 </div>
             </div>
@@ -74,9 +75,9 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr data-route-stage-id="@item.out_spr_routes_stage_id">
+                                <tr data-route-stage-id="@item.OutSprRoutesStageId">
                                     <td>
-                                        @item.out_stage_name
+                                        @item.OutStageName
                                     </td>
                                     <td class="text-right">
                                         <i class="fa fa-check-circle font-18 text-muted"></i>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
-using ReceptionCentreNew.Domain.Concrete;
+using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
 
 namespace AisReception.Data.Context.App;
@@ -51,8 +51,8 @@ public partial class EFRepository : IRepository
 
     public IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime? in_date_start, DateTime? in_date_stop, Guid? in_spr_type_id, Guid? in_spr_type_difficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id) => _context.FuncDataAppealSelect(spr_employee_id, in_date_start, in_date_stop, in_spr_type_id, in_spr_type_difficulty_id, in_spr_category_id, in_spr_subject_treatment_id, in_spr_status_id);
     public DataAppealSelect FuncDataAppealInfo(string number) => _context.FuncDataAppealInfo(number);
-    public IEnumerable<DataAppealRouteStageNext> FuncDataAppealRouteStageNext(Guid data_appeal_id) => _context.FuncDataAppealRoutesStageNextSelect(data_appeal_id);
-    public IEnumerable<DataAppealRouteStageSelect> FuncDataAppealRouteStageSelect(Guid data_appeal_id) => _context.FuncDataAppealRoutesStageSelect(data_appeal_id);
+    public IEnumerable<DataAppealRouteStageNext> FuncDataAppealRouteStageNext(Guid DataAppealId) => _context.FuncDataAppealRoutesStageNextSelect(DataAppealId);
+    public IEnumerable<DataAppealRouteStageSelect> FuncDataAppealRouteStageSelect(Guid DataAppealId) => _context.FuncDataAppealRoutesStageSelect(DataAppealId);
     public IEnumerable<DataAppealEmailSelect> FuncDataAppealEmailSelect(Guid? spr_employee_id, DateTime? in_date_start, DateTime? in_date_stop, short? in_email_type_id, short? in_is_connected) => _context.FuncDataAppealEmailSelect(spr_employee_id, in_date_start, in_date_stop, in_email_type_id, in_is_connected);
     public IEnumerable<DataAppealCallSelect> FuncDataAppealCallSelect(Guid? spr_employee_id, DateTime? in_date_start, DateTime? in_date_stop, short? in_email_type_id, short? in_is_connected) => _context.FuncDataAppealCallSelect(spr_employee_id, in_date_start, in_date_stop, in_email_type_id, in_is_connected);
     public IEnumerable<ChartInYear> FuncChartInYear() => _context.FuncChartInYear();
@@ -64,16 +64,16 @@ public partial class EFRepository : IRepository
     public IEnumerable<ReportTreatment> FuncReportTreatment(DateTime date_start, DateTime date_stop) => _context.FuncReportTreatment(date_start, date_stop);
     public bool FuncDeleteDublicationCall() => _context.FuncDeleteDublicationCall();
 
-    public DataAppealClaimStatistics FuncDataAppealClaimStatistics(Guid? spr_mfc_id) => _context.FuncDataAppealClaimStatistics(spr_mfc_id);
-    public IEnumerable<DataAppealClaimWeek> FuncDataAppealClaimWeek(Guid? spr_mfc_id) => _context.FuncDataAppealClaimWeek(spr_mfc_id);
-    public IEnumerable<DataAppealClaimYear> FuncDataAppealClaimYear(Guid? spr_mfc_id) => _context.FuncDataAppealClaimYear(spr_mfc_id);
+    public DataAppealClaimStatistics FuncDataAppealClaimStatistics(Guid? SprMfcId) => _context.FuncDataAppealClaimStatistics(SprMfcId);
+    public IEnumerable<DataAppealClaimWeek> FuncDataAppealClaimWeek(Guid? SprMfcId) => _context.FuncDataAppealClaimWeek(SprMfcId);
+    public IEnumerable<DataAppealClaimYear> FuncDataAppealClaimYear(Guid? SprMfcId) => _context.FuncDataAppealClaimYear(SprMfcId);
 
-    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? spr_mfc_id, Guid? spr_treatment_id, Guid? spr_category_id, Guid? spr_type_id, Guid? spr_type_difficulty_id) => _context.FuncStatisticsDataAppeal(spr_mfc_id, spr_treatment_id, spr_category_id, spr_type_id, spr_type_difficulty_id);
+    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId) => _context.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId);
     public IEnumerable<StatisticsDataAppealCall> FuncStatisticsDataAppealCall() => _context.FuncStatisticsDataAppealCall();
-    public IEnumerable<StatisticsDataAppealCategory> FuncStatisticsDataAppealCategory(Guid? spr_mfc_id, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealCategory(spr_mfc_id, date_start, date_stop);
-    public IEnumerable<StatisticsDataAppealSubject> FuncStatisticsDataAppealSubject(Guid? spr_mfc_id, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealSubject(spr_mfc_id, date_start, date_stop);
-    public IEnumerable<StatisticsDataAppealType> FuncStatisticsDataAppealType(Guid? spr_mfc_id, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealType(spr_mfc_id, date_start, date_stop);
-    public IEnumerable<StatisticsDataAppealTypeDifficulty> FuncStatisticsDataAppealTypeDifficulty(Guid? spr_mfc_id, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealTypeDifficulty(spr_mfc_id, date_start, date_stop);
+    public IEnumerable<StatisticsDataAppealCategory> FuncStatisticsDataAppealCategory(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealCategory(SprMfcId, date_start, date_stop);
+    public IEnumerable<StatisticsDataAppealSubject> FuncStatisticsDataAppealSubject(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealSubject(SprMfcId, date_start, date_stop);
+    public IEnumerable<StatisticsDataAppealType> FuncStatisticsDataAppealType(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealType(SprMfcId, date_start, date_stop);
+    public IEnumerable<StatisticsDataAppealTypeDifficulty> FuncStatisticsDataAppealTypeDifficulty(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealTypeDifficulty(SprMfcId, date_start, date_stop);
      
 
     /// <summary>

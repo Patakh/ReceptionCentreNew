@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_call>
+﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
 <script>
     $(document).ready(function () {
         $('.slimscroll-route').slimScroll({
@@ -98,20 +98,20 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                                <tr data-call-id="@item.id">
+                                <tr data-call-id="@item.Id">
                                     <td>
-                                        @item.phone_number
+                                        @item.PhoneNumber
                                     </td>
                                     <td>
-                                        @item.time_talk
+                                        @item.TimeTalk
                                     </td>
                                     <td>
-                                        @item.date_call
+                                        @item.DateCall
                                     </td>
                                     <td class="text-right">
-                                        @if (item.save_ftp)
+                                        @if (item.SaveFtp)
                                         {
-                                            <button type="button" class="attach_call_btn_play btn btn-link btn-audio" data-id="@item.id"><i class="md md-play-circle-outline"></i></button>
+                                            <button type="button" class="attach_call_btn_play btn btn-link btn-audio" data-id="@item.Id"><i class="md md-play-circle-outline"></i></button>
                                         }
                                     </td>
                                     <td class="check">

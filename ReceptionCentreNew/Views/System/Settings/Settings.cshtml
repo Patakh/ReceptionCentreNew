@@ -1,19 +1,19 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_setting>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.SprSetting>
 @{
     ViewBag.Title = "Настройки";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <!-- Все настройки -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 <div class="row m-t-15 m-b-15">
     <div class="col-sm-12">
-        @Html.MvcSiteMap().SiteMapPath()
+         @* @Html.MvcSiteMap().SiteMapPath() *@
     </div>
 </div>
 <div id="settings">
-    @Html.Action("PartialTableSettings", "System")
+    @Url.Action("PartialTableSettings", "System")
 </div>
 
 @section scripts{
@@ -34,5 +34,5 @@
     </script>
 
     <!-- Настройки -->
-    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

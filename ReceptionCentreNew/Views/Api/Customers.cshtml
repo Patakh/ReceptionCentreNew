@@ -1,23 +1,25 @@
-﻿@model  ReceptionCentreNew.Models.Services_sub_customer_response
+﻿@model  ReceptionCentreNew.Models.ServicesSubCustomerResponse
 <div class="tab-content">
     <div class="tab-pane active" id="customers">
         @if (Model.Customers.Any())
         {
             <ul style="padding-left:10px;">
-                @foreach (var item in Model.Customers.GroupBy(g => g.customer_snils).Select(g => g.First()))
+                @foreach (var item in Model.Customers.GroupBy(g => g.CustomerSnils).Select(g => g.First()))
                 {
                     <li style="margin-bottom: 3px;">
                         <div>
-                            <h4 class="mt-0 mb- header-title"><b>@item.customer_fio</b></h4>
+                            <h4 class="mt-0 mb- header-title"><b>@item.CustomerFio</b></h4>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-2">
                                     <small>
-                                        <b>Пол:</b> @item.customer_sex <b>Дата рождения:</b> @item.document_birth_date.Value.ToShortDateString() <b>Email:</b> @item.customer_email
-                                        <small><b>Адрес:</b> @item.customer_address</small>
+                                        <b>Пол:</b> @item.CustomerSex <b>Дата рождения:</b> @item.DocumentBirthDate.Value.ToShortDateString() <b>Email:</b> @item.CustomerEmail
+                                        <small><b>Адрес:</b> @item.CustomerAddress</small>
                                         <b>СНИЛС:</b> <span class="snils">
                                             <u>
-                                                @if (item.customer_snils != null)
-                                                {@Ajax.ActionLink(item.customer_snils ?? "", "GetCustomerCases", "Api", new { snils = item.customer_snils ?? "#" }, new AjaxOptions { UpdateTargetId = "cases", OnBegin = "$('#cases').html('... ждите')" })}
+                                                @if (item.CustomerSnils != null)
+                                                {
+                                                    Ajax.ActionLink(item.CustomerSnils ?? "", "GetCustomerCases", "Api", new { snils = item.CustomerSnils ?? "#" }, new AjaxOptions { UpdateTargetId = "cases", OnBegin = "$('#cases').html('... ждите')" });
+                                                }
                                             </u>
                                         </span>
                                     </small>

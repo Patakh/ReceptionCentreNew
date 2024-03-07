@@ -2,7 +2,7 @@
     ViewBag.Title = "Количество обращений";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
+<link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 <style>
     .c3-legend-item {
         font-size: 14px;
@@ -19,7 +19,7 @@
                             <div class="row p-l-r-10">
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">МФЦ</label>
-                                    @Html.DropDownList("spr_mfc_id", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("SprMfcId", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 </div>
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
@@ -57,9 +57,9 @@
     </div>
 
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/c3.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/d3.v3.min.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
+    <script src="~/new_design/plugins/Charts/js/c3.js"></script>
+    <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
     <script>
         $(document).ready(function () {
             $('form#form').validate();

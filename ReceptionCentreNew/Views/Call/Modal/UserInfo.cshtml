@@ -1,7 +1,7 @@
 ﻿<h5 class="card-header">Информация о пользователе</h5>
 <div class="card-body custom-scrollbar" style="max-height: 250px;">
     <div class="contact-card" id="user-info">
-        @*@Html.Action("GetCustomers","Api", new {phone_number = ViewBag.PhoneNumber })*@
+        @*@Html.Action("GetCustomers","Api", new {PhoneNumber = ViewBag.PhoneNumber })*@
     </div>
 </div>
 
@@ -10,7 +10,7 @@
         $.ajax({
             async: true,
             url: '/Api/GetCustomers',
-            data: { phone_number: '@ViewBag.PhoneNumber' },
+            data: { PhoneNumber: '@ViewBag.PhoneNumber' },
             type: 'POST',
             beforeSend: function () {
                 $('#user-info').html("... ждите");

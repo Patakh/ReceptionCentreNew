@@ -338,7 +338,7 @@ SOFTWARE.
         var four_bytes_over = "";
         var value_str = "";
         var length,
-            new_value,
+            NewValue,
             num,
             den;
 
@@ -369,50 +369,50 @@ SOFTWARE.
                 four_bytes_over = _pack_long(raw_value);
             }
         } else if (value_type == "Ascii") {
-            new_value = raw_value + "\x00";
-            length = new_value.length;
+            NewValue = raw_value + "\x00";
+            length = NewValue.length;
             if (length > 4) {
                 value_str = pack(">L", [offset]);
-                four_bytes_over = new_value;
+                four_bytes_over = NewValue;
             } else {
-                value_str = new_value + nStr("\x00", 4 - length);
+                value_str = NewValue + nStr("\x00", 4 - length);
             }
         } else if (value_type == "Rational") {
             if (typeof (raw_value[0]) == "number") {
                 length = 1;
                 num = raw_value[0];
                 den = raw_value[1];
-                new_value = pack(">L", [num]) + pack(">L", [den]);
+                NewValue = pack(">L", [num]) + pack(">L", [den]);
             } else {
                 length = raw_value.length;
-                new_value = "";
+                NewValue = "";
                 for (var n = 0; n < length; n++) {
                     num = raw_value[n][0];
                     den = raw_value[n][1];
-                    new_value += (pack(">L", [num]) +
+                    NewValue += (pack(">L", [num]) +
                         pack(">L", [den]));
                 }
             }
             value_str = pack(">L", [offset]);
-            four_bytes_over = new_value;
+            four_bytes_over = NewValue;
         } else if (value_type == "SRational") {
             if (typeof (raw_value[0]) == "number") {
                 length = 1;
                 num = raw_value[0];
                 den = raw_value[1];
-                new_value = pack(">l", [num]) + pack(">l", [den]);
+                NewValue = pack(">l", [num]) + pack(">l", [den]);
             } else {
                 length = raw_value.length;
-                new_value = "";
+                NewValue = "";
                 for (var n = 0; n < length; n++) {
                     num = raw_value[n][0];
                     den = raw_value[n][1];
-                    new_value += (pack(">l", [num]) +
+                    NewValue += (pack(">l", [num]) +
                         pack(">l", [den]));
                 }
             }
             value_str = pack(">L", [offset]);
-            four_bytes_over = new_value;
+            four_bytes_over = NewValue;
         } else if (value_type == "Undefined") {
             length = raw_value.length;
             if (length > 4) {

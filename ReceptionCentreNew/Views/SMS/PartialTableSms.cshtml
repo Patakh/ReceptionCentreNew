@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.SmsViewModel
+﻿@model  SmsViewModel
 @if (Model.SmsList.Any())
 {
     <div class="card-box p-0 m-t-20 m-b-20">
@@ -21,26 +21,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.SmsList.OrderByDescending(o => o.date_message))
+                    @foreach (var item in Model.SmsList.OrderByDescending(o => o.DateMessage))
                     {
                         <tr>
                             <td class="vertical-middle">
-                                @if (item.message_type == 2)
+                                @if (item.MessageType == 2)
                                 {<span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span> }
                                 else
                                 {<span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span>}
                             </td>
                             <td class="vertical-middle p-l-20-important">
-                                <span class="text font-13">@Html.DisplayFor(m => item.phone_number)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.PhoneNumber)</span>
                             </td>                            
                             <td class="vertical-middle p-l-20-important" width="45%">
-                                <span class="text font-13">@Html.DisplayFor(m => item.text_message)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.TextMessage)</span>
                             </td>
                             <td class="vertical-middle">
-                                <span class="text font-13">@Html.DisplayFor(m => item.date_message)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.DateMessage)</span>
                             </td>
                             <td class="vertical-middle p-r-20-important">
-                                <span class="text font-13">@Html.DisplayFor(m => item.employees_name)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.EmployeesNameAdd)</span>
                             </td>
                         </tr>
                     }
@@ -48,9 +48,9 @@
             </table>
         </div>
     </div>
-    <link href="~/Content/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
-    <script src="~/Content/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="~/Content/plugins/datatables/dataTables.bootstrap.js"></script>
+    <link href="~/plugins/datatables/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables/dataTables.bootstrap.js"></script>
     <script>
         $(document).ready(function () {
             var oTable = $('#messagesTable').DataTable({

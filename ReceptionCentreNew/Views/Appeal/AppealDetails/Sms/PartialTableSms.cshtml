@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 <div class="row m-b-15">
     <div class="col-sm-6">
         <h3 class="panel-title">Список сообщений</h3>
@@ -25,9 +25,9 @@
                 <tr>
                     <th class="number-row p-l-20-important">№</th>
                     <th>Тип</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().date_message)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().phone_number)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().employees_name_add)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().DateMessage)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().PhoneNumber)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealSmsList.First().EmployeesNameAdd)</th>
                     <th></th>
                 </tr>
             </thead>
@@ -36,29 +36,29 @@
                 {
                     foreach (var item in Model.DataAppealSmsList)
                     {
-                        <tr data-sms-id="@item.id">
+                        <tr data-sms-id="@item.Id">
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td>
-                                @if(item.message_type==2)
+                                @if(item.MessageType==2)
                                 {<span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span> }
                                 else
                                 {<span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span> }
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.date_message)                              
+                                @Html.DisplayFor(i => item.DateMessage)                              
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.phone_number)
+                                @Html.DisplayFor(i => item.PhoneNumber)
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.employees_name_add)
+                                @Html.DisplayFor(i => item.EmployeesNameAdd)
                             </td>
                             <td class="actions">
                                 @if (User.IsInRole("superadmin"))
                                 {
-                                    <button type="button" class="on-default link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "employees_fio": "@item.employees_name_add", "date_add": "@item.date_message"}'>
+                                    <button type="button" class="on-default link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "EmployeesFio": "@item.EmployeesNameAdd", "DateAdd": "@item.DateMessage"}'>
                                         <i class="ion-ios7-information-outline"></i>
                                     </button>
                                     <button class="on-default remove-row link"><i class="ion-trash-b"></i></button>
@@ -103,7 +103,7 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                            "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>"+
+                            "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>"+
                        "</div>";
             },
             html: true,

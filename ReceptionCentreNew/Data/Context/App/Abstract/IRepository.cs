@@ -1,4 +1,4 @@
-﻿using ReceptionCentreNew.Domain.Concrete;
+﻿using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
 
 namespace ReceptionCentreNew.Data.Context.App.Abstract;

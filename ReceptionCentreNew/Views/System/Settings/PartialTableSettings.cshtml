@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.spr_setting>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.SprSetting>
 
 <div class="card-box p-0">
     <div class="table-responsive">
@@ -14,23 +14,23 @@
                 @foreach (var item in Model)
                 {
                     { i++; }
-                    <tr data-settings-id="@item.id">
+                    <tr data-settings-id="@item.Id">
                         <td class="number-row p-l-20-important">
                             @i.ToString()
                         </td>
                         <td>
-                            <span>@item.param_name</span><br>
+                            <span>@item.ParamName</span><br>
                         </td>
                         <td>
-                            <span>@item.param_value</span><br>
+                            <span>@item.ParamValue</span><br>
                         </td>
                         <td>
-                            <span>@item.commentt</span><br>
+                            <span>@item.Commentt</span><br>
                         </td>
                         <td class="actions text-right">
                             @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                             {
-                                using (Ajax.BeginForm("EditSetting", "System", new { FormMethod = "POST", settingId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                using (Ajax.BeginForm("EditSetting", "System", new { FormMethod = "POST", settingId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                 {
                                     <button class="on-default edit-row btn btn-link"><i class="ion-edit"></i></button>
                                 }

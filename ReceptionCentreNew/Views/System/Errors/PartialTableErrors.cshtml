@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.ReferenceViewModel
+﻿@model  ReferenceViewModel
 <div class="card-box p-0">
     <div class="table-responsive">
         <table id="errorsTable" class="footable journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
@@ -15,9 +15,9 @@
             <thead>
                 <tr class="text">
                     <th class="number-row" style="min-width:45px;">№</th>
-                    <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().error_date)</th>
-                    <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().error_message)</th>
-                    <th class="p-r-20-important">@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().employees_name)</th>
+                    <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().ErrorDate)</th>
+                    <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().ErrorMessage)</th>
+                    <th class="p-r-20-important">@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().EmployeesName)</th>
                 </tr>
             </thead>
             <tbody>
@@ -26,9 +26,9 @@
                 {
                     <tr class="text">
                         <td class="number-row"> @(index++)</td>
-                        <td class="p-l-20-important">@item.error_date.ToString("yyyy.MM.dd HH:mm:ss")</td>
-                        <td>@item.error_message</td>
-                        <td class="p-r-20-important">@item.employees_name</td>
+                        <td class="p-l-20-important">@item.ErrorDate.ToString("yyyy.MM.dd HH:mm:ss")</td>
+                        <td>@item.ErrorMessage</td>
+                        <td class="p-r-20-important">@item.EmployeesName</td>
                     </tr>
                 }
             </tbody>

@@ -1,7 +1,7 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 
 <!-- Все обращения -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 <style>
     .clip {
         white-space: nowrap; /* Запрещаем перенос строк */
@@ -40,25 +40,25 @@
                 @if (Model.DataAppealSelectList.Any())
                 {
 
-                    foreach (var item in Model.DataAppealSelectList.OrderByDescending(o => o.out_date_add))
+                    foreach (var item in Model.DataAppealSelectList.OrderByDescending(o => o.OutDateAdd))
                     {
-                <tr data-number-appeal="@item.out_number_appeal" @*onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.out_number_appeal})')"*@>
+                <tr data-number-appeal="@item.OutNumberAppeal" @*onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.OutNumberAppeal})')"*@>
                     <td class="text-center p-r-0">
-                        <h3 data-tooltip="@item.out_category"><i class="@(item.out_category=="Жалоба"?"md md-report-problem text-danger":item.out_category=="Предложение"?"md md-chat text-success":item.out_category=="Вопрос"?"md md-help text-custom":item.out_category=="Отзыв"?"md md-rate-review text-info":item.out_category=="Оповещение"?"md md-announcement text-warning":"")"></i></h3>
+                        <h3 data-tooltip="@item.OutCategory"><i class="@(item.OutCategory=="Жалоба"?"md md-report-problem text-danger":item.OutCategory=="Предложение"?"md md-chat text-success":item.OutCategory=="Вопрос"?"md md-help text-custom":item.OutCategory=="Отзыв"?"md md-rate-review text-info":item.OutCategory=="Оповещение"?"md md-announcement text-warning":"")"></i></h3>
                     </td>
                     <td>
-                        <span>#@item.out_number_appeal</span><br />
-                        <span class=""><i class="fa fa-calendar m-r-5"></i>@item.out_date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.out_date_add.Value.ToShortTimeString()</span><br />
-                        @if (item.out_mfc_name != null)
+                        <span>#@item.OutNumberAppeal</span><br />
+                        <span class=""><i class="fa fa-calendar m-r-5"></i>@item.OutDateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateAdd.Value.ToShortTimeString()</span><br />
+                        @if (item.OutMfcName != null)
                         {
-                            <div class="clip" style="max-width:185px;" data-tooltip="@item.out_mfc_name"><img src="/Content/images/logo.png" height="15" style="opacity:0.6"> @item.out_mfc_name</div>
+                            <div class="clip" style="max-width:185px;" data-tooltip="@item.OutMfcName"><img src="/Content/images/logo.png" height="15" style="opacity:0.6"> @item.OutMfcName</div>
                         }
-                        @*<span class="text-muted font-12">@(item.out_case_number != null ? '#' + item.out_case_number.Trim('#') : "")</span>*@
-                        @if (item.out_case_number != null)
+                        @*<span class="text-muted font-12">@(item.OutCaseNumber != null ? '#' + item.OutCaseNumber.Trim('#') : "")</span>*@
+                        @if (item.OutCaseNumber != null)
                         {
-                            if (item.out_case_number != null)
+                            if (item.OutCaseNumber != null)
                             {
-                                string[] n = item.out_case_number.Split(' ');
+                                string[] n = item.OutCaseNumber.Split(' ');
                                 foreach (var cases in n)
                                 {
                                     if (cases.Length != 0)
@@ -70,24 +70,24 @@
                         }
                     </td>
                     <td>
-                        <b class="case-text m-b-5" style="font-size:15px" title="@item.out_text_appeal" data-tooltip="@item.out_text_appeal">
-                            @(item.out_text_appeal.Length > 230 ? item.out_text_appeal.Substring(0, 230) + "..." : item.out_text_appeal)
+                        <b class="case-text m-b-5" style="font-size:15px" title="@item.OutTextAppeal" data-tooltip="@item.OutTextAppeal">
+                            @(item.OutTextAppeal.Length > 230 ? item.OutTextAppeal.Substring(0, 230) + "..." : item.OutTextAppeal)
                         </b>
-                        <span class="text-muted"><i class="md md-person"></i> @(item.out_applicant_name?.ToString())</span>
-                        @if (item.out_phone_number != null)
-                        {<span class="text-muted"> <i class="md md-call"></i> @(item.out_phone_number)</span>}
-                        @if (item.out_email_ != null)
-                        {<span class="text-muted"> <span style="top:-1px;">&#64;</span> @(item.out_email_?.ToString() ?? "-")</span>}
+                        <span class="text-muted"><i class="md md-person"></i> @(item.OutApplicantName?.ToString())</span>
+                        @if (item.OutPhoneNumber != null)
+                        {<span class="text-muted"> <i class="md md-call"></i> @(item.OutPhoneNumber)</span>}
+                        @if (item.OutEmail != null)
+                        {<span class="text-muted"> <span style="top:-1px;">&#64;</span> @(item.OutEmail?.ToString() ?? "-")</span>}
                     </td>
 
                     <td>
-                        @{int d = 0; TimeSpan tms = (item.out_date_regulation - DateTime.Now).Value;}
-                        @if (item.out_date_execution != null)
+                        @{int d = 0; TimeSpan tms = (item.OutDateRegulation - DateTime.Now).Value;}
+                        @if (item.OutDateExecution != null)
                         { }
                         else
                         {
-                            d = (item.out_date_regulation - DateTime.Now).Value.Days;
-                            <div class="text-nowrap m-b-5" data-tooltip="Регламентная дата"><i class="fa fa-calendar m-r-5"></i>@item.out_date_regulation.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.out_date_regulation.Value.ToShortTimeString()</div>                            
+                            d = (item.OutDateRegulation - DateTime.Now).Value.Days;
+                            <div class="text-nowrap m-b-5" data-tooltip="Регламентная дата"><i class="fa fa-calendar m-r-5"></i>@item.OutDateRegulation.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateRegulation.Value.ToShortTimeString()</div>                            
                             if (d < 0)
                             {
                                 <span class="text-nowrap" data-tooltip="Просрочка"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span><br />
@@ -101,11 +101,11 @@
                     </td>
                     <td class="p-l-r-0" @*style="max-width:200px; min-width:180px;"*@>
                         
-                        <span data-tooltip="@item.out_employees_name" class="font-12 label @(item.out_status_name.ToString() == "Исполнено" ? "label-success" : item.out_status_name.ToString() == "Ошибка" ? "label-danger" : item.out_status_name.ToString() == "Прекращено" ? "label-mfc" : item.out_status_name.ToString() == "На исполнении" ? "label-warning" : "label-default") ">@Html.DisplayFor(m => item.out_status_name)</span>
-                        @if (item.out_date_execution == null)
+                        <span data-tooltip="@item.OutEmployeesName" class="font-12 label @(item.OutStatusName.ToString() == "Исполнено" ? "label-success" : item.OutStatusName.ToString() == "Ошибка" ? "label-danger" : item.OutStatusName.ToString() == "Прекращено" ? "label-mfc" : item.OutStatusName.ToString() == "На исполнении" ? "label-warning" : "label-default") ">@Html.DisplayFor(m => item.OutStatusName)</span>
+                        @if (item.OutDateExecution == null)
                         {
                             <div style="height:5px;"></div>
-                            <span data-tooltip="@item.out_employees_name_current" class="text-nowrap @(item.out_stage_name_current.ToString() == "Исполнено" ? "label label-success":"")">@item.out_stage_name_current</span>
+                            <span data-tooltip="@item.OutEmployeesNameCurrent" class="text-nowrap @(item.OutStageNameCurrent.ToString() == "Исполнено" ? "label label-success":"")">@item.OutStageNameCurrent</span>
                         }
                     </td>
                     <td style="max-width:55px; min-width:50px"><i class=" d-block h1 text-primary ti-angle-right"></i></td>

@@ -1,11 +1,11 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal_email
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppealEmail
 @*<form class="form-horizontal" id="newAppealEmailForm">*@
 @if (Model != null)
 {
     <label class="text-muted m-b-0 m-t-0" for="email">E-mail</label>
     <div class="input-group">
-        <input type="hidden" name="newEmailId" value="@Model.id" />
-        <input type="text" name="email_caption" class="form-control" value="@Model.caption" />
+        <input type="hidden" name="newEmailId" value="@Model.Id" />
+        <input type="text" name="email_caption" class="form-control" value="@Model.Caption" />
         <div class="input-group-append">
             <button id="clear_email" class="btn btn-info waves-effect waves-light" type="button">
                 <i class="md md-clear"></i>

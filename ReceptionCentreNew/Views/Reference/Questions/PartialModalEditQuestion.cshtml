@@ -1,5 +1,5 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_question
-<link href="~/Content/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
+﻿@model ReceptionCentreNew.Data.Context.App.SprQuestion
+<link href="~/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
 <style>
     .trumbowyg-box {
         margin: 0px !important;
@@ -38,16 +38,16 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        @Html.LabelFor(model => model.Question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.question) } })
+                            @Html.TextBoxFor(model => model.Question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Question) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea class="input p-t-10 required" rows="10" id="answer" name="answer" placeholder="Ответ" style="height: auto; resize: vertical;">@Model.answer</textarea>
+                            <textarea class="input p-t-10 required" rows="10" id="answer" name="answer" placeholder="Ответ" style="height: auto; resize: vertical;">@Model.Answer</textarea>
 
                             @*@Html.LabelFor(model => model.answer, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
         <div class="col-md-8">
@@ -58,9 +58,9 @@
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.commentt_modify, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        @Html.LabelFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.commentt_modify, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.commentt_modify) } })
+                            @Html.TextBoxFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.CommenttModify) } })
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
-﻿@model ReceptionCentreNew.Models.ServicesSubInfo
+﻿@model  ServicesSubInfo
 
-@*<link href="~/Content/social-networks/custom_style.css" rel="stylesheet" />*@
+@*<link href="~/social-networks/custom_style.css" rel="stylesheet" />*@
 
 <span id="back-to-consultations-services-list"><a href="#">< назад</a></span>
 <div><h3 class="h-title">Информация об услуге</h3></div>
@@ -9,7 +9,7 @@
     @if (Model.Info.Any())
     {
         <h4 class="">Описание</h4>
-        @Model.Info.FirstOrDefault().name
+        @Model.Info.FirstOrDefault().Description
     }
 </div>
 <hr />
@@ -39,7 +39,7 @@
         <ul>
             @foreach (var item in Model.Failure)
             {
-                <li><div>@item.failure_text @item.legal_act  @item.commentt</div></li>
+                <li><div>@item.FailureText @item.LegalAct  @item.Commentt</div></li>
             }
         </ul>
         <hr />
@@ -52,7 +52,7 @@
         <ul>
             @foreach (var item in Model.FailureDocuments)
             {
-                <li><div>@item.failure_text @item.legal_act @item.commentt</div></li>
+                <li><div>@item.FailureText @item.LegalAct @item.Commentt</div></li>
             }
         </ul>
         <hr />
@@ -70,7 +70,7 @@
                         @item.name <br />
                         @if (item.method != null)
                         {<span>Способ получения</span> <span class="sub-title">@item.method</span>}
-                        <span class="label">Срок хранения в МФЦ <span class="text-info">@item.period_mfc</span> Срок хранения в органе власти <span class="text-info">@item.period_provider</span></span>
+                        <span class="label">Срок хранения в МФЦ <span class="text-info">@item.PeriodMfc</span> Срок хранения в органе власти <span class="text-info">@item.PeriodProvider</span></span>
                     </div>
                 </li>
             }
@@ -85,7 +85,7 @@
         <ul>
             @foreach (var item in Model.Stop)
             {
-                <li><div>@item.text @item.week_name @item.count_day @item.commentt</div></li>
+                <li><div>@item.text @item.WeekName @item.CountDay @item.Commentt</div></li>
             }
         </ul>
         <hr />
@@ -101,7 +101,7 @@
                 <li>
                     <div>
                         @item.type <span class="text-info">@item.tariff руб.</span> <br />
-                        <span class="label">Обработка <span class="text-info">@item.count_day_processing </span> Исполнение <span class="text-info">@item.count_day_execution</span> Возврат <span class="text-info">@item.count_day_return</span> (ед. изм. <span class="text-info">@item.week</span>)</span> 
+                        <span class="label">Обработка <span class="text-info">@item.CountDayProcessing </span> Исполнение <span class="text-info">@item.CountDayExecution</span> Возврат <span class="text-info">@item.CountDayReturn</span> (ед. изм. <span class="text-info">@item.week</span>)</span> 
                     </div>
                 </li>
             }
@@ -116,7 +116,7 @@
         <ul>
             @foreach (var item in Model.Way)
             {
-                <li><div><span>@item.name_way</span></div></li>
+                <li><div><span>@item.NameWay</span></div></li>
             }
         </ul>
         <hr />
@@ -129,7 +129,7 @@
         <ul>
             @foreach (var item in Model.WayResult)
             {
-                <li><div><span>@item.name_way</span></div></li>
+                <li><div><span>@item.NameWay</span></div></li>
             }
         </ul>
     }

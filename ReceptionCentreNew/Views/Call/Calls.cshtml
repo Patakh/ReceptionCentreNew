@@ -1,25 +1,22 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_call>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
 @{
     ViewBag.Title = "Звонки";
 }
 <!-- Все звонки -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-
-@Html.MvcSiteMap().SiteMapPath()
-
-<div class="card-box p-3">
-
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+ 
+<div class="card-box p-3"> 
     @using (Ajax.BeginForm("PartialTableCalls", "Call", null, new AjaxOptions { UpdateTargetId = "callsTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
     {
         <div id="collapseExample" class="collapse show">
             <div class="row p-l-r-10">
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Сотрудник</label>
-                    @Html.DropDownList("sprEmployeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    @Html.DropDownList("SprEmployeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
-                    @Html.DropDownList("period", new SelectList(new List<SelectListItem>
+                    @Html.DropDownList("Period", new SelectList(new List<SelectListItem>
                                                { new SelectListItem {Text = "Сегодня", Value = "1"},
                                                    new SelectListItem {Text = "Неделя", Value = "2"},
                                                    new SelectListItem {Text = "Месяц", Value = "3"},
@@ -28,14 +25,14 @@
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Тип</label>
-                    @Html.DropDownList("type", new SelectList(new List<SelectListItem>
+                    @Html.DropDownList("Type", new SelectList(new List<SelectListItem>
                                                { new SelectListItem {Text = "Входящие", Value = "2"},
                                                    new SelectListItem {Text = "Исходящие", Value = "1"}
                                                }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
-                    @Html.DropDownList("is_connected", new SelectList(new List<SelectListItem>
+                    @Html.DropDownList("IsConnected", new SelectList(new List<SelectListItem>
                                        { new SelectListItem {Text = "Да", Value = "1"},
                                            new SelectListItem {Text = "Нет", Value = "2" }
                                        }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
@@ -84,6 +81,6 @@
 
 </script>
 <!-- Все звонки -->
-<script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+<script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }
 

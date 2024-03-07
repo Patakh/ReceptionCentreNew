@@ -72,23 +72,19 @@ public class ConnectionMapping<T>
         }
     }
 }
-public class NotificationHub : Hub
+public class NotificationHub : Hub, IHubContext
 {
     // Подключение нового пользователя
     public void Connect(string userName)
     {
-
     }
+
     private readonly static ConnectionMapping<string> _connections = new();
-    public override Task OnConnectedAsync()
-    {
-        string name = Context.User.Identity.Name;
 
-        _connections.Add(name, Context.ConnectionId);
+    public IHubClients Clients => throw new NotImplementedException();
 
-        return base.OnConnectedAsync();
-    }
-
+    public IGroupManager Groups => throw new NotImplementedException();
+     
     public Dictionary<string, HashSet<string>> get_online_users()
     {
         return _connections.GetAllConnections();

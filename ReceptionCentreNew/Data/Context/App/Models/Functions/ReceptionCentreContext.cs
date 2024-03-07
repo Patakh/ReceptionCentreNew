@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Npgsql;
-using ReceptionCentreNew.Domain.Concrete;
+using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
 
 namespace ReceptionCentreNew.Data.Context.App;
@@ -63,7 +63,7 @@ public partial class ReceptionCentreContext : DbContext
         NpgsqlParameter param3 = new("@in_is_connected", (object)in_is_connected ?? DBNull.Value);
         NpgsqlParameter param4 = new("@in_spr_employees_id", (object)spr_employee_id ?? DBNull.Value);
         NpgsqlParameter param5 = new("@in_email_type_id", (object)in_email_type_id ?? DBNull.Value);
-        return this.Database.SqlQueryRaw<DataAppealEmailSelect>("SELECT * FROM data_appeal_email_select(@in_date_start, @in_date_stop,@in_is_connected, @in_spr_employees_id, @in_email_type_id)", param1, param2, param3, param4, param5).ToArray();
+        return Database.SqlQueryRaw<DataAppealEmailSelect>("SELECT * FROM data_appeal_email_select(@in_date_start, @in_date_stop,@in_is_connected, @in_spr_employees_id, @in_email_type_id)", param1, param2, param3, param4, param5).ToArray();
     }
     /// <summary>
     /// Получение списка звонков
@@ -109,7 +109,7 @@ public partial class ReceptionCentreContext : DbContext
     /// Статистика звонков
     /// </summary>
     public virtual IEnumerable<StatisticsDataAppealCall> FuncStatisticsDataAppealCall() =>
-        Database.SqlQueryRaw<StatisticsDataAppealCall>("SELECT * FROM statistics_data_appeal_call()").ToArray(); 
+        Database.SqlQueryRaw<StatisticsDataAppealCall>("SELECT * FROM statistics_DataAppealCall()").ToArray(); 
 
     /// <summary>
     /// Статистика по категориям
@@ -197,17 +197,17 @@ public partial class ReceptionCentreContext : DbContext
     public virtual DataAppealClaimStatistics FuncDataAppealClaimStatistics(Guid? SprMfcId)
     {
         NpgsqlParameter param1 = new("@in_spr_mfc_id", (object)SprMfcId ?? DBNull.Value);
-        return this.Database.SqlQueryRaw<DataAppealClaimStatistics>("SELECT * FROM data_appeal_claim_statistics(@in_spr_mfc_id)", param1).FirstOrDefault();
+        return Database.SqlQueryRaw<DataAppealClaimStatistics>("SELECT * FROM data_appeal_claim_statistics(@in_spr_mfc_id)", param1).FirstOrDefault();
     }
     public virtual IEnumerable<DataAppealClaimWeek> FuncDataAppealClaimWeek(Guid? SprMfcId)
     {
         NpgsqlParameter param1 = new("@in_spr_mfc_id", (object)SprMfcId ?? DBNull.Value);
-        return this.Database.SqlQueryRaw<DataAppealClaimWeek>("SELECT * FROM data_appeal_claim_week(@in_spr_mfc_id)", param1).ToArray();
+        return Database.SqlQueryRaw<DataAppealClaimWeek>("SELECT * FROM data_appeal_claim_week(@in_spr_mfc_id)", param1).ToArray();
     }
     public virtual IEnumerable<DataAppealClaimYear> FuncDataAppealClaimYear(Guid? SprMfcId)
     {
         NpgsqlParameter param1 = new("@in_spr_mfc_id", (object)SprMfcId ?? DBNull.Value);
-        return this.Database.SqlQueryRaw<DataAppealClaimYear>("SELECT * FROM data_appeal_claim_year(@in_spr_mfc_id)", param1).ToArray();
+        return Database.SqlQueryRaw<DataAppealClaimYear>("SELECT * FROM data_appeal_claim_year(@in_spr_mfc_id)", param1).ToArray();
     }
     #endregion
 }

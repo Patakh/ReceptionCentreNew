@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 <style>
     .table {
     font-size:14px;
@@ -10,7 +10,7 @@
             <tr valing="top"><td colspan="3"><div class="report_name">Количество обращений</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -41,7 +41,7 @@
                         <td class="text-left"><b>Статусы</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_status_name))
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.OutStatusName))
                     {
                         <tr>
                             <td class="text-left">@item.Key</td>
@@ -52,7 +52,7 @@
                         <td class="text-left"><b>Типы</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_type))
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.OutType))
                     {
                         <tr>
                             <td class="text-left">@item.Key</td>
@@ -63,7 +63,7 @@
                         <td class="text-left"><b>Типы сложности</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_type_difficulty))
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.OutTypeDifficulty))
                     {
                         <tr>
                             <td class="text-left">@item.Key</td>
@@ -74,7 +74,7 @@
                         <td class="text-left"><b>Предмет обращения</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_subject_treatment))
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.OutSubjectTreatment))
                     {
                         <tr>
                             <td class="text-left">@item.Key</td>
@@ -85,7 +85,7 @@
                         <td class="text-left"><b>Категория</b></td>
                         <td></td>
                     </tr>
-                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.out_category))
+                    @foreach (var item in Model.DataAppealSelectList.GroupBy(g => g.OutCategory))
                     {
                         <tr>
                             <td class="text-left">@item.Key</td>

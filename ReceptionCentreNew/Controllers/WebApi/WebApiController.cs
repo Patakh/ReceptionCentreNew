@@ -17,8 +17,8 @@ namespace ReceptionCentreNew.Controllers.WebApi;
 public class WebApiController : ApiController
 {
     private IRepository _repository;
-    private readonly IHubContext _hubContext;
-    public WebApiController(IRepository repo, IHubContext hubContext)
+    private readonly IHubContext<NotificationHub> _hubContext;
+    public WebApiController(IRepository repo, IHubContext<NotificationHub> hubContext)
     {
         _hubContext = hubContext;
         _repository = repo;

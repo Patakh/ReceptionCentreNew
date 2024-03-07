@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.EmailsViewModel
+﻿@model EmailsViewModel
 
 <style>
     .not_read {
@@ -18,46 +18,51 @@
                     <input type="text" id="searchTextEmails" class="form-control pl-0 border-0" placeholder="Поиск писем" aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
                 </div>
                 <tbody>
-                    @foreach (var item in Model.EmailList.OrderByDescending(o => o.out_date_email))
+                    @foreach (var item in Model.EmailList.OrderByDescending(o => o.OutDateEmail))
                     {
-                        <tr data-email-id="@item.out_id" data-is_connected="@item.out_number_appeal" @{if (item.out_is_read != true) { <text> class="not_read" </text>  } }>
+                        <tr data-email-id="@item.OutId" data-is_connected="@item.OutNumberAppeal" @{if (item.OutIsRead != true) { <text> class="not_read" </text>  } }>
                             <td class="vertical-middle">
-                                @if (item.out_email_type == 2)
+                                @if (item.OutEmailType == 2)
                                 {<span><i class="glyphicon glyphicon-arrow-left" style="color:green"></i></span> }
                                 else
                                 {<span><i class="glyphicon glyphicon-arrow-right" style="color:red"></i></span>}
                             </td>
                             <td class="vertical-middle is_reader">
-                                <button type="button" data-email-id="@item.out_id" data-is_read="@item.out_is_read" title="Прочитано/непрочитано" class="btn btn-link btn_read" style="font-size: 18px;line-height: 18px;" @{if (!(User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))) { <text> disabled </text>  } }>
-                                    @if (item.out_is_read == true)
+                                        <button type="button" data-email-id="@item.OutId" data-is_read="@item.OutIsRead" title="Прочитано/непрочитано" class="btn btn-link btn_read" style="font-size: 18px;line-height: 18px;" @{
+                                    if (!(User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator")))
+                                    {
+                                        <text> disabled </text>
+                                    }
+                                }>
+                                    @if (item.OutIsRead == true)
                                     {<i class="text-success ion-ios7-circle-filled"></i>}
                                     else
                                     {<i class="text-danger ion-ios7-circle-filled"></i>}
                                 </button>
                             </td>
                             <td class="vertical-middle p-l-20-important">
-                                <span class="text font-13">@Html.DisplayFor(m => item.out_email_)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.OutDateEmail)</span>
                             </td>
                             <td class="vertical-middle p-l-20-important" width="50%">
-                                <div class="text-clip-cust font-13 pull-left" style="max-width:300px; margin:0px 10px 0 0;" title="@Html.DisplayFor(m => item.out_caption)">@Html.DisplayFor(m => item.out_caption)</div>
-                                <div class="text-clip-cust text-muted font-13" style="max-width:250px;" title="@Html.DisplayFor(m => item.out_text_email)">@Html.DisplayFor(m => item.out_text_email)</div>
+                                <div class="text-clip-cust font-13 pull-left" style="max-width:300px; margin:0px 10px 0 0;" title="@Html.DisplayFor(m => item.OutCaption)">@Html.DisplayFor(m => item.OutCaption)</div>
+                                <div class="text-clip-cust text-muted font-13" style="max-width:250px;" title="@Html.DisplayFor(m => item.OutTextEmail)">@Html.DisplayFor(m => item.OutTextEmail)</div>
                             </td>
                             <td class="vertical-middle">
-                                <span class="text font-13">@Html.DisplayFor(m => item.out_date_email)</span>
+                                <span class="text font-13">@Html.DisplayFor(m => item.OutDateEmail)</span>
                             </td>
                             <td class="vertical-middle p-r-20-important text-right" style="font-size: 22px;line-height: 22px;">
-                                @if (item.out_number_appeal == null)
+                                @if (item.OutNumberAppeal == null)
                                 {
                                     if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
                                     {
-                                        <button type="button" title="Создать обращение на основе письма" class="btn btn-link" onclick="window.open('@Url.Action("NewAppeal", "Appeal", new { emailId = item.out_id })')"><i class="ti-file"></i></button>
+                                        <button type="button" title="Создать обращение на основе письма" class="btn btn-link" onclick="window.open('@Url.Action("NewAppeal", "Appeal", new { emailId = item.OutId })')"><i class="ti-file"></i></button>
                                     }
                                 }
                                 else
                                 {
                                     <i title="Прикреплен" class="glyphicon glyphicon-file" style="font-size: 22px;line-height: 22px; padding:1px 6px; cursor:default; color:#ccc"></i>
                                 }
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "appeal_number": "@item.out_number_appeal", "employees_fio": "@item.out_employees_name", "is_read": "@item.out_is_read"}'>
+                                        <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "appeal_number": "@item.OutNumberAppeal", "EmployeesFio": "@item.OutEmployeesName", "is_read": "@item.OutIsRead"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                             </td>
@@ -100,7 +105,7 @@
                         var tooltipInfo = $(this).data('tooltipInfo');
                         return "<div class='text-left'>" +
                             "<strong>Номер дела:</strong> " + tooltipInfo['appeal_number'] + "</br>" +
-                            "<strong>Сотрудник:</strong> " + tooltipInfo['employees_fio'] + "</br>" +
+                            "<strong>Сотрудник:</strong> " + tooltipInfo['EmployeesFio'] + "</br>" +
                             "<strong>Прочитано:</strong> " + (tooltipInfo['is_read'] != "False" ? "ДА" : "НЕТ") + "</br>" +
                             "</div>";
                     },

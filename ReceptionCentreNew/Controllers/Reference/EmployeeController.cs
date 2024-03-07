@@ -132,7 +132,7 @@ public partial class ReferenceController
     public IActionResult PartialModalAddEmployeeRole(Guid employeeId)
     {
         ViewBag.EmployeeId = employeeId;
-        ViewBag.EmployeeRoles = new SelectList(_repository.SprEmployeesRole, "Id", "commentt");
+        ViewBag.EmployeeRoles = new SelectList(_repository.SprEmployeesRole, "Id", "Commentt");
         return PartialView("Employees/EmployeeRoles/PartialModalAddEmployeeRole", new SprEmployeesRoleJoin { SprEmployeesId = employeeId });
     }
 

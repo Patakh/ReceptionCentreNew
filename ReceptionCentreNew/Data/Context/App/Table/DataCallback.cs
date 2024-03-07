@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ReceptionCentreNew.Data.Context.App;
+﻿namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Таблица хранения заказных звонков

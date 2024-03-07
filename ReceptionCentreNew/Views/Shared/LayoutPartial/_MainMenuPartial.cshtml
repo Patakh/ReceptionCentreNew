@@ -1,5 +1,5 @@
 ﻿@{
-    string[] fio = ["Абдурашидов","Шамиль"];
+    string[] fio = ["Абдурашидов", "Шамиль"];
 }
 <div class="topbar">
     <div class="topbar-left">
@@ -67,7 +67,7 @@
                             <i class="md md-call"></i>
                         </a>
                     }
-                    <a href="@Url.Action("LogOff", "Account")" class="dropdown-item notify-item">
+                    <a class="dropdown-item notify-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
                         <i class="md md-settings-power"></i> <span>Выход</span>
                     </a>
                 </div>
