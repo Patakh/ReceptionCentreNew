@@ -1,10 +1,10 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.data_employees_notification>
+﻿@model IEnumerable<DataEmployeesNotification>
 @{
     ViewBag.Title = "Уведомления";
 }
 
 <!-- Все оповещения -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 @Html.MvcSiteMap().SiteMapPath()
 
@@ -28,7 +28,7 @@
                 </div>
                 <div class="form-group col-sm-4">
                     <label class="font-12 text-muted p-t-0 m-b-0">Активные / неактивные</label>
-                    @Html.DropDownList("is_active", new SelectList(new List<SelectListItem>
+                    @Html.DropDownList("IsActive", new SelectList(new List<SelectListItem>
                                    { new SelectListItem {Text = "Да", Value = "true", Selected=true},
                                        new SelectListItem {Text = "Нет", Value = "false"}
                                    }, "Value", "Text", "true"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
@@ -52,7 +52,7 @@
     }
 </div>
 <div id="notificationsTableContainer">
-    @*@Html.Action("PartialTableNotifications", "Notification", new { is_active=true})*@
+    @*@Html.Action("PartialTableNotifications", "Notification", new { IsActive=true})*@
 </div>
 @section scripts {
     <script>
@@ -63,6 +63,6 @@
 
     </script>
     <!-- Все звонки -->
-    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }
 

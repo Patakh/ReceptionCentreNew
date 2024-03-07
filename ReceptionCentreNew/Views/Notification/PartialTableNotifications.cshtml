@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.NotificationsViewModel
+﻿@model  NotificationsViewModel
 <style>
     .not_read {
         font-weight: bold;
@@ -20,28 +20,36 @@
                 <tbody>
                     @foreach (var item in Model.NotificationList)
                     {
-                        <tr data-notification-id="@item.id" @if (item.is_active == true) { { if (item.is_active == true) { <text> class="not_read" </text> } } }>
+                        <tr data-notification-id="@item.Id" @if (item.IsActive == true)
+                        {
+                            {
+                                if (item.IsActive == true)
+                                {
+                                    <text> class="not_read" </text>
+                                }
+                            }
+                        }>
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td class="vertical-middle">
-                                <button type="button" data-notify-id="@item.id" data-is_active="@item.is_active" title="Активно/неактивно" class="btn btn-link" style="font-size: 18px;line-height: 18px;">
-                                    @if (item.is_active == true)
+                                <button type="button" data-notify-id="@item.Id" data-IsActive="@item.IsActive" title="Активно/неактивно" class="btn btn-link" style="font-size: 18px;line-height: 18px;">
+                                    @if (item.IsActive == true)
                                     {<i class="text-success ion-ios7-circle-filled"></i>}
                                     else
                                     {<i class="text-danger ion-ios7-circle-filled"></i>}
                                 </button>
                             </td>                            
                             <td>
-                                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = item.data_appeal.number_appeal, notificationId = item.id, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = item.DataAppeal.NumberAppeal, notificationId = item.Id, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                 {
-                                <button type="submit" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-link">@item.data_appeal.number_appeal</button>
+                                <button type="submit" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-link">@item.DataAppeal.NumberAppeal</button>
                                 }                                
                             </td>
                             <td>
-                                @if (item.data_appeal.spr_mfc != null)
+                                @if (item.DataAppeal.SprMfc != null)
                                 {
-                                    @item.data_appeal.spr_mfc.mfc_name
+                                    @item.DataAppeal.SprMfc.MfcName
                                 }
                                 else
                                 {
@@ -49,13 +57,13 @@
                                 }
                             </td>
                             <td>
-                                <div class="text-clip-cust" title="@Html.DisplayFor(i => item.data_appeal.text_appeal)">@Html.DisplayFor(i => item.data_appeal.text_appeal)</div>
+                                <div class="text-clip-cust" title="@Html.DisplayFor(i => item.DataAppeal.TextAppeal)">@Html.DisplayFor(i => item.DataAppeal.TextAppeal)</div>
                             </td>
                             <td>
-                                <span>@Html.DisplayFor(i => item.spr_notification.notification)</span>
+                                <span>@Html.DisplayFor(i => item.SprNotification.Notification)</span>
                             </td>
                             <td>
-                                <span>@Html.DisplayFor(i => item.date_receipt)</span>
+                                <span>@Html.DisplayFor(i => item.DateReceipt)</span>
                             </td>
                         </tr>
                     }
@@ -98,7 +106,7 @@
         $('#notificationsTable tr td button[type="button"]').click(function () {
         var $this = $(this);
         var notifyId = $(this).data("notifyId");
-        var is_active = $(this).data("is_active");
+        var IsActive = $(this).data("IsActive");
                 $.ajax({
                     url: '@Url.Action("SubmitNoficationSave", "Notification")',
                     type: 'POST',

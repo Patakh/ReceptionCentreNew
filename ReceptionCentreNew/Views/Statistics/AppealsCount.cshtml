@@ -2,7 +2,7 @@
     ViewBag.Title = "Количество обращений";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
+<link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 @Html.MvcSiteMap().SiteMapPath()
 
     <div class="card-box m-t-10 p-t-10 p-b-10">
@@ -13,7 +13,7 @@
                             <div class="row p-l-r-10">
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">МФЦ</label>
-                                    @Html.DropDownList("spr_mfc_id", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("SprMfcId", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 </div>
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Предмет</label>
@@ -21,17 +21,17 @@
                                 </div>
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Категория</label>
-                                    @Html.DropDownList("spr_category_id", ViewBag.SprCategory as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("SprCategoryId", ViewBag.SprCategory as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 </div>
                             </div>
                             <div class="row p-l-r-10">
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Вид</label>
-                                    @Html.DropDownList("spr_type_id", ViewBag.SprType as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("SprTypeId", ViewBag.SprType as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 </div>
                                 <div class="col-md-3 m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Сложность</label>
-                                    @Html.DropDownList("spr_type_difficulty_id", ViewBag.SprTypeDifficulty as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("SprTypeDifficultyId", ViewBag.SprTypeDifficulty as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 </div>
                                 <div class="col-md-6 m-b-10 text-right">
                                     <br />
@@ -59,9 +59,9 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/c3.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/d3.v3.min.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
+    <script src="~/new_design/plugins/Charts/js/c3.js"></script>
+    <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
     <script>
     $('#btnShowChart').click(function () {
         $form = $('form#form').serializeArray();

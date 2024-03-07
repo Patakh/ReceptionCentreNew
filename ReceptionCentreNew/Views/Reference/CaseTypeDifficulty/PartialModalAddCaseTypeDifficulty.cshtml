@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_type_difficulty
+﻿@model ReceptionCentreNew.Data.Context.App.SprTypeDifficulty
 <script>
     $(document).ready(function () {
         $('#AddCaseTypeDifficultyForm').validate();
@@ -17,17 +17,17 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.type_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.type_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.type_name) } })
+                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.count_day, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.CountDay, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.count_day, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.count_day) } })
+                            @Html.TextBoxFor(model => model.CountDay, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.CountDay) } })
                         </div>
                     </div>
                 </div>

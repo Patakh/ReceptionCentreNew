@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_email>
+﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealEmail>
 
 <script>
     $(document).ready(function () {
@@ -73,15 +73,15 @@
                         <tbody>
                             @foreach (var item in Model)
                             {
-                            <tr data-email-id="@item.id">
+                            <tr data-email-id="@item.Id">
                                 <td>
-                                    @item.email_
+                                    @item.Email
                                 </td>
                                 <td>
-                                    @item.caption
+                                    @item.Caption
                                 </td>
                                 <td>
-                                    @item.date_email
+                                    @item.DateEmail
                                 </td>
                                 <td class="text-right">
                                     <i class="fa fa-check-circle font-18 text-muted"></i>

@@ -1,5 +1,5 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_question
-<link href="~/Content/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
+﻿@model ReceptionCentreNew.Data.Context.App.SprQuestion
+<link href="~/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
 <script>
     $(document).ready(function () {
         $('#AddQuestionForm').validate();
@@ -32,9 +32,9 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        @Html.LabelFor(model => model.Question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.question) } })
+                            @Html.TextBoxFor(model => model.Question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Question) } })
                         </div>
                     </div>
                 </div>

@@ -8,19 +8,19 @@
 
     <!-- Plugins css-->
 
-    <link href="~/new_design/plugins/jquery.steps/css/jquery.steps.css" rel="stylesheet" />
-    <link href="~/new_design/plugins/animate/animate.min.css" rel="stylesheet">
-    <link href="~/new_design/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet">
-    <link href="~/new_design/plugins/select2/css/select2.min.css" rel="stylesheet">
-    <link href="~/new_design/plugins/custombox4/css/custombox.min.css" rel="stylesheet">
-    <link href="~/new_design/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" />
-    <link href="~/new_design/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/new_design/assets/css/icons.css" rel="stylesheet">
-    <link href="~/new_design/assets/css/style.css" rel="stylesheet">
-    <link href="~/new_design/css/main.css" rel="stylesheet">
-    <link href="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" />
-    <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" />
-    <link href="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.css" rel="stylesheet" />
+    <link href="~/new_design/plugins/jquery.steps/css/jquery.steps.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/new_design/plugins/animate/animate.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/plugins/custombox4/css/custombox.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/new_design/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/assets/css/icons.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/assets/css/style.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/new_design/css/main.css" rel="stylesheet" type="text/css" asp-append-version="true">
+    <link href="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
 
     <script src="~/new_design/assets/js/modernizr.min.js"></script>
 </head>
@@ -45,7 +45,7 @@
     <script>
         var resizefunc = [];
     </script>
-
+    <script src="~/signalr/hubs"></script>
     <script src="~/new_design/assets/js/jquery.min.js"></script>
     <script src="~/new_design/assets/js/popper.min.js"></script>
     <script src="~/new_design/assets/js/bootstrap.min.js"></script>
@@ -73,7 +73,7 @@
 
     @RenderSection("scripts", false)
 
-    <script src="~/new_design/js/script.js"></script>
+    
     <script src="~/new_design/assets/js/jquery.core.js"></script>
     <script src="~/new_design/assets/js/jquery.app.js"></script>
 
@@ -83,270 +83,7 @@
     <script src="~/plugins/lobibox/js/lobibox.js"></script>
     <script src="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.js"></script>
     <script src="~/js/jQuery/jquery.signalR-2.2.3.min.js"></script>
-
-
-    <script>
-        $(function () {
-            var i = 0;
-            $.ajax({
-                async: true,
-                url: '@Url.Action("SocketJitsi", "Socket")',
-                type: 'POST',
-                success: function (data) {
-                    console.log(data);
-                }
-            });
-
-            $.ajax({
-                async: true,
-                url: '@Url.Action("GetEmails", "Common")',
-                type: 'POST',
-                success: function (data) {
-                    $('#menu_input_email').text(data);
-                }
-            });
-            $.ajax({
-                async: true,
-                url: '@Url.Action("GetNotifications", "Common")',
-                type: 'POST',
-                success: function (data) {
-                    $('#menu_input_notification').text(data);
-                }
-            });
-
-        });
-
-        // unblock when ajax activity stops
-        $(document).ajaxStart(function () {
-            $.blockUI({ message: '<div class="fa fa-spin fa-spinner icon-lg"></div>', overlayCSS: { backgroundColor: "#FFF", cursor: "wait" }, css: { border: 0, padding: 0, backgroundColor: "none" } });
-        }).ajaxStop(function () {
-            $.unblockUI();
-        });
-
-        var resizefunc = [];
-        $('.navbar-toggle').on('click', function (event) {
-            $(this).toggleClass('open');
-            $('#navigation').slideToggle(400);
-            $('.cart, .search').removeClass('open');
-        });
-
-        $('.navigation-menu>li').slice(-1).addClass('last-elements');
-
-        $('.navigation-menu li.has-submenu a[href="#"]').on('click', function (e) {
-            if ($(window).width() < 992) {
-                e.preventDefault();
-                $(this).parent('li').toggleClass('open').find('.submenu:first').toggleClass('open');
-            }
-        });
-
-
-        // событие клика по веб-документу
-        $(document).mouseup(function (e) {
-
-            var bar = $("#alertBar"); // Панель уведомлений
-            var btn = $("#alertBtn"); // Кнопка уведомлений
-
-            // Проверяем, находится ли курсор на панели или на кнопке уведомлений, если нет, то закрываем панель
-            if (!bar.is(e.target)
-                && bar.has(e.target).length === 0
-                && !btn.is(e.target)
-                && btn.has(e.target).length === 0) {
-                bar.removeClass('slideInRight').addClass('slideOutRight');
-                setTimeout(function () {
-                    bar.hide().removeClass('slideOutRight');
-                    btn.closest('li').removeClass('open');
-                }, 200);
-            }
-            else {
-                $('.navbar .active').removeClass('active');
-                btn.closest('li').addClass('open');
-            }
-        });
-
-        $(document).on('click', '[data-toggle="animation"]', function (event) {
-            //event.stopPropagation();
-            var button = $(this);
-            var target = $(button.data('target'));
-            var animationIn = button.data('animation');
-            var animationOut = animationIn.replace('In', 'Out').replace('Up', 'Down').replace('Down', 'Up');
-            var state = target.hasClass(animationIn);
-            if (state) {
-                target.removeClass(animationIn).addClass(animationOut);
-                setTimeout(function () {
-                    target.hide().removeClass(animationOut);
-                    button.closest('li').removeClass('open');
-                }, 200);
-            } else {
-                target.addClass(animationIn).show();
-                button.closest('li').addClass('open');
-            }
-        });
-        $('#delete-dublication-call').click(function () {
-            $.ajax({
-                url: '@Url.Action("DeleteDublicationCall", "System")',
-                type: 'POST',
-                success: function (data) {
-                    location.reload();
-                }
-            });
-        });
-    </script>
-
-    <script>
-
-        //====/*Закрыть и сохранить данные в окошках
-        $(document).on('click', '.finished-call', function () {
-            var $data = $('#call-questions form').serialize();
-            var phone = $('#call-phone-number').text();
-            console.log(phone);
-            $.ajax({
-                async: true,
-                url: '@Url.Action("SaveQuestions", "Call")',
-                type: 'POST',
-                data: $data + "&phone_number=" + phone,
-                success: function (data) {
-
-                }
-            });
-            //$(this).addClass("d-none");
-            Custombox.modal.close();
-        });
-        $(document).on('click', '#call-survey-save', function () {
-            var $data = $('#call-survey form').serialize();
-            console.log($data);
-            var phone = $('#call-phone-number').text();
-            $.ajax({
-                async: true,
-                url: '@Url.Action("SaveSurveyAnswers", "Call")',
-                type: 'POST',
-                data: $data + "&phone_number=" + phone,
-                success: function (data) {
-
-                }
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        $(function () {
-            //if (!document.hidden) {
-            //    _hubStart();
-            //}
-            if (document.visibilityState == "visible") {
-                console.log("первый вызов _hubStart");
-                _hubStart();
-            }
-
-            var notificationhub = $.connection.notificationHub;
-            notificationhub.client.sendCommentt = function (message) {
-                Lobibox.notify('info', {
-                    title: 'Уведомление!',
-                    size: 'normal',
-                    position: 'top right',
-                    msg: message,
-                    soundPath: '../Content/plugins/lobibox/sounds/',
-                    sound: true,
-                    delay: false,
-                });
-                //$.Notification.autoHideFalseNotify('custom', 'right top false', 'Новое уведомление!', message);
-                console.log("Получено уведомление");
-            };
-            // входящий звонок
-            notificationhub.client.incomingCall = function (message) {
-                showIncomingCallAlert(message);
-                console.log("Звонок");
-            };
-
-            notificationhub.client.ReturnCallId = function (message) {
-                $('#jitsi_call_id').val(message); // Присвоение Id-звонка
-                console.log(message, "ИД звонка от звонилки");
-            };
-
-            notificationhub.client.callback = function (message) {
-                CallBackCountRefresh();
-                CallBackRefresh();
-            };
-
-            function handleVisibilityChange() {
-                if (document.visibilityState == "visible") {
-                    _hubStart();
-                    console.log('Hub connection start');
-                } else {
-                    $.connection.hub.stop();
-                    console.log('Hub connection stop');
-                }
-            }
-            document.addEventListener('visibilitychange', handleVisibilityChange, false);
-
-            function _hubStart() {
-                $.connection.hub.start().done(function () {
-                    notificationhub.server.get_online_users().done(function (result) {
-                        console.log(Object.keys(result));
-                        var connectionId = $.connection.hub.Id;
-                    })
-                });
-            }
-
-        });
-        // Callback
-        $('#callBackHeadBtn').on('click', function (e) {
-            CallBackRefresh();
-        });
-        function CallBackCustomer(Id, fio, tel) {
-            $.ajax({
-                type: "POST",
-                url: "/Appeal/_CallBackPhone",
-                data: { CallbackId: Id, CustomerFio: fio, tel: tel }, // обратный звонок type 2
-                success: function (result) {
-                    var socket = new WebSocket("ws://localhost:8886");
-                    socket.onopen = function () {
-                        socket.send(result);
-                    };
-                    socket.onmessage = function (event) {
-                        console.log("Ответ", event.data);
-                    }
-                },
-                error: function (event) {
-                    console.log(event);
-                }
-            });
-        }
-        function CallBackClose(Id) {
-            swal({
-                title: "Закрыть заявку?",
-                text: "Заявка будет закрыта",
-                type: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
-                confirmButtonText: "Да",
-                cancelButtonText: "Нет"
-            }).then(function () {
-                $.ajax({
-                    type: 'POST',
-                    url: 'CallBack/CallBackClose',
-                    data: { Id: Id },
-                    success: function (data) {
-                        if (data !== null) {
-                            swal({
-                                title: "Готово!",
-                                text: "Заявка закрыта",
-                                type: "success",
-                                confirmButtonColor: "#73c482",
-                                confirmButtonText: "Закрыть"
-                            });
-                        }
-                        else {
-                            swal({
-                                title: "Ошибка!",
-                                text: "Не удалось закрыть заявку",
-                                type: "error",
-                                confirmButtonColor: "#DD6B55",
-                                confirmButtonText: "Закрыть"
-                            });
-                        }
-                    }
-                });
-            }).catch(swal.noop);
-        }
-    </script>
+   
+    <script src="~/new_design/js/script.js"></script>
 </body>
 </html>

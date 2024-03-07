@@ -21,17 +21,17 @@
                     </thead>
                     <tbody>
                         @{int i = 0; }
-                        @foreach (ReceptionCentreNew.Domain.Concrete.data_appeal item in ViewBag.LastAppeals)
+                        @foreach (ReceptionCentreNew.Data.Context.App.DataAppeal item in ViewBag.LastAppeals)
                         {
                             <tr>
                                 <td>@(++i)</td>
-                                <td>@item.date_add.Value.ToShortDateString() <br /> <small class="d-block text-muted">@item.date_add.Value.ToShortTimeString()</small></td>
-                                <td><small class="case-text text-truncate" data-content="@item.text_appeal"> 
-                                    @Html.ActionLink(item.text_appeal, "AppealInfo", "Appeal", new { number= item.number_appeal }, new {@target= "_blank"} )                                        
+                                <td>@item.DateAdd.Value.ToShortDateString() <br /> <small class="d-block text-muted">@item.DateAdd.Value.ToShortTimeString()</small></td>
+                                <td><small class="case-text text-truncate" data-content="@item.TextAppeal"> 
+                                    @Html.ActionLink(item.TextAppeal, "AppealInfo", "Appeal", new { number= item.NumberAppeal }, new {@target= "_blank"} )                                        
                                     </small></td>
                                 <td class="text-nowrap">
-                                    <span class="text-truncate">@item.employees_name_add</span>
-                                    <span data-status="@item.spr_status_id" class="label @(item.spr_status_id == 1 ? "label-success" : item.spr_status_id == 0 ? "label-warning" : item.spr_status_id == 2 ? "label-danger" : item.spr_status_id == 3 ? "label-info" : "label-default" ) label-sm">@item.spr_status.status_name</span>
+                                    <span class="text-truncate">@item.EmployeesNameAdd</span>
+                                    <span data-status="@item.SprStatusId" class="label @(item.SprStatusId == 1 ? "label-success" : item.SprStatusId == 0 ? "label-warning" : item.SprStatusId == 2 ? "label-danger" : item.SprStatusId == 3 ? "label-info" : "label-default" ) label-sm">@item.SprStatus.StatusName</span>
                                 </td>
                             </tr>
                         }
@@ -53,17 +53,17 @@
                     </thead>
                     <tbody>
                         @{int j = 0; }
-                        @foreach (ReceptionCentreNew.Domain.Concrete.data_appeal_call item in ViewBag.LastCalls)
+                        @foreach (ReceptionCentreNew.Data.Context.App.DataAppealCall item in ViewBag.LastCalls)
                         {
                             <tr>
                                 <td>@(++j)</td>
                                 <td class="text-nowrap">
-                                    @item.date_call.Value.ToShortDateString()
-                                    <small class="d-block text-muted">@item.date_call.Value.ToShortTimeString()</small>
+                                    @item.DateCall.Value.ToShortDateString()
+                                    <small class="d-block text-muted">@item.DateCall.Value.ToShortTimeString()</small>
                                 </td>
-                                <td>@item.time_talk</td>
+                                <td>@item.TimeTalk</td>
                                 <td class="text-nowrap">
-                                    <span class="d-block">@item.employees_name_add</span>
+                                    <span class="d-block">@item.EmployeesNameAdd</span>
                                 </td>
                             </tr>
                         }

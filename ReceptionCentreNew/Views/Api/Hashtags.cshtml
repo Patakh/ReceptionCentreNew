@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReceptionCentreNew.Models.Hashtag_services_list>
+﻿@model IEnumerable<HashtagServicesList>
 <style>
     .list-group-item {
     background-color:transparent;
@@ -19,7 +19,7 @@
         color: white !important;
     }
 </style>
-@*<link href="~/Content/social-networks/custom_style.css" rel="stylesheet" />*@
+@*<link href="~/social-networks/custom_style.css" rel="stylesheet" />*@
 @using (Ajax.BeginForm("GetHashtag", "Api", null, new AjaxOptions { UpdateTargetId = "call-consultations", OnBegin = "$('#call-consultations-services-list').html('... ждите')" }, new { @id = "searchHashtagsForm", @class = "" }))
 {
     <div class="row" style="margin:0;">
@@ -38,7 +38,7 @@
                     <div class="list-group">
                         @foreach (var item in Model)
                         {
-                            @Ajax.ActionLink(item.name, "GetServicesInfo", new { @id = item.id }, new AjaxOptions { UpdateTargetId = "call-services-info", OnBegin = "$('#call-services-info').html('... ждите')" }, new { @class = "list-group-item services-item" })
+                            @Ajax.ActionLink(item.Name, "GetServicesInfo", new { @id = item.Id }, new AjaxOptions { UpdateTargetId = "call-services-info", OnBegin = "$('#call-services-info').html('... ждите')" }, new { @class = "list-group-item services-item" })
                         }
                     </div>
                 }

@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+﻿@model  EmployeeViewModel
 <div class="card-box p-0">
     <div class="row">
         <div class="col-sm-10">
@@ -27,29 +27,29 @@
                 <thead>
                     <tr>
                         <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployeesJobPosList.First().job_pos_name)</th>
+                        <th>@Html.DisplayNameFor(model => model.SprEmployeesJobPosList.First().JobPosName)</th>
                         
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.SprEmployeesJobPosList)
                     {
-                        <tr data-employee-job-pos-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                        <tr data-employee-job-pos-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td>
-                                <span>@Html.DisplayFor(i => item.job_pos_name)</span><br>
+                                <span>@Html.DisplayFor(i => item.JobPosName)</span><br>
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="text-custom btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"job_pos_name": @Json.Encode(item.job_pos_name), "employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.commentt_modify ?? "-"), "date_add": "@Html.DisplayFor(i => item.date_add)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                <button type="button" class="text-custom btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"JobPosName": @Json.Encode(item.JobPosName), "EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.CommenttModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
-                                    if (item.is_remove != true)
+                                    if (item.IsRemove != true)
                                     {
-                                        using (Ajax.BeginForm("PartialModalEditEmployeeJobPos", "Reference", new { employeeJobPosId = item.id }, new AjaxOptions { UpdateTargetId = "myModal", OnSuccess = "$('#myModal').modal('show');" }, new { @class = "form-submit" }))
+                                        using (Ajax.BeginForm("PartialModalEditEmployeeJobPos", "Reference", new { employeeJobPosId = item.Id }, new AjaxOptions { UpdateTargetId = "myModal", OnSuccess = "$('#myModal').modal('show');" }, new { @class = "form-submit" }))
                                         {
                                             <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
                                         }
@@ -107,13 +107,13 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Наименование</strong>: " + tooltipInfo['job_pos_name'] + "</br>" +
+                    "<strong>Наименование</strong>: " + tooltipInfo['JobPosName'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
                     "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    (tooltipInfo['is_remove'] ?
+                    (tooltipInfo['IsRemove'] ?
                             "<hr class='m-t-5 m-b-5'>" +
                             "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
                             "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +

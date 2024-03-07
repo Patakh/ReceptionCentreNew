@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+﻿@model  EmployeeViewModel
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -29,19 +29,19 @@
                             <thead>
                                 <tr>
                                     <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                                    <th>@Html.DisplayNameFor(model => model.SprEmployeesRoleJoin.First().spr_employees_role_id)</th>
+                                    <th>@Html.DisplayNameFor(model => model.SprEmployeesRoleJoin.First().SprEmployeesRoleId)</th>
 
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach (var item in Model.SprEmployeesRoleJoin)
                                 {
-                                    <tr data-employee-role-id="@item.id">
+                                    <tr data-employee-role-id="@item.Id">
                                         <td class="number-row p-l-20-important">
                                             @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                                         </td>
                                         <td>
-                                            @Html.DisplayFor(i => item.spr_employees_role.commentt)
+                                            @Html.DisplayFor(i => item.SprEmployeesRole.Commentt)
                                         </td>
                                         <td class="actions text-right">
                                             @if (User.IsInRole("superadmin"))

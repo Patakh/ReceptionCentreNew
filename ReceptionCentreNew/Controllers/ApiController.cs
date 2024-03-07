@@ -34,7 +34,7 @@ namespace ReceptionCentreNew.Controllers
             reader.Close();
             stream_rez.Close();
             Token model_token = JsonConvert.DeserializeObject<Token>(data);
-            token = model_token.access_token;
+            token = model_token.AccessToken;
             return token;
         }
         public string GetHttpClient(string uri)
@@ -90,15 +90,15 @@ namespace ReceptionCentreNew.Controllers
 
             ServicesSubInfo model = new ServicesSubInfo
             {
-                Info = msgInfo != "[]" ? msgInfo != "null" ? JsonConvert.DeserializeObject<List<Services_sub_info>>(msgInfo) : new List<Services_sub_info>() : new List<Services_sub_info>(),
-                Documents = msgDocuments != "[]" ? msgDocuments != "null" ? JsonConvert.DeserializeObject<List<Services_sub_documents>>(msgDocuments) : new List<Services_sub_documents>() : new List<Services_sub_documents>(),
-                Failure = msgFailure != "[]" ? msgFailure != "null" ? JsonConvert.DeserializeObject<List<Services_sub_failure>>(msgFailure) : new List<Services_sub_failure>() : new List<Services_sub_failure>(),
-                FailureDocuments = msgFailureDocuments != "[]" ? msgFailureDocuments != "null" ? JsonConvert.DeserializeObject<List<Services_sub_failure>>(msgFailureDocuments) : new List<Services_sub_failure>() : new List<Services_sub_failure>(),
-                Result = msgResult != "[]" ? msgResult != "null" ? JsonConvert.DeserializeObject<List<Services_sub_result>>(msgResult) : new List<Services_sub_result>() : new List<Services_sub_result>(),
-                Stop = msgStop != "[]" ? msgStop != "null" ? JsonConvert.DeserializeObject<List<Services_sub_stop>>(msgStop) : new List<Services_sub_stop>() : new List<Services_sub_stop>(),
-                Tariff = msgTariff != "[]" ? msgTariff != "null" ? JsonConvert.DeserializeObject<List<Services_sub_tariff>>(msgTariff) : new List<Services_sub_tariff>() : new List<Services_sub_tariff>(),
-                Way = msgWay != "[]" ? msgWay != "null" ? JsonConvert.DeserializeObject<List<Services_sub_way>>(msgWay) : new List<Services_sub_way>() : new List<Services_sub_way>(),
-                WayResult = msgWayResult != "[]" ? msgWayResult != "null" ? JsonConvert.DeserializeObject<List<Services_sub_way>>(msgWayResult) : new List<Services_sub_way>() : new List<Services_sub_way>(),
+                Info = msgInfo != "[]" ? msgInfo != "null" ? JsonConvert.DeserializeObject<List<ServicesSubInfo>>(msgInfo) : new List<ServicesSubInfo>() : new List<ServicesSubInfo>(),
+                Documents = msgDocuments != "[]" ? msgDocuments != "null" ? JsonConvert.DeserializeObject<List<ServicesSubDocuments>>(msgDocuments) : new List<ServicesSubDocuments>() : new List<ServicesSubDocuments>(),
+                Failure = msgFailure != "[]" ? msgFailure != "null" ? JsonConvert.DeserializeObject<List<ServicesSubFailure>>(msgFailure) : new List<ServicesSubFailure>() : new List<ServicesSubFailure>(),
+                FailureDocuments = msgFailureDocuments != "[]" ? msgFailureDocuments != "null" ? JsonConvert.DeserializeObject<List<ServicesSubFailure>>(msgFailureDocuments) : new List<ServicesSubFailure>() : new List<ServicesSubFailure>(),
+                Result = msgResult != "[]" ? msgResult != "null" ? JsonConvert.DeserializeObject<List<ServicesSubResult>>(msgResult) : new List<ServicesSubResult>() : new List<ServicesSubResult>(),
+                Stop = msgStop != "[]" ? msgStop != "null" ? JsonConvert.DeserializeObject<List<ServicesSubStop>>(msgStop) : new List<ServicesSubStop>() : new List<ServicesSubStop>(),
+                Tariff = msgTariff != "[]" ? msgTariff != "null" ? JsonConvert.DeserializeObject<List<ServicesSubTariff>>(msgTariff) : new List<ServicesSubTariff>() : new List<ServicesSubTariff>(),
+                Way = msgWay != "[]" ? msgWay != "null" ? JsonConvert.DeserializeObject<List<ServicesSubWay>>(msgWay) : new List<ServicesSubWay>() : new List<ServicesSubWay>(),
+                WayResult = msgWayResult != "[]" ? msgWayResult != "null" ? JsonConvert.DeserializeObject<List<ServicesSubWay>>(msgWayResult) : new List<ServicesSubWay>() : new List<ServicesSubWay>(),
             };
 
             return PartialView("ServicesInfo", model);
@@ -112,12 +112,12 @@ namespace ReceptionCentreNew.Controllers
             if (search != null && search.Replace(" ","") != "")
             {                
                 var msg = GetResponseApi("Services/SearchByHashtag/1912196/" + search.TrimStart('#').Replace('#', ';'));
-                var Services = JsonConvert.DeserializeObject<List<Hashtag_services_list>>(msg);                
+                var Services = JsonConvert.DeserializeObject<List<HashtagServicesList>>(msg);                
                 return PartialView("Hashtags", Services);
             }
             else
             {
-                return PartialView("Hashtags", new List<Hashtag_services_list>());
+                return PartialView("Hashtags", new List<HashtagServicesList>());
             }
 
         }
@@ -138,19 +138,19 @@ namespace ReceptionCentreNew.Controllers
 
                     ViewBag.PhoneNumber = PhoneNumber;
                     var msg = GetResponseApi("Jitsi/SearchCustomer/" + pn.Replace(" ", ""));
-                    var Customers = JsonConvert.DeserializeObject<Services_sub_customer_response>(msg);
+                    var Customers = JsonConvert.DeserializeObject<ServicesSubCustomerResponse>(msg);
                     var model = Customers;
                     return PartialView("Customers", model);
                 }
                 else
                 {
-                    return PartialView("Customers", new Services_sub_customer_response());
+                    return PartialView("Customers", new ServicesSubCustomerResponse());
                 }
 
             }
             catch
             {
-                return PartialView("Customers", new Services_sub_customer_response());
+                return PartialView("Customers", new ServicesSubCustomerResponse());
             }
         }
         #endregion
@@ -162,12 +162,12 @@ namespace ReceptionCentreNew.Controllers
             {
                 ViewBag.Snils = snils;
                 var msg = GetResponseApi("Case/" + snils);
-                var UserInfo = JsonConvert.DeserializeObject<List<Account_case>>(msg);
-                return PartialView("Cases", UserInfo.OrderByDescending(o=>o.date_enter).Take(3));
+                var UserInfo = JsonConvert.DeserializeObject<List<AccountCase>>(msg);
+                return PartialView("Cases", UserInfo.OrderByDescending(o=>o.DateEnter).Take(3));
             }
             else
             {
-                return PartialView("Cases", new List<Account_case>());
+                return PartialView("Cases", new List<AccountCase>());
             }
 
         }

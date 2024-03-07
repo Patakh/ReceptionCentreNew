@@ -1,12 +1,12 @@
-﻿@model ReceptionCentreNew.Models.ReportViewModel
+﻿@model  ReportViewModel
     @{ 
         int q, c, r, p, a;
         int sum;
-        int total_q = @Model.ReportCategoryList.Sum(s => s.out_count_question);
-        int total_c = @Model.ReportCategoryList.Sum(s => s.out_count_claim);
-        int total_r = @Model.ReportCategoryList.Sum(s => s.out_count_review);
-        int total_p = @Model.ReportCategoryList.Sum(s => s.out_count_proposals);
-        int total_a = @Model.ReportCategoryList.Sum(s => s.out_count_alert);
+        int total_q = @Model.ReportCategoryList.Sum(s => s.OutCountQuestion);
+        int total_c = @Model.ReportCategoryList.Sum(s => s.OutCountClaim);
+        int total_r = @Model.ReportCategoryList.Sum(s => s.OutCountReview);
+        int total_p = @Model.ReportCategoryList.Sum(s => s.OutCountProposals);
+        int total_a = @Model.ReportCategoryList.Sum(s => s.OutCountAlert);
         int totalSum = total_q + total_c + total_r + total_p + total_a;
     }
 <style>
@@ -25,7 +25,7 @@
             <tr valing="top"><td colspan="3"><div class="report_name">Отчет по категориям</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -62,21 +62,21 @@
                         @foreach (var item in Model.ReportCategoryList)
                         {
                             {
-                                q = item.out_count_question;
-                                c = item.out_count_claim;
-                                r = item.out_count_review;
-                                p = item.out_count_proposals;
-                                a = item.out_count_alert;
+                                q = item.OutCountQuestion;
+                                c = item.OutCountClaim;
+                                r = item.OutCountReview;
+                                p = item.OutCountProposals;
+                                a = item.OutCountAlert;
                                 sum = q + c + r + p + a;
                             }
                             <tr>
-                                <td>@item.out_num</td>
-                                <td class="text-left">@item.out_mfc_name</td>
-                                <td>@item.out_count_question</td>
-                                <td>@item.out_count_claim</td>
-                                <td>@item.out_count_review</td>
-                                <td>@item.out_count_proposals</td>
-                                <td>@item.out_count_alert</td>
+                                <td>@item.OutNum</td>
+                                <td class="text-left">@item.OutMfcName</td>
+                                <td>@item.OutCountQuestion</td>
+                                <td>@item.OutCountClaim</td>
+                                <td>@item.OutCountReview</td>
+                                <td>@item.OutCountProposals</td>
+                                <td>@item.OutCountAlert</td>
                                 <td class="text-center"><b>@sum</b></td>
                             </tr>
                         }
@@ -134,23 +134,23 @@
                 @foreach (var item in Model.ReportCategoryList)
                 {
                     {                        
-                        q = item.out_count_question;
-                        c = item.out_count_claim;
-                        r = item.out_count_review;
-                        p = item.out_count_proposals;
-                        a = item.out_count_alert;
+                        q = item.OutCountQuestion;
+                        c = item.OutCountClaim;
+                        r = item.OutCountReview;
+                        p = item.OutCountProposals;
+                        a = item.OutCountAlert;
                         sum = q + c + r + p + a;
                     }
                     <tr>
                         <td class="number-row p-l-20-important">
-                            @item.out_num
+                            @item.OutNum
                         </td>
-                        <td><div class="clip" title="@item.out_mfc_name"  style="max-width:250px;"> @item.out_mfc_name </div></td>
-                        <td class="text-center">@item.out_count_question</td>
-                        <td class="text-center">@item.out_count_claim</td>
-                        <td class="text-center">@item.out_count_review</td>
-                        <td class="text-center">@item.out_count_proposals</td>
-                        <td class="text-center">@item.out_count_alert</td>
+                        <td><div class="clip" title="@item.OutMfcName"  style="max-width:250px;"> @item.OutMfcName </div></td>
+                        <td class="text-center">@item.OutCountQuestion</td>
+                        <td class="text-center">@item.OutCountClaim</td>
+                        <td class="text-center">@item.OutCountReview</td>
+                        <td class="text-center">@item.OutCountProposals</td>
+                        <td class="text-center">@item.OutCountAlert</td>
                         <td class="text-center"><b>@sum</b></td>
                     </tr>
                 }

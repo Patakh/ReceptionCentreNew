@@ -1,9 +1,9 @@
-﻿@model ReceptionCentreNew.Models.Report_Parameters
+﻿@model  ReportParameters
 @{
     ViewBag.Title = "Отчет по типу обращения";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet" />
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet" />
 @Html.MvcSiteMap().SiteMapPath()
 <div class="card-box">
     <h4>Отчет по предмету обращения</h4>
@@ -61,8 +61,8 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
-    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
 }
 <script>
 

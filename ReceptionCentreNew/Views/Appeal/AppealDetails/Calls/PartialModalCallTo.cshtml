@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppeal
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -11,16 +11,16 @@
             <div class="card-box">
                 <div class="text-center">
                     <img class="swal2-image rounded-circle" src="/Content/new_design/assets/images/users/avatar-6.jpg" width="100" height="100">
-                    <h5 class="">@Model.applicant_name</h5>
-                    <h6 class="">@Model.phone_number</h6>
+                    <h5 class="">@Model.ApplicantName</h5>
+                    <h6 class="">@Model.PhoneNumber</h6>
                 </div>
                 
                 <div class="row">
                     <div class="col-sm-1"></div>
                     <div class="col-sm-8 text-center">
                         @{
-                            string phone = Model.phone_number.Replace("(", "").Replace(")", "").Replace("-", "");
-                            if (Model.phone_number.Length == 10 && Model.phone_number.Substring(0, 4) == "8722")
+                            string phone = Model.PhoneNumber.Replace("(", "").Replace(")", "").Replace("-", "");
+                            if (Model.PhoneNumber.Length == 10 && Model.PhoneNumber.Substring(0, 4) == "8722")
                             { phone = phone.Substring(4, phone.Length); }
                         }
                         <input type="text" class="form-control" id="modal_phone_number" value="@phone" />
@@ -31,7 +31,7 @@
                 <div class="row">
                     <div class="col-sm-2"></div>
                     <div class="col-sm-2">
-                        <button type="button" id="CallOn" class="link btn btn-success waves-effect waves-light" style="width:65px; height:65px; font-size:32px; border-radius:50%" data-phone-number="@Model.phone_number"><i class="glyphicon glyphicon-earphone"></i></button>
+                        <button type="button" id="CallOn" class="link btn btn-success waves-effect waves-light" style="width:65px; height:65px; font-size:32px; border-radius:50%" data-phone-number="@Model.PhoneNumber"><i class="glyphicon glyphicon-earphone"></i></button>
                     </div>
                     <div class="col-sm-2"></div>
                 </div>
@@ -42,13 +42,13 @@
 <script>
     //$(document).ready(function () {
     $('button#CallOn').click(function () {
-        var phone_number = $('#modal_phone_number').val();
-            if (phone_number.length >= 5) {
-                console.log(phone_number);
+        var PhoneNumber = $('#modal_phone_number').val();
+            if (PhoneNumber.length >= 5) {
+                console.log(PhoneNumber);
                 $.ajax({
                     type: "POST",
                     url: '@Url.Action("_CallPhone", "Appeal")',
-                    data: { appealId: '@Model.id', phone_number: phone_number },
+                    data: { appealId: '@Model.Id', PhoneNumber: PhoneNumber },
                     success: function (result) {
                         //var socket = new WebSocket("ws://192.168.35.190:8886");
                         var socket = new WebSocket("ws://localhost:8886");

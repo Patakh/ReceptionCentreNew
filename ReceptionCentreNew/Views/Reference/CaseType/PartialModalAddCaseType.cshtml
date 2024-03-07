@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_type
+﻿@model ReceptionCentreNew.Data.Context.App.SprType
 <script>
     $(document).ready(function () {
         $('#AddCaseTypeForm').validate();
@@ -17,9 +17,9 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.type_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.type_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.type_name) } })
+                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
                         </div>
                     </div>
                 </div>

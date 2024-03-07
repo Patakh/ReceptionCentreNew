@@ -1,13 +1,13 @@
-﻿@model ReceptionCentreNew.Models.ReportViewModel
+﻿@model  ReportViewModel
     @{ 
         int e, m, c, o, q, s;
         int sum;
-        int total_e = @Model.ReportTreatmentList.Sum(ss => ss.out_count_earth);
-        int total_s = @Model.ReportTreatmentList.Sum(ss => ss.out_count_social);
-        int total_m = @Model.ReportTreatmentList.Sum(ss => ss.out_count_migratory);
-        int total_c = @Model.ReportTreatmentList.Sum(ss => ss.out_count_commercial);
-        int total_q = @Model.ReportTreatmentList.Sum(ss => ss.out_count_quality);
-        int total_o = @Model.ReportTreatmentList.Sum(ss => ss.out_count_other);
+        int total_e = @Model.ReportTreatmentList.Sum(ss => ss.OutCountEarth);
+        int total_s = @Model.ReportTreatmentList.Sum(ss => ss.OutCountSocial);
+        int total_m = @Model.ReportTreatmentList.Sum(ss => ss.OutCountMigratory);
+        int total_c = @Model.ReportTreatmentList.Sum(ss => ss.OutCountCommercial);
+        int total_q = @Model.ReportTreatmentList.Sum(ss => ss.OutCountQuality);
+        int total_o = @Model.ReportTreatmentList.Sum(ss => ss.OutCountOther);
         int totalSum = total_e + total_m + total_c + total_o + total_q + total_s;
     }
 <style>
@@ -26,7 +26,7 @@
             <tr valing="top"><td colspan="3"><div class="report_name">Отчет по предмету обращения</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -63,23 +63,23 @@
                         @foreach (var item in Model.ReportTreatmentList)
                         {
                             {
-                                e = item.out_count_earth;
-                                s = item.out_count_social;
-                                m = item.out_count_migratory;
-                                c = item.out_count_commercial;
-                                q = item.out_count_quality;
-                                o = item.out_count_other;
+                                e = item.OutCountEarth;
+                                s = item.OutCountSocial;
+                                m = item.OutCountMigratory;
+                                c = item.OutCountCommercial;
+                                q = item.OutCountQuality;
+                                o = item.OutCountOther;
                                 sum = e + m + c + o + q + s;
                             }
                             <tr>
-                                <td>@item.out_num</td>
-                                <td class="text-left">@item.out_mfc_name</td>
-                                <td>@item.out_count_earth</td>
-                                <td>@item.out_count_social</td>
-                                <td>@item.out_count_migratory</td>
-                                <td>@item.out_count_commercial</td>
-                                <td>@item.out_count_quality</td>
-                                <td>@item.out_count_other</td>
+                                <td>@item.OutNum</td>
+                                <td class="text-left">@item.OutMfcName</td>
+                                <td>@item.OutCountEarth</td>
+                                <td>@item.OutCountSocial</td>
+                                <td>@item.OutCountMigratory</td>
+                                <td>@item.OutCountCommercial</td>
+                                <td>@item.OutCountQuality</td>
+                                <td>@item.OutCountOther</td>
                                 <td class="text-center"><b>@sum</b></td>
                             </tr>
                         }
@@ -139,25 +139,25 @@
                 @foreach (var item in Model.ReportTreatmentList)
                 {
                     {
-                        e = item.out_count_earth;
-                        s = item.out_count_social;
-                        m = item.out_count_migratory;
-                        c = item.out_count_commercial;
-                        q = item.out_count_quality;
-                        o = item.out_count_other;
+                        e = item.OutCountEarth;
+                        s = item.OutCountSocial;
+                        m = item.OutCountMigratory;
+                        c = item.OutCountCommercial;
+                        q = item.OutCountQuality;
+                        o = item.OutCountOther;
                         sum = e + m + c + o + q + s;
                     }
                     <tr>
                         <td class="number-row p-l-20-important">
-                            @item.out_num
+                            @item.OutNum
                         </td>
-                        <td><div class="clip" title="@item.out_mfc_name"  style="max-width:250px;"> @item.out_mfc_name </div></td>
-                        <td class="text-center">@item.out_count_earth</td>
-                        <td class="text-center">@item.out_count_social</td>
-                        <td class="text-center">@item.out_count_migratory</td>
-                        <td class="text-center">@item.out_count_commercial</td>
-                        <td class="text-center">@item.out_count_quality</td>
-                        <td class="text-center">@item.out_count_other</td>
+                        <td><div class="clip" title="@item.OutMfcName"  style="max-width:250px;"> @item.OutMfcName </div></td>
+                        <td class="text-center">@item.OutCountEarth</td>
+                        <td class="text-center">@item.OutCountSocial</td>
+                        <td class="text-center">@item.OutCountMigratory</td>
+                        <td class="text-center">@item.OutCountCommercial</td>
+                        <td class="text-center">@item.OutCountQuality</td>
+                        <td class="text-center">@item.OutCountOther</td>
                         <td class="text-center"><b>@sum</b></td>
                     </tr>
                 }

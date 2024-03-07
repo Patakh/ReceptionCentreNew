@@ -1,9 +1,9 @@
-﻿@model ReceptionCentreNew.Models.Report_Parameters
+﻿@model  ReportParameters
 @{
     ViewBag.Title = "Статистика обращений";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/css/print-report.css" rel="stylesheet" />
+<link href="~/new_design/css/print-report.css" rel="stylesheet" />
 @Html.MvcSiteMap().SiteMapPath()
 <div class="card-box">
     <h4>Статистика обращений</h4>
@@ -69,11 +69,11 @@
         }
     </div>
     <div id="appealsTableContainer">
-        @*@Html.Action("Report_DataAppeals", "Report", new { parameters = new ReceptionCentreNew.Models.Report_Parameters() { sprEmployeeId = @ViewBag.SprEmployeesId, sprStatusId = 0 } })*@
+        @*@Html.Action("Report_DataAppeals", "Report", new { parameters = new ReceptionCentreNew.Models.ReportParameters() { sprEmployeeId = @ViewBag.SprEmployeesId, sprStatusId = 0 } })*@
     </div>
 </div>
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
 }
 <script>
 

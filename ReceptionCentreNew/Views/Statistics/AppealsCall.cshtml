@@ -2,7 +2,7 @@
     ViewBag.Title = "Количество звонков";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<link href="~/Content/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
+<link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 @Html.MvcSiteMap().SiteMapPath()
 <div class="card-box">
     <div id="result">
@@ -10,9 +10,9 @@
     </div>
 </div>
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/c3.js"></script>
-    <script src="~/Content/new_design/plugins/Charts/js/d3.v3.min.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
+    <script src="~/new_design/plugins/Charts/js/c3.js"></script>
+    <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
     <script>
     $(document).ready(function () {        
         $.ajax({

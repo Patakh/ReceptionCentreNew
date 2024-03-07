@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 
 @using (Ajax.BeginForm("SubmitNextRouteStageSave", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "stages", OnBegin="console.log('+этап')" }, new { @id = "AddRouteStageForm", @class = "form-submit" }))
 {
@@ -22,8 +22,8 @@
             <table class="table table-vertical-middle">
                 <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_stage_name) @Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_date_start) </th>                        
-                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().out_employees_name)</th>
+                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutStageName) @Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutDateStart) </th>                        
+                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutEmployeesName)</th>
                         <th>Дни</th>
                         <th>Дополнительно</th>
                     </tr>
@@ -33,21 +33,21 @@
                     {
                         <tr class="text-nowrap">
                             <td class="vertical-middle">
-                                @Html.DisplayFor(i => item.out_stage_name)<br />
-                                <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.out_date_start) 
-                                <i class="fa fa-clock-o text-muted"></i> <span class="text-muted">@Html.DisplayFor(i => item.out_time_start)</span>
+                                @Html.DisplayFor(i => item.OutStageName)<br />
+                                <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.OutDateStart) 
+                                <i class="fa fa-clock-o text-muted"></i> <span class="text-muted">@Html.DisplayFor(i => item.OutTimeStart)</span>
                             </td>
                            
                             <td class="font-13 vertical-middle">
-                                <div title="@item.out_employees_name" class="clip" style="max-width:210px">@item.out_employees_name</div>
+                                <div title="@item.OutEmployeesName" class="clip" style="max-width:210px">@item.OutEmployeesName</div>
                             </td>
                             <td class="vertical-middle">
-                                <span class="text-muted">Регл. <span style="margin-left: 3px;"></span> @Html.DisplayFor(i => item.out_count_day_regulation)</span><br />
-                                <span class="text-muted">Факт. @Html.DisplayFor(i => item.out_count_day_fact)</span>
+                                <span class="text-muted">Регл. <span style="margin-left: 3px;"></span> @Html.DisplayFor(i => item.OutCountDayRegulation)</span><br />
+                                <span class="text-muted">Факт. @Html.DisplayFor(i => item.OutCountDayFact)</span>
                             </td>
                             <td>
-                                <span class="text-muted">Регл. <i class="fa fa-calendar text-muted" style="margin-left: 3px;"></i> @Html.DisplayFor(i => item.out_date_regulation)</span><br />
-                                <span class="text-muted">Факт. <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.out_date_stop)</span>
+                                <span class="text-muted">Регл. <i class="fa fa-calendar text-muted" style="margin-left: 3px;"></i> @Html.DisplayFor(i => item.OutDateRegulation)</span><br />
+                                <span class="text-muted">Факт. <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.OutDateStop)</span>
                             </td>
                         </tr>
                     }

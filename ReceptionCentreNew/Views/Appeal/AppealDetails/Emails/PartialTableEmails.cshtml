@@ -1,6 +1,6 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
-<link href="~/Content/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
-<script src="~/Content/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
+﻿@model  AppealViewModel
+<link href="~/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
 <style>
     .conversation-list .odd .ctext-wrap {
         background-color: #78c9e6;
@@ -27,18 +27,18 @@
         {
             foreach (var item in Model.DataAppealEmailList)
             {
-                <li class="clearfix @(item.email_type==1?"odd":"")">
+                <li class="clearfix @(item.EmailType==1?"odd":"")">
                     <div class="chat-avatar">
                         <img src="/Content/img/user_image.jpg" alt="Я">
                     </div>
                     <div class="conversation-text">
                         <div class="ctext-wrap">
                             <div class="d-flex justify-content-between font-12">
-                                <time class="mr-3">@item.date_email</time>
-                                <b>@(item.email_type == 1 ? "Я" : item.data_appeal.applicant_name)</b>
+                                <time class="mr-3">@item.DateEmail</time>
+                                <b>@(item.EmailType == 1 ? "Я" : item.DataAppeal.ApplicantName)</b>
                             </div>
-                            <p><b>@item.caption</b></p>
-                            <p>@item.text_email</p>
+                            <p><b>@item.Caption</b></p>
+                            <p>@item.TextEmail</p>
                         </div>
                     </div>
                 </li>
@@ -58,14 +58,14 @@
                 <div class="col-md-6">
                     <div class="input-group">
                         <span class="input-group-text" id="basic-addon1">&#64;</span>
-                        <input class="form-control required" style="min-width:250px" type="email" name="email_" placeholder="Адрес электронной почты" value="@ViewBag.Email_" readonly />
+                        <input class="form-control required" style="min-width:250px" type="email" name="Email" placeholder="Адрес электронной почты" value="@ViewBag.Email_" readonly />
                     </div>
                 </div>
             </div>
             <div class="position-relative">
-                <input type="hidden" name="data_appeal_id" value="@Model.DataAppealId" />
-                <input type="hidden" name="employees_name_add" value="@Model.EmployeeId" />
-                <textarea class="form-control p-r-30" id="text_email" name="text_email" placeholder="Сообщение..."></textarea>
+                <input type="hidden" name="DataAppealId" value="@Model.DataAppealId" />
+                <input type="hidden" name="EmployeesNameAdd" value="@Model.EmployeeId" />
+                <textarea class="form-control p-r-30" id="TextEmail" name="TextEmail" placeholder="Сообщение..."></textarea>
                 <button type="submit" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
                     <i class="fa fa-send"></i>
                 </button>
@@ -82,7 +82,7 @@
         $('a[href="#notification-email"]').find('.badge').text(@Model.DataAppealEmailListCount);
     });
 
-    var textarea = document.querySelector('#text_email');
+    var textarea = document.querySelector('#TextEmail');
 
     textarea.addEventListener('keyup', function () {
         if (this.scrollTop > 0) {
@@ -93,7 +93,7 @@
         }
     });
 
-    $('#addEmailForm').find('[name="text_email"]').keyup(function () {
+    $('#addEmailForm').find('[name="TextEmail"]').keyup(function () {
         if (!$.trim(this.value)) {
             $('#addEmailForm').find('[type="submit"]').prop("disabled", true);
         }

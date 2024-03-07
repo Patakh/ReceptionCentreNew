@@ -1,127 +1,118 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace ReceptionCentreNew.Models
+﻿namespace ReceptionCentreNew.Models;
+public class Token
 {
-    public class Token
-    {
-        public string access_token { get; set; }
-        public string token_type { get; set; }
-        public string expires_in { get; set; }
-        public string userName { get; set; }
-        public string issued { get; set; }
-        public string expires { get; set; }
-    }
-    public class LsServices
-    {
-        public Guid services_sub_id { get; set; }
-        public string provider_name { get; set; }
-        public string service_name { get; set; }
-        public string hashtag { get; set; }
-        public string situation_name { get; set; }
-    }
-    public class Services_sub_info
-    {
-        public string name { get; set; }
-        public string description { get; set; }
-        public string legal_act { get; set; }
-    }
-    public class Services_sub_documents
-    {
-        public string name { get; set; }
-        public string needs { get; set; }
-        public string type { get; set; }
-    }
-    public class Services_sub_failure
-    {
-        public string failure_text { get; set; }
-        public string commentt { get; set; }
-        public string legal_act { get; set; }
-    }
+    public string AccessToken { get; set; }
+    public string TokenType { get; set; }
+    public string ExpiresIn { get; set; }
+    public string UserName { get; set; }
+    public string Issued { get; set; }
+    public string Expires { get; set; }
+}
+public class LsServices
+{
+    public Guid ServicesSubId { get; set; }
+    public string ProviderName { get; set; }
+    public string ServiceName { get; set; }
+    public string Hashtag { get; set; }
+    public string SituationName { get; set; }
+}
 
-    public class Services_sub_result
-    {
-        public string name { get; set; }
-        public string result { get; set; }
-        public string method { get; set; }
-        public string period_provider { get; set; }
-        public string period_mfc { get; set; }
-    }
-    public class Services_sub_stop
-    {
-        public string text { get; set; }
-        public string CountDay { get; set; }
-        public string commentt { get; set; }
-        public string week_name { get; set; }
-    }
-    public class Services_sub_tariff
-    {
-        public string type { get; set; }
-        public string tariff { get; set; }
-        public string count_day_processing { get; set; }
-        public string count_day_execution { get; set; }
-        public string count_day_return { get; set; }
-        public string week { get; set; }
-    }
-    public class Services_sub_way
-    {
-        public string name_way { get; set; }
-    }
-    public class ServicesSubInfo
-    {
-        public List<Services_sub_info> Info { get; set; }
-        public List<Services_sub_documents> Documents { get; set; }
-        public List<Services_sub_failure> Failure { get; set; }
-        public List<Services_sub_failure> FailureDocuments { get; set; }
-        public List<Services_sub_result> Result { get; set; }
-        public List<Services_sub_stop> Stop { get; set; }
-        public List<Services_sub_tariff> Tariff { get; set; }
-        public List<Services_sub_way> Way { get; set; }
-        public List<Services_sub_way> WayResult { get; set; }
-    }
 
-    public class Hashtag_services_list
-    {
-        public Guid id { get; set; }
-        public string provider { get; set; }
-        public string EmployeeFio { get; set; }
-        public string name { get; set; }
-        public string[] hashtags { get; set; }
-    }
+public class ServicesSubDocuments
+{
+    public string Name { get; set; }
+    public string Needs { get; set; }
+    public string Type { get; set; }
+}
+public class ServicesSubFailure
+{
+    public string FailureText { get; set; }
+    public string Commentt { get; set; }
+    public string LegalAct { get; set; }
+}
 
-    public class Services_sub_customers
-    {
-        public string CustomerFio { get; set; }
-        public DateTime? DocumentBirthDate { get; set; }
-        public string CustomerSex { get; set; }
-        public string CustomerAddress { get; set; }
-        public string CustomerEmail { get; set; }
-        public string CustomerSnils { get; set; }
-    }
+public class ServicesSubResult
+{
+    public string Name { get; set; }
+    public string Result { get; set; }
+    public string Method { get; set; }
+    public string PeriodProvider { get; set; }
+    public string PeriodMfc { get; set; }
+}
+public class ServicesSubStop
+{
+    public string Text { get; set; }
+    public string CountDay { get; set; }
+    public string Commentt { get; set; }
+    public string WeekName { get; set; }
+}
+public class ServicesSubTariff
+{
+    public string Type { get; set; }
+    public string Tariff { get; set; }
+    public string CountDayProcessing { get; set; }
+    public string CountDayExecution { get; set; }
+    public string CountDayReturn { get; set; }
+    public string Week { get; set; }
+}
+public class ServicesSubWay
+{
+    public string NameWay { get; set; }
+}
+public class ServicesSubInfo
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string LegalAct { get; set; }
+    public List<ServicesSubInfo> Info { get; set; }
+    public List<ServicesSubDocuments> Documents { get; set; }
+    public List<ServicesSubFailure> Failure { get; set; }
+    public List<ServicesSubFailure> FailureDocuments { get; set; }
+    public List<ServicesSubResult> Result { get; set; }
+    public List<ServicesSubStop> Stop { get; set; }
+    public List<ServicesSubTariff> Tariff { get; set; }
+    public List<ServicesSubWay> Way { get; set; }
+    public List<ServicesSubWay> WayResult { get; set; }
+}
 
-    public class Services_sub_customer_data
-    {
-        public List<Services_sub_customers> Customers { get; set; }
-    }
-    public class Services_sub_customer_response
-    {
-        public string ResponseCode { get; set; }
-        public string ResponseMessage { get; set; }
-        public List<Services_sub_customers> Customers { get; set; }
-    }
-    public class Account_case
-    {
-        public string DataServicesInfoId { get; set; }
-        public DateTime date_enter { get; set; }
-        public string services_provider_name { get; set; }
-        public string services_sub_name { get; set; }
-        public DateTime? date_finish_total { get; set; }
-        public string employees_fio { get; set; }
-        public string MfcName { get; set; }
-        public int status_id { get; set; }
-        public string status { get; set; }
-    }
+public class HashtagServicesList
+{
+    public Guid Id { get; set; }
+    public string Provider { get; set; }
+    public string EmployeeFio { get; set; }
+    public string Name { get; set; }
+    public string[] Hashtags { get; set; }
+}
 
+public class ServicesSubCustomers
+{
+    public string CustomerFio { get; set; }
+    public DateTime? DocumentBirthDate { get; set; }
+    public string CustomerSex { get; set; }
+    public string CustomerAddress { get; set; }
+    public string CustomerEmail { get; set; }
+    public string CustomerSnils { get; set; }
+}
+
+public class ServicesSubCustomerData
+{
+    public List<ServicesSubCustomers> Customers { get; set; }
+}
+public class ServicesSubCustomerResponse
+{
+    public string ResponseCode { get; set; }
+    public string ResponseMessage { get; set; }
+    public List<ServicesSubCustomers> Customers { get; set; }
+}
+public class AccountCase
+{
+    public string DataServicesInfoId { get; set; }
+    public DateTime DateEnter { get; set; }
+    public string ServicesProviderName { get; set; }
+    public string ServicesSubName { get; set; }
+    public DateTime? DateFinishTotal { get; set; }
+    public string EmployeesFio { get; set; }
+    public string MfcName { get; set; }
+    public int StatusId { get; set; }
+    public string Status { get; set; }
 }

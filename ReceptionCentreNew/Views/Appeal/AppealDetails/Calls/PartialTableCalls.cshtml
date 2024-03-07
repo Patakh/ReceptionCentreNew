@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 <style>
     .footable > thead > tr > th > span.footable-sort-indicator {
         position: absolute;
@@ -28,10 +28,10 @@
                 <tr>
                     <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
                     <th>Тип</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().date_call)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().phone_number)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().DateCall)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().PhoneNumber)</th>
                     <th>Прод-ть</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().employees_name_add)</th>
+                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().EmployeesNameAdd)</th>
                     <th class="text-right p-r-20-important" data-sort-ignore="true"></th>
                 </tr>
             </thead>
@@ -39,12 +39,12 @@
 
                 @foreach (var item in Model.DataAppealCallList)
                 {
-                    <tr data-call-id="@item.id">
+                    <tr data-call-id="@item.Id">
                         <td class="number-row p-l-20-important">
                             @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                         </td>
                         <td>
-                            @if (item.call_type == 2)
+                            @if (item.CallType == 2)
                             {
                                 <i class="md md-call-received"></i>
                             }
@@ -52,22 +52,22 @@
                             {<i class="md md md-call-made"></i>}
                         </td>
                         <td>
-                            @item.date_call.Value.ToShortDateString()
-                            <small class="d-block text-muted">@item.date_call.Value.ToShortTimeString()</small>
+                            @item.DateCall.Value.ToShortDateString()
+                            <small class="d-block text-muted">@item.DateCall.Value.ToShortTimeString()</small>
                         </td>
                         <td>
-                            @Html.DisplayFor(i => item.phone_number)
+                            @Html.DisplayFor(i => item.PhoneNumber)
                         </td>
                         <td>
-                            @Html.DisplayFor(i => item.time_talk)
+                            @Html.DisplayFor(i => item.TimeTalk)
                         </td>
                         <td>
-                            <div class="clip" style="max-width: 135px;">@Html.DisplayFor(i => item.employees_name_add)</div>
+                            <div class="clip" style="max-width: 135px;">@Html.DisplayFor(i => item.EmployeesNameAdd)</div>
                         </td>
                         <td class="actions text-right">
-                            @if (item.save_ftp)
+                            @if (item.SaveFtp)
                             {
-                            <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.id" @*data-toggle="modal" data-target="#audio_modal"*@>
+                            <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.Id" @*data-toggle="modal" data-target="#audio_modal"*@>
                                 <i class="md md-play-circle-outline"></i>
                             </button>
                             }
@@ -75,7 +75,7 @@
                             {
                                 <button class="btn btn-link on-default remove-row"><i class="md md-delete"></i></button>
                             }
-                            <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "employees_fio": "@item.employees_name_add", "date_add": "@item.date_call"}'>
+                            <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "EmployeesFio": "@item.EmployeesNameAdd", "DateAdd": "@item.DateCall"}'>
                                 <i class="ion-ios7-information-outline"></i>
                             </button>
                         </td>
@@ -130,7 +130,7 @@
                 title: function () {
                     var tooltipInfo = $(this).data('tooltipInfo');
                     return "<div class='text-left'>" +
-                        "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                        "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
                         "</div>";
                 },
                 html: true,

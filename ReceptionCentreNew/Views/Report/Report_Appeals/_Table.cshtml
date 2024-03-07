@@ -1,5 +1,5 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
-<link href="~/Content/new_design/plugins/datatables/datatable.custom.css" rel="stylesheet" />
+﻿@model  AppealViewModel
+<link href="~/new_design/plugins/datatables/datatable.custom.css" rel="stylesheet" />
 
 <div id="printable">
     <div class="report_head" style="display:none;">
@@ -7,7 +7,7 @@
             <tr valing="top"><td colspan="3"><div class="report_name">Реестр обращений</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/Content/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -49,9 +49,9 @@
                         {
                             <tr>
                                 <td>@(i++)</td>
-                                <td class="text-left">@item.out_applicant_name</td>
-                                <td>@item.out_status_name</td>
-                                <td>@item.out_date_add</td>
+                                <td class="text-left">@item.OutApplicantName</td>
+                                <td>@item.OutStatusName</td>
+                                <td>@item.OutDateAdd</td>
                             </tr>
                         }
                     </tbody>
@@ -91,9 +91,9 @@
                 {
                     <tr>
                         <td class="text-right">@(i++)</td>
-                        <td class="text-left">@item.out_applicant_name</td>
-                        <td>@item.out_status_name</td>
-                        <td>@item.out_date_add.Value.ToString("yyyy.MM.dd HH:mm")</td>
+                        <td class="text-left">@item.OutApplicantName</td>
+                        <td>@item.OutStatusName</td>
+                        <td>@item.OutDateAdd.Value.ToString("yyyy.MM.dd HH:mm")</td>
                     </tr>
                 }
             </tbody>

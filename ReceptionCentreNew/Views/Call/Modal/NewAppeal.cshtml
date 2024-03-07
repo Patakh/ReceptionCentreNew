@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.data_appeal
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppeal
 <style>
     select option {
         background: black;
@@ -12,47 +12,47 @@
     @using (Ajax.BeginForm("SubmitNewAppealSave", "Call", Model, new AjaxOptions { UpdateTargetId = "call-new-appeal" }, new { @id = "AddNewAppealForm", @class = "form-horizontal" }))
     {
         <div class="form-group">
-            @Html.LabelFor(model => model.applicant_name, new Dictionary<string, object> { })
-            @Html.TextBoxFor(model => model.applicant_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.applicant_name) } })
+            @Html.LabelFor(model => model.ApplicantName, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.ApplicantName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ApplicantName) } })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.phone_number, new Dictionary<string, object> { })
-            @Html.TextBoxFor(model => model.phone_number, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
+            @Html.LabelFor(model => model.PhoneNumber, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.PhoneNumber, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.email_, new Dictionary<string, object> { })
-            @Html.TextBoxFor(model => model.email_, new Dictionary<string, object> { { "class", "form-control email" } })
+            @Html.LabelFor(model => model.Email, new Dictionary<string, object> { })
+            @Html.TextBoxFor(model => model.Email, new Dictionary<string, object> { { "class", "form-control email" } })
         </div>
 
         <div class="form-group row">
-            @Html.LabelFor(model => model.spr_mfc_id, new Dictionary<string, object> { })
-            @Html.DropDownListFor(model => model.spr_mfc_id, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
+            @Html.LabelFor(model => model.SprMfcId, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.SprMfcId, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.text_appeal, new Dictionary<string, object> { })
-            @Html.TextAreaFor(model => model.text_appeal, new Dictionary<string, object> { { "class", "form-control required no-resize" }, { "rows", "5" }, { "placeholder", Html.DisplayNameFor(model => model.text_appeal) } })
+            @Html.LabelFor(model => model.TextAppeal, new Dictionary<string, object> { })
+            @Html.TextAreaFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "form-control required no-resize" }, { "rows", "5" }, { "placeholder", Html.DisplayNameFor(model => model.TextAppeal) } })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.spr_category_id, new Dictionary<string, object> { })
-            @Html.DropDownListFor(model => model.spr_category_id, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+            @Html.LabelFor(model => model.SprCategoryId, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.SprCategoryId, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
         </div>
         <div class="form-group">
-            @Html.LabelFor(model => model.spr_subject_treatment_id, new Dictionary<string, object> { })
-            @Html.DropDownListFor(model => model.spr_subject_treatment_id, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+            @Html.LabelFor(model => model.SprSubjectTreatmentId, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.SprSubjectTreatmentId, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.spr_type_id, new Dictionary<string, object> { })
-            @Html.DropDownListFor(model => model.spr_type_id, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+            @Html.LabelFor(model => model.SprTypeId, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.SprTypeId, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
         </div>
 
         <div class="form-group row">
-            @Html.LabelFor(model => model.spr_type_difficulty_id, new Dictionary<string, object> { })
-            @Html.DropDownListFor(model => model.spr_type_difficulty_id, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+            @Html.LabelFor(model => model.SprTypeDifficultyId, new Dictionary<string, object> { })
+            @Html.DropDownListFor(model => model.SprTypeDifficultyId, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
         </div>
 
         <div class="form-group mt-4">

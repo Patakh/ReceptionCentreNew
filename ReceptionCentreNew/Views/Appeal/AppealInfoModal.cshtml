@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.DataAppealSelect
+﻿@model ReceptionCentreNew.Data.Context.App.DataAppealSelect
 @{
     ViewBag.Title = "Обращение";
 }
@@ -16,7 +16,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("EditAppeal", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id', modal:true},
+                data: { appealId: '@Model.OutDataAppealId', modal:true},
                 success: function (data) {
                     $('#newModal').modal('show');
                     $('#newModal').html(data);
@@ -29,7 +29,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableCommentts", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#notes').html(data);
                 }
@@ -39,7 +39,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableChangeLogs", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#changeLogs').html(data);
                 }
@@ -50,7 +50,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableEmails", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#notification-messages').html(data);
                 }
@@ -61,7 +61,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableCalls", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#notification-calls').html(data);
                 }
@@ -72,7 +72,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableSms", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#notification-sms').html(data);
                 }
@@ -83,7 +83,7 @@
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableFiles", "Appeal")',
-                data: { appealId: '@Model.out_data_appeal_id' },
+                data: { appealId: '@Model.OutDataAppealId' },
                 success: function (data) {
                     $('#files').html(data);
                 }
@@ -121,11 +121,11 @@
 
         $(document).on('click', '#notes ul li button i.md-mode-edit', function (e) {
             var commentId = $(this).closest('li').data('commenttId');
-            var edit_commentt = $(this).closest('li').data('commentt');
+            var edit_commentt = $(this).closest('li').data('Commentt');
             $('#notes ul li').removeClass('edit');
             $(this).closest('li').addClass('edit');
             $('#addCommentsForm').find('[name="id"]').val(commentId);
-            $('#addCommentsForm').find('[name="commentt"]').val(edit_commentt).css('border', '1px dashed green');
+            $('#addCommentsForm').find('[name="Commentt"]').val(edit_commentt).css('border', '1px dashed green');
             //$('#addCommentsForm').find('[type="submit"]').html("<i class='fa fa-edit m-l-5'></i>");
             $('#addCommentsForm').find('[type="submit"]').prop("disabled", false);
         });
@@ -134,7 +134,7 @@
             var commentId = "00000000-0000-0000-0000-000000000000";
             $('#notes ul li').removeClass('edit');
             $('#addCommentsForm').find('[name="id"]').val(commentId);
-            $('#addCommentsForm').find('[name="commentt"]').val('').css('border', '1px solid #E3E3E3');
+            $('#addCommentsForm').find('[name="Commentt"]').val('').css('border', '1px solid #E3E3E3');
             //$('#addCommentsForm').find('[type="submit"]').html("<i class='fa fa-paper-plane m-l-5'></i>");
             $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
     });
@@ -229,7 +229,7 @@
     }
     
 </style>
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -241,17 +241,17 @@
         </div>
         <div class="modal-body custom-scrollbar">
             <div class="row">
-                <input type="hidden" value="@Model.out_data_appeal_id" class="_glAppealId" />
+                <input type="hidden" value="@Model.OutDataAppealId" class="_glAppealId" />
                 <div class="col-lg-9">
                     <div class="card-box m-b-15">
                         <div class="row">
                             <div class="col-md-6">
                                 <h5 class="text-black-60 font-125">
-                                    <i class="font-24 m-r-5 @(Model.out_category=="Жалоба"?"md md-report-problem text-danger":Model.out_category=="Предложение"?"md md-chat text-success":Model.out_category=="Вопрос"?"md md-help text-custom":Model.out_category=="Отзыв"?"md md-rate-review text-info":Model.out_category=="Оповещение"?"md md-announcement text-warning":"")"></i>
-                                    @Model.out_category
-                                    @if (User.IsInRole("superadmin") || User.IsInRole("admin") || Model.out_spr_employees_id == ViewBag.SprEmployeesId)
+                                    <i class="font-24 m-r-5 @(Model.OutCategory=="Жалоба"?"md md-report-problem text-danger":Model.OutCategory=="Предложение"?"md md-chat text-success":Model.OutCategory=="Вопрос"?"md md-help text-custom":Model.OutCategory=="Отзыв"?"md md-rate-review text-info":Model.OutCategory=="Оповещение"?"md md-announcement text-warning":"")"></i>
+                                    @Model.OutCategory
+                                    @if (User.IsInRole("superadmin") || User.IsInRole("admin") || Model.OutSprEmployeesId == ViewBag.SprEmployeesId)
                                     {
-                                        if (Model.out_status_name != "Исполнено")
+                                        if (Model.OutStatusName != "Исполнено")
                                         {
                                             <button type="button" class="btn btn-link text-danger" style="padding:1px 6px;" id="btn_edit_appeal">
                                                 <i class="ion-edit"></i>
@@ -261,12 +261,12 @@
                                 </h5>
                             </div>
                             <div class="col-md-6 text-right">
-                                <strong class=""><span class="@(Model.out_status_name.ToString() == "Исполнено" ? "text-success" : Model.out_status_name.ToString() == "Ошибка" ? "text-danger" : Model.out_status_name.ToString() == "Прекращено" ? "text-mfc" : "text-warning" )">@(Model.out_status_name)</span></strong>
+                                <strong class=""><span class="@(Model.OutStatusName.ToString() == "Исполнено" ? "text-success" : Model.OutStatusName.ToString() == "Ошибка" ? "text-danger" : Model.OutStatusName.ToString() == "Прекращено" ? "text-mfc" : "text-warning" )">@(Model.OutStatusName)</span></strong>
                                 <br />
-                                @{int d = 0; TimeSpan tms = (Model.out_date_regulation - DateTime.Now).Value;}
-                                @if (Model.out_date_execution == null)
+                                @{int d = 0; TimeSpan tms = (Model.OutDateRegulation - DateTime.Now).Value;}
+                                @if (Model.OutDateExecution == null)
                                 {
-                                    d = (Model.out_date_regulation - DateTime.Now).Value.Days;
+                                    d = (Model.OutDateRegulation - DateTime.Now).Value.Days;
                                     if (d < 0)
                                     {
                                         <span class="font-16 text-nowrap"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span><br />
@@ -278,7 +278,7 @@
                                 }
                                 else
                                 {
-                                    <i class="fa fa-calendar m-r-5"></i><span class="font-500 text-nowrap">@Model.out_date_execution.Value.ToShortDateString() </span> <i class="ion ion-ios7-clock-outline m-r-5"></i><span class="font-500 text-nowrap">@Model.out_date_execution.Value.ToShortTimeString()</span>
+                                    <i class="fa fa-calendar m-r-5"></i><span class="font-500 text-nowrap">@Model.OutDateExecution.Value.ToShortDateString() </span> <i class="ion ion-ios7-clock-outline m-r-5"></i><span class="font-500 text-nowrap">@Model.OutDateExecution.Value.ToShortTimeString()</span>
                                 }
                             </div>
                         </div>
@@ -286,20 +286,20 @@
                             <div class="col-md-6">
                                 <p>
                                     <span class="text-muted font-12">Номер </span><br />
-                                    <span class="text-danger">#@Model.out_number_appeal</span>
+                                    <span class="text-danger">#@Model.OutNumberAppeal</span>
                                 </p>
                             </div>
                             <div class="col-md-6">
                                 <p>
                                     <span class="text-muted font-12">Дата и время </span><br />
-                                    <i class="fa fa-calendar m-r-5"></i> @Model.out_date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.out_date_add.Value.ToShortTimeString()
+                                    <i class="fa fa-calendar m-r-5"></i> @Model.OutDateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.OutDateAdd.Value.ToShortTimeString()
                                 </p>
 
                             </div>
                         </div>
                         <div class="row">
                             <div class="col">
-                                <div id="text-appeal" class="font-13 custom-scrollbar" style="max-height:60px;">@Model.out_text_appeal</div>
+                                <div id="text-appeal" class="font-13 custom-scrollbar" style="max-height:60px;">@Model.OutTextAppeal</div>
                             </div>
                         </div>
                     </div>
@@ -335,7 +335,7 @@
                         <div class="tab-content" id="pills-tabContent">
                             <!-- Этапы -->
                             <div class="tab-pane fade show active" id="stages" role="tabpanel" aria-labelledby="pills-stages-tab">
-                                @Html.Action("PartialTableRouteStages", "Appeal", new { appealId = Model.out_data_appeal_id })
+                                @Html.Action("PartialTableRouteStages", "Appeal", new { appealId = Model.OutDataAppealId })
                             </div>
                             <!-- Примечания -->
                             <div class="tab-pane fade" id="notes" role="tabpanel" aria-labelledby="pills-notes-tab">
@@ -390,25 +390,25 @@
                                 <h4 class="text-black-60 font-18 font-400"><i class="md md-person-outline vertical-middle m-r-5" style="font-size:22px"></i>Заявитель</h4>
                                 <p class="font-13">
                                     <span class="text-muted font-12">ФИО и контакты:</span><br />
-                                    <span title="@Model.out_applicant_name"><i class="md md-person"></i>  @Model.out_applicant_name</span>
-                                    @if (Model.out_phone_number != null)
-                                    {<br /> <button type="button" class="btn btn-link font-13" onclick="onCallModalBtnClick('@Model.out_phone_number', '@Model.out_number_appeal');"><i class="md-call m-r-5"></i>@Model.out_phone_number</button>}
-                                    @if (Model.out_email_ != null)
-                                    {<br /> <span>&#64; @Model.out_email_</span>}
+                                    <span title="@Model.OutApplicantName"><i class="md md-person"></i>  @Model.OutApplicantName</span>
+                                    @if (Model.OutPhoneNumber != null)
+                                    {<br /> <button type="button" class="btn btn-link font-13" onclick="onCallModalBtnClick('@Model.OutPhoneNumber', '@Model.OutNumberAppeal');"><i class="md-call m-r-5"></i>@Model.OutPhoneNumber</button>}
+                                    @if (Model.OutEmail != null)
+                                    {<br /> <span>&#64; @Model.OutEmail</span>}
                                 </p>
                                 <h4 class="text-black-60 font-18 font-400"><i class="md md-info-outline vertical-middle m-r-5" style="font-size:20px"></i>Дополнительно</h4>
-                                @if (Model.out_mfc_name != null || Model.out_case_number != null)
+                                @if (Model.OutMfcName != null || Model.OutCaseNumber != null)
                                 {
                                     <p class="clip">
                                         <span class="text-muted font-12">МФЦ и номер обращения: </span><br />
-                                        @if (Model.out_mfc_name != null)
+                                        @if (Model.OutMfcName != null)
                                         {
-                                            <span title="@Model.out_mfc_name"> <img src="/Content/images/logo.png" height="15" style="opacity:0.6" /> @Model.out_mfc_name </span>
+                                            <span title="@Model.OutMfcName"> <img src="/Content/images/logo.png" height="15" style="opacity:0.6" /> @Model.OutMfcName </span>
                                             <br />
                                         }
-                                        @if (Model.out_case_number != null)
+                                        @if (Model.OutCaseNumber != null)
                                         {
-                                            string[] n = Model.out_case_number.Split(' ');
+                                            string[] n = Model.OutCaseNumber.Split(' ');
                                             foreach (var item in n)
                                             {
                                                 if (item.Length != 0)
@@ -420,38 +420,38 @@
                                     </p>
                                 }
 
-                                @if (Model.out_employees_name != null)
+                                @if (Model.OutEmployeesName != null)
                                 {
                                     <p class="clip">
                                         <span class="text-muted font-12">Принял: </span><br />
-                                        <span title="@Model.out_employees_name"> <i class="md md-person"></i> @Model.out_employees_name </span>
+                                        <span title="@Model.OutEmployeesName"> <i class="md md-person"></i> @Model.OutEmployeesName </span>
                                     </p>
                                 }
-                                @if (Model.out_employees_name_execution != null)
+                                @if (Model.OutEmployeesNameExecution != null)
                                 {
                                     <p class="clip">
                                         <span class="text-muted font-12">Исполнил: </span><br />
-                                        <span title="@Model.out_employees_name_execution"> <i class="md md-person"></i> @Model.out_employees_name_execution </span>
+                                        <span title="@Model.OutEmployeesNameExecution"> <i class="md md-person"></i> @Model.OutEmployeesNameExecution </span>
                                     </p>
                                 }
-                                @if (Model.out_date_regulation != null)
+                                @if (Model.OutDateRegulation != null)
                                 {
                                     <p>
                                         <span class="text-muted font-12">Регламентная дата: </span><br />
-                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.out_date_regulation.Value.ToShortDateString() </span>
+                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.OutDateRegulation.Value.ToShortDateString() </span>
                                     </p>
                                 }
-                                @if (Model.out_date_execution != null)
+                                @if (Model.OutDateExecution != null)
                                 {
                                     <p>
                                         <span class="text-muted font-12">Дата исполнения:</span><br />
-                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.out_date_execution.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.out_date_execution.Value.ToShortTimeString() </span>
+                                        <span><i class="fa fa-calendar m-r-5"></i>@Model.OutDateExecution.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.OutDateExecution.Value.ToShortTimeString() </span>
                                     </p>
                                 }
 
-                                <p class="font-13"><span class="text-muted font-12">Способ обращения: </span> <br />@Model.out_type</p>
-                                <p class="font-13"><span class="text-muted font-12">Предмет: </span> <br />@Model.out_subject_treatment</p>
-                                <p class="font-13"><span class="text-muted font-12">Сложность: </span> <br />@Model.out_type_difficulty</p>
+                                <p class="font-13"><span class="text-muted font-12">Способ обращения: </span> <br />@Model.OutType</p>
+                                <p class="font-13"><span class="text-muted font-12">Предмет: </span> <br />@Model.OutSubjectTreatment</p>
+                                <p class="font-13"><span class="text-muted font-12">Сложность: </span> <br />@Model.OutTypeDifficulty</p>
                             </div>               
                 </div>
             </div>
@@ -461,9 +461,9 @@
         </div>
     </div>
 </div>
-<script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+<script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 @section scripts{
-    <script src="~/Content/plugins/print/printThis.js"></script>
+    <script src="~/plugins/print/printThis.js"></script>
     <script>
 
         var filteringCall = $('#callsTable');
@@ -500,14 +500,14 @@
             });
         }        
 
-        if ('@Model.out_phone_number' != '' && '@Model.out_phone_number' != 'null' && '@Model.out_phone_number' != null) {
+        if ('@Model.OutPhoneNumber' != '' && '@Model.OutPhoneNumber' != 'null' && '@Model.OutPhoneNumber' != null) {
             $(document).on('click', '#btnCallModalFromAppeal', function () {
                 @{
                     string a = ""; string b="";
-                    if (Model.out_phone_number!= null)
+                    if (Model.OutPhoneNumber!= null)
                     {
-                        a = @Model.out_phone_number.Replace(")", "").Replace("(", "").Replace("-", "").Replace("+7 ", "8").Replace("+7", "8").Replace(" ", "").Replace("+3", "8");
-                        b = @Model.out_number_appeal;
+                        a = @Model.OutPhoneNumber.Replace(")", "").Replace("(", "").Replace("-", "").Replace("+7 ", "8").Replace("+7", "8").Replace(" ", "").Replace("+3", "8");
+                        b = @Model.OutNumberAppeal;
                     }
                  }
                 var d = '@b';

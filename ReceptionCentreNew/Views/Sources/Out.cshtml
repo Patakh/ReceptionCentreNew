@@ -1,18 +1,14 @@
-﻿
+﻿@using ReceptionCentreNew.Controllers
 @{
-    ViewBag.Title = "Исходящие";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Исходящие"; 
 }
 
 <!-- Все звонки -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-
-@Html.MvcSiteMap().SiteMapPath()
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+ 
 
 <div class="card-box p-3">
-
-    @using (Ajax.BeginForm("PartialTableSources", "Sources", null, new AjaxOptions { UpdateTargetId = "sourcesTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
-    {
+    <form id="sourcesTableContainer" method="post" action="/Sources/PartialTableSources" class="form-horizontal">
         <input type="hidden" name="action_" id="action_" value="1" />
         <div id="collapseExample" class="collapse show">
             <div class="row p-l-r-10">
@@ -42,7 +38,7 @@
 
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
-                    @Html.DropDownList("is_connected", new SelectList(new List<SelectListItem>
+                    @Html.DropDownList("isConnected", new SelectList(new List<SelectListItem>
                                        { new SelectListItem {Text = "Да", Value = "1"},
                                            new SelectListItem {Text = "Нет", Value = "2" }
                                        }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
@@ -62,8 +58,8 @@
             <div class="col text-right">
                 <button id="button_find_sources" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
-        </div>
-    }
+        </div> 
+    </form>
 
 </div>
 <div id="sourcesTableContainer">
@@ -80,9 +76,9 @@
         var sources = $('#sources').val();
         var sprEmployeeId = $('#sprEmployeeId').val();
         var period = $('#period').val();
-        var is_connected = $('#is_connected').val();
-             $.ajax({
-                 url: '@Url.Action("PartialTableSources", "Sources")',
+            var is_connected = $('#isConnected').val();
+             $.ajax({ 
+                url: '@Url.Action(nameof(SourcesController.PartialTableSources), nameof(SourcesController).Replace("Controller", ""))',
                  type: 'POST',
                  data: { search: $(this).val(), action_: action, sources: sources, period: period, sprEmployeeId: sprEmployeeId, is_connected: is_connected },
                  success: function (data) {
@@ -97,7 +93,7 @@
         $(document).on('click', '#sourcesTable .btn-audio',function () {
             var id = $(this).data('id');
             $.ajax({
-                url: '@Url.Action("Play_Audio", "Call")',
+                url: '@Url.Action(nameof(CallController.Play_Audio), nameof(CallController).Replace("Controller", ""))',
                 type: 'GET',
                 data: { id: id },
                 success: function (data) {
@@ -108,5 +104,5 @@
         })
     </script>
     <!-- Все звонки -->
-    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

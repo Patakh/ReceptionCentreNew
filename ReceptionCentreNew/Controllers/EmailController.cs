@@ -54,7 +54,7 @@ namespace ReceptionCentreNew.Controllers
             var emails = _repository.FuncDataAppealEmailSelect(SprEmployeeId, dateStart, DateTime.Now.AddDays(1), type, IsConnected);
             if(!String.IsNullOrEmpty(search))
             {
-                emails = search.ToLower().Split().Aggregate(emails, (current, item) => current.Where(h => h.OutEmail.ToLower().Contains(item) || h.OutCaption.ToLower().Contains(item) || h.OutEmployeesName.ToLower().Contains(item)));
+                emails = search.ToLower().Split().Aggregate(emails, (current, item) => current.Where(h => h.OutTextEmail.ToLower().Contains(item) || h.OutEmployeesName.ToLower().Contains(item)));
             }
             
             EmailsViewModel model = new EmailsViewModel

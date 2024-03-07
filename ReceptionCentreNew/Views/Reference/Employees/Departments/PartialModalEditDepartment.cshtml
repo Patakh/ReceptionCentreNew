@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_employees_department
+﻿@model SprEmployeesDepartment
 <script>
     $(document).ready(function () {
         $(".select2-nosearch").select2();
@@ -18,9 +18,9 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.department_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.DepartmentName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.department_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.department_name) } })
+                            @Html.TextBoxFor(model => model.DepartmentName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.DepartmentName) } })
                         </div>
                     </div>
                 </div>

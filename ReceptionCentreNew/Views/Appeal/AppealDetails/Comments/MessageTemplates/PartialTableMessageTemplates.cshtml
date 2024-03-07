@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.EmployeeViewModel
+﻿@model  EmployeeViewModel
 <script>
     $(document).ready(function () {
         var filtering = $('#messageTemplatesTable');
@@ -12,11 +12,11 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
                     "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    (tooltipInfo['is_remove'] ?
+                    (tooltipInfo['IsRemove'] ?
                             "<hr class='m-t-5 m-b-5'>" +
                             "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
                             "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
@@ -105,8 +105,8 @@
                     <thead>
                         <tr>
                             <th class="number-row p-l-20-important">№</th>
-                            <th>@Html.DisplayNameFor(model => model.SprEmployeesMessageTemplateList.First().message_text)</th>
-                            <th>@Html.DisplayNameFor(model => model.SprEmployeesMessageTemplateList.First().sort)</th>
+                            <th>@Html.DisplayNameFor(model => model.SprEmployeesMessageTemplateList.First().MessageText)</th>
+                            <th>@Html.DisplayNameFor(model => model.SprEmployeesMessageTemplateList.First().Sort)</th>
                             <th class="text-right p-r-20-important">
                                 <button id="showRemoves" type="button" class="btn btn-link p-r-0 text-custom"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
                             </th>
@@ -117,20 +117,20 @@
                         {
                             foreach (var item in Model.SprEmployeesMessageTemplateList)
                             {
-                                <tr data-template-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                                <tr data-template-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
                                     <td class="number-row p-l-20-important">
                                         @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                                     </td>
                                     <td>
-                                        <span>@Html.DisplayFor(i => item.message_text)</span><br>
+                                        <span>@Html.DisplayFor(i => item.MessageText)</span><br>
                                     </td>
                                     <td>
-                                        <span>@Html.DisplayFor(i => item.sort)</span><br>
+                                        <span>@Html.DisplayFor(i => item.Sort)</span><br>
                                     </td>
                                     <td class="actions text-right">
-                                        @if (item.spr_employees_id == Model.EmployeeId)
+                                        @if (item.Id == Model.EmployeeId)
                                         {
-                                            if (item.is_remove != true)
+                                            if (item.IsRemove != true)
                                             {
                                                 <button class="btn btn-link on-default edit-row"><i class="ion-edit"></i></button>
                                                 <button class="btn btn-link on-default remove-row"><i class="ion-trash-b"></i></button>
@@ -140,7 +140,7 @@
                                                 <button class="btn btn-link on-default recovery-row" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                             }
                                         }
-                                        <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "set_date": "@Html.DisplayFor(i=>item.date_add)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                        <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.EmployeesNameModify ?? "-"), "set_date": "@Html.DisplayFor(i=>item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
                                             <i class="ion-ios7-information-outline"></i>
                                         </button>
                                     </td>

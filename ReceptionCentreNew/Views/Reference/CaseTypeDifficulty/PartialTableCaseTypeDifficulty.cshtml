@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.ReferenceViewModel
+﻿@model  ReferenceViewModel
 <div class="card-box p-0">
     <div class="row">
         <div class="col-sm-10">
@@ -28,25 +28,25 @@
                 <tbody>
                     @foreach (var item in Model.SprCaseTypeDifficultyList)
                     {
-                        <tr data-case-type-difficulty-id="@item.id" class="@(item.is_remove == true ? "danger" : "")">
+                        <tr data-case-type-difficulty-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td>
-                                <span>@Html.DisplayFor(i => item.type_name)</span><br>
+                                <span>@Html.DisplayFor(i => item.TypeName)</span><br>
                             </td>
                             <td>
-                                <span>@Html.DisplayFor(i => item.count_day) дн.</span><br>
+                                <span>@Html.DisplayFor(i => item.CountDay) дн.</span><br>
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "date_add": "@Html.DisplayFor(i => item.date_add)", "date_modify": "@Html.DisplayFor(i => item.date_modify)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": @Json.Encode(item.IsRemove)}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
-                                    if (item.is_remove != true)
+                                    if (item.IsRemove != true)
                                     {
-                                        using (Ajax.BeginForm("PartialModalEditCaseTypeDifficulty", "Reference", new { FormMethod = "POST", caseTypeDifficultyId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                        using (Ajax.BeginForm("PartialModalEditCaseTypeDifficulty", "Reference", new { FormMethod = "POST", caseTypeDifficultyId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                         {
                                             <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
                                         }
@@ -105,11 +105,11 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
-                    "<strong>Дата добавления</strong>: " + tooltipInfo['date_add'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    "<strong>Дата изменения</strong>: " + tooltipInfo['date_modify'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
                     "</div>";
             },
             html: true,

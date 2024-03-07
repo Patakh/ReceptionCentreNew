@@ -1,6 +1,6 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
-<link href="~/Content/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
-<script src="~/Content/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
+﻿@model  AppealViewModel
+<link href="~/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
+<script src="~/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
 <style>
     .conversation-list .ctext-wrap i {
         display: initial !important;
@@ -82,21 +82,21 @@
             <ul class="conversation-list custom-scrollbar mb-4">
                 @foreach (var item in Model.DataAppealCommenttList)
                 {
-                    if (item.spr_employees_id == Model.EmployeeId)
+                    if (item.SprEmployeesId == Model.EmployeeId)
                     {
-                        <li class="clearfix odd data_services_commentt" data-commentt-id="@item.id" data-commentt="@item.commentt">
+                        <li class="clearfix odd data_services_commentt" data-Commentt-id="@item.Id" data-Commentt="@item.Commentt">
                             <div class="chat-avatar">
-                                <img src="~/Content/img/user_image.jpg" alt="Female">
+                                <img src="~/img/user_image.jpg" alt="Female">
                             </div>
                             <div class="conversation-text">
                                 <div class="ctext-wrap">
                                     <div class="d-flex justify-content-between font-11">
-                                        <time class="mr-3"><i class="fa fa-calendar m-r-5"></i> @item.date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.date_add.Value.ToShortTimeString()</time>
+                                        <time class="mr-3"><i class="fa fa-calendar m-r-5"></i> @item.DateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.DateAdd.Value.ToShortTimeString()</time>
                                         <b>Я</b>
                                     </div>
-                                    @if (item.is_remove != true)
+                                    @if (item.IsRemove != true)
                                     {
-                                        <p>@item.commentt</p>
+                                        <p>@item.Commentt</p>
                                         <div class="ctext-actions">
                                             <button class="btn btn-link scale-hover this-delete" type="button"><i class="md md-delete"></i></button>
                                             <button class="btn btn-link scale-hover this-edit" type="button"><i class="md md-mode-edit"></i></button>
@@ -112,15 +112,15 @@
                                         </div>
                                     }
                                     <div class="text-right">
-                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        @foreach (var recipient in item.DataAppealCommenttRecipients)
                                         {
-                                            if (recipient.read_date != null)
+                                            if (recipient.ReadDate != null)
                                             {
-                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                                <i class="fa fa-user m-r-5" title="@recipient.SprEmployees.EmployeesName (@recipient.ReadDate.Value.ToShortDateString())"></i>
                                             }
                                             else
                                             {
-                                                <i class="fa fa-user m-r-5 text-danger" title="@recipient.spr_employees.employees_name"></i>
+                                                <i class="fa fa-user m-r-5 text-danger" title="@recipient.SprEmployees.EmployeesName"></i>
                                             }
 
                                         }
@@ -131,34 +131,34 @@
                     }
                     else
                     {
-                        <li class="clearfix" data-commentt-id="@item.id">
+                        <li class="clearfix" data-Commentt-id="@item.Id">
                             <div class="chat-avatar">
-                                <img src="~/Content/img/user_image.jpg" alt="male">
+                                <img src="~/img/user_image.jpg" alt="male">
                             </div>
                             <div class="conversation-text">
                                 <div class="ctext-wrap">
                                     <div class="d-flex justify-content-between font-11">
-                                        <b>@Html.DisplayFor(i => item.employees_name_add)</b>
-                                        <time class="ml-3 text-muted"><i class="fa fa-calendar m-r-5"></i> @item.date_add.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.date_add.Value.ToShortTimeString()</time>
+                                        <b>@Html.DisplayFor(i => item.EmployeesNameAdd)</b>
+                                        <time class="ml-3 text-muted"><i class="fa fa-calendar m-r-5"></i> @item.DateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline"></i>@item.DateAdd.Value.ToShortTimeString()</time>
                                     </div>
-                                    @if (item.is_remove != true)
+                                    @if (item.IsRemove != true)
                                     {
-                                        <p>@item.commentt</p>
+                                        <p>@item.Commentt</p>
                                     }
                                     else
                                     {
                                         <p><i style="color:#505461; font-style:italic"> Примечание было удалено</i></p>
                                     }
                                     <div class="text-left">
-                                        @foreach (var recipient in item.data_appeal_commentt_recipients)
+                                        @foreach (var recipient in item.DataAppealCommenttRecipients)
                                         {
-                                            if (recipient.read_date != null)
+                                            if (recipient.ReadDate != null)
                                             {
-                                                <i class="fa fa-user m-r-5" title="@recipient.spr_employees.employees_name (@recipient.read_date.Value.ToShortDateString())"></i>
+                                                <i class="fa fa-user m-r-5" title="@recipient.SprEmployees.EmployeesName (@recipient.ReadDate.Value.ToShortDateString())"></i>
                                             }
                                             else
                                             {
-                                                <i class="fa fa-user m-r-5 text-success" title="@recipient.spr_employees.employees_name"></i>
+                                                <i class="fa fa-user m-r-5 text-success" title="@recipient.SprEmployees.EmployeesName"></i>
                                             }
 
                                         }
@@ -180,8 +180,8 @@
     @using (Ajax.BeginForm("SubmitCommentSave", "Appeal", null, new AjaxOptions { UpdateTargetId = "notes" }, new { @id = "addCommentsForm", @class = "" }))
     {
         @Html.Hidden("id", Guid.Empty)
-        @Html.Hidden("spr_employees_id", Model.EmployeeId)
-        @Html.Hidden("data_appeal_id", Model.DataAppealId)
+        @Html.Hidden("SprEmployeesId", Model.EmployeeId)
+        @Html.Hidden("DataAppealId", Model.DataAppealId)
         <div class="chat-bottom">
             <div class="row">
                 <div class="form-group col">
@@ -204,7 +204,7 @@
                             </div>
                         </div>
 
-                        <textarea class="form-control p-r-30" id="commentt" name="commentt" placeholder="Сообщение..."></textarea>
+                        <textarea class="form-control p-r-30" id="Commentt" name="Commentt" placeholder="Сообщение..."></textarea>
                         
                         <div class="btn-group dropup textarea-icon noclose" style="position: absolute; right: 35px; width:20px; bottom: -4px;">
                             @Html.DropDownList("recipients", ViewBag.SprEmployees as SelectList, new Dictionary<string, object> { { "class", "btn btn-link text-custom waves-effect waves-light font-18 noclose" }, { "multiple", "multiple" } })                            
@@ -261,7 +261,7 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
                     "<strong>Редактировал</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
                     "</div>";
             },
@@ -270,7 +270,7 @@
         });        
     });
 
-    $('#addCommentsForm').find('[name="commentt"]').keyup(function () {
+    $('#addCommentsForm').find('[name="Commentt"]').keyup(function () {
         if (!$.trim(this.value)) {
             $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
         }
@@ -280,8 +280,8 @@
     });
 
     $('#addCommentsForm').find('a.templates').click(function () {
-        $('#addCommentsForm').find('[name="commentt"]').val($(this).text());
-        if (!$.trim($('#addCommentsForm').find('[name="commentt"]').val())) {
+        $('#addCommentsForm').find('[name="Commentt"]').val($(this).text());
+        if (!$.trim($('#addCommentsForm').find('[name="Commentt"]').val())) {
             $('#addCommentsForm').find('[type="submit"]').prop("disabled", true);
         }
         else {

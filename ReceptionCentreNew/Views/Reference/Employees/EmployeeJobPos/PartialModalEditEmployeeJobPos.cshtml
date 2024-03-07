@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_employees_job_pos
+﻿@model ReceptionCentreNew.Data.Context.App.SprEmployeesJobPos
 <script>
     $(document).ready(function () {
         $(".select2-nosearch").select2();
@@ -18,9 +18,9 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.job_pos_name, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        @Html.LabelFor(model => model.JobPosName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.job_pos_name, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.job_pos_name) } })
+                            @Html.TextBoxFor(model => model.JobPosName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.JobPosName) } })
                         </div>
                     </div>
                 </div>

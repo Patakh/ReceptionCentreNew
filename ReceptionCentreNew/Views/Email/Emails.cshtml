@@ -1,9 +1,9 @@
-﻿@model IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_email>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealEmail>
 @{
     ViewBag.Title = "Электронная почта";
 }
 <!-- Все письма -->
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 @Html.MvcSiteMap().SiteMapPath()
 
@@ -80,5 +80,5 @@
     });
     </script>
     <!-- Все письма -->
-    <script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

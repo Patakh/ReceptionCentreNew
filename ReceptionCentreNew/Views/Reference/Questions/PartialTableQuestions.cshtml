@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.ReferenceViewModel
+﻿@model  ReferenceViewModel
 <style>
     .row {
         margin: 0px;
@@ -43,37 +43,37 @@
                         <div class="card-header">
                             <div class="row">
                                 <div class="col">
-                                    <b> @item.question </b>
+                                    <b> @item.Question </b>
                                 </div>
                                 <div class="col text-right">
-                                    <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"employees_fio": @Json.Encode(item.employees_name_add), "employees_fio_modifi": @Json.Encode(item.employees_name_modify ?? "-"), "date_add": "@Html.DisplayFor(i => item.date_add)", "date_modify": "@Html.DisplayFor(i => item.date_modify)", "is_remove": @Json.Encode(item.is_remove)}'>
+                                    <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": @Json.Encode(item.IsRemove)}'>
                                         <i class="ion-ios7-information-outline"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                         <div class="card-body">
-                            @Html.Raw(item.answer)
+                            @Html.Raw(item.Answer)
                         </div>
                         <div class="card-footer mt-auto">
                             <div class="row">
                                 <div class="col">
-                                    @item.date_add
+                                    @item.DateAdd
                                 </div>
                                 <div class="col text-right">
                                     @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                     {
-                                        if (item.is_remove != true)
+                                        if (item.IsRemove != true)
                                         {
-                                            using (Ajax.BeginForm("PartialModalEditQuestion", "Reference", new { FormMethod = "POST", questionId = item.id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
+                                            using (Ajax.BeginForm("PartialModalEditQuestion", "Reference", new { FormMethod = "POST", questionId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
                                             {
                                                 <button class="btn btn-link edit-row"><i class="ion-edit"></i></button>
                                             }
-                                            <button class="btn btn-link remove-row" data-question-id="@item.id"><i class="ion-trash-b"></i></button>
+                                            <button class="btn btn-link remove-row" data-question-id="@item.Id"><i class="ion-trash-b"></i></button>
                                         }
                                         else
                                         {
-                                            <button class="btn btn-link recovery-row" data-question-id="@item.id" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                            <button class="btn btn-link recovery-row" data-question-id="@item.Id" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                         }
                                     }
                                 </div>
@@ -116,11 +116,11 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
-                    "<strong>Дата добавления</strong>: " + tooltipInfo['date_add'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    "<strong>Дата изменения</strong>: " + tooltipInfo['date_modify'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
                     "</div>";
             },
             html: true,

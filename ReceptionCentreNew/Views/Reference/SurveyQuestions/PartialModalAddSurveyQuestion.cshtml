@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_survey_question
+﻿@model ReceptionCentreNew.Data.Context.App.SprSurveyQuestion
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -13,9 +13,9 @@
             {
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        @Html.LabelFor(model => model.Question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.question) } })
+                            @Html.TextBoxFor(model => model.Question, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Question) } })
                         </div>
                     </div>
                 </div>

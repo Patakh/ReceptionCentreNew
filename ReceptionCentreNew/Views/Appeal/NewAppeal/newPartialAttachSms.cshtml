@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Domain.Concrete.data_appeal_message>
+﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealMessage>
 
 <script>
     $(document).ready(function () {
@@ -45,15 +45,15 @@
                 <tbody>
                     @foreach (var item in Model)
                     {
-                        <tr data-sms-id="@item.id">
+                        <tr data-sms-id="@item.Id">
                             <td>
-                                @item.phone_number
+                                @item.PhoneNumber
                             </td>
                             <td>
-                                @item.text_message
+                                @item.TextMessage
                             </td>
                             <td>
-                                @item.date_message
+                                @item.DateMessage
                             </td>
                             <td class="text-right">
                                 <i class="fa fa-check-circle font-18 text-muted"></i>

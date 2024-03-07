@@ -1,11 +1,11 @@
-﻿@model ReceptionCentreNew.Models.AppealViewModel
+﻿@model  AppealViewModel
 <style>
     .table-td-sm td {
         padding: 0.1rem 0.1rem;
     }
 </style>
-<link href="~/Content/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-<script src="~/Content/new_design/plugins/footable/js/footable.all.min.js"></script>
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+<script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 @if (Model.DataChangeLogList.Any())
 {
     <div class="input-group">
@@ -19,9 +19,9 @@
             <tr>
                 <th class="number-row p-l-20-important" style="min-width:40px;">№</th>
                 <th >Таблица</th>
-                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().old_value)</th>
-                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().new_value)</th>
-                <th style="min-width:100px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().employees_name)</th>                
+                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().OldValue)</th>
+                <th style="min-width:130px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().NewValue)</th>
+                <th style="min-width:100px;">@Html.DisplayNameFor(model => model.DataChangeLogList.First().EmployeesName)</th>                
             </tr>
         </thead>
         <tbody>
@@ -32,21 +32,21 @@
                         @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                     </td>
                     <td>
-                        @Html.DisplayFor(i => item.table_name_)<br />
-                        <span class="text-muted">Поле: </span>@Html.DisplayFor(i => item.field_name_)
+                        @Html.DisplayFor(i => item.TableName)<br />
+                        <span class="text-muted">Поле: </span>@Html.DisplayFor(i => item.FieldName)
                     </td>
                     <td>
-                        @Html.DisplayFor(i => item.old_value)
+                        @Html.DisplayFor(i => item.OldValue)
                     </td>
                     <td>
-                        @Html.DisplayFor(i => item.new_value)
+                        @Html.DisplayFor(i => item.NewValue)
                     </td>
                     <td>
-                        @Html.DisplayFor(i => item.employees_name)<br />
-                        <span class="text-muted">Дата: </span>@Html.DisplayFor(i => item.date_change)
+                        @Html.DisplayFor(i => item.EmployeesName)<br />
+                        <span class="text-muted">Дата: </span>@Html.DisplayFor(i => item.DateChange)
                     </td>
                     <td class="actions text-right">
-                        <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"table_name_": "@item.table_name_", "field_name_": "@item.field_name_", "employees_fio": "@item.employees_name", "date_change": "@item.date_change", "commentt": "@item.commentt", "old_value": "@item.old_value", "new_value": "@item.new_value", "table_name_base_": "@item.table_name_base_", "field_name_base_": "@item.field_name_base_"}'>
+                        <button type="button" class="on-default btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"TableName": "@item.TableName", "FieldName": "@item.FieldName", "EmployeesFio": "@item.EmployeesName", "DateChange": "@item.DateChange", "Commentt": "@item.Commentt", "OldValue": "@item.OldValue", "NewValue": "@item.NewValue", "TableNameBase": "@item.TableNameBase", "FieldNameBase": "@item.FieldNameBase"}'>
                             <i class="ion-ios7-information-outline"></i>
                         </button>
                     </td>
@@ -95,14 +95,14 @@ else
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>Таблица</strong>: " + tooltipInfo['table_name_'] + " - " + tooltipInfo['table_name_base_'] + "</br>" +
-                    "<strong>Поле</strong>: " + tooltipInfo['field_name_'] + " - " + tooltipInfo['field_name_base_'] + "</br>" +
-                    "<strong>Старое значение</strong>: " + tooltipInfo['old_value'] + "</br>" +
-                    "<strong>Новое значение</strong>: " + tooltipInfo['new_value'] + "</br>" +
-                    "<strong>Комментарии</strong>: " + tooltipInfo['commentt'] + "</br>" +
+                    "<strong>Таблица</strong>: " + tooltipInfo['TableName'] + " - " + tooltipInfo['TableNameBase'] + "</br>" +
+                    "<strong>Поле</strong>: " + tooltipInfo['FieldName'] + " - " + tooltipInfo['FieldNameBase'] + "</br>" +
+                    "<strong>Старое значение</strong>: " + tooltipInfo['OldValue'] + "</br>" +
+                    "<strong>Новое значение</strong>: " + tooltipInfo['NewValue'] + "</br>" +
+                    "<strong>Комментарии</strong>: " + tooltipInfo['Commentt'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
-                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio'] + "</br>" +
-                    "<strong>Дата изменения</strong>: " + tooltipInfo['date_change'] + "</br>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['DateChange'] + "</br>" +
                     "</div>";
             },
             html: true,

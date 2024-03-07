@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Models.Account_case>
+﻿@model  IEnumerable<ReceptionCentreNew.Models.AccountCase>
 <div>
     <span id="back-to-customers"><a href="#">< назад</a></span>
     @if (Model.Any())
@@ -20,18 +20,18 @@
                         <tr>
                             <td>@(++i)</td>
                             <td>
-                                <small>@item.date_enter.ToShortDateString()</small>
-                                <span class="label label-sm">@item.status</span>
+                                <small>@item.DateEnter.ToShortDateString()</small>
+                                <span class="label label-sm">@item.Status</span>
                             </td>
                             <td>
-                                <small class="text-truncate" data-content="@item.services_provider_name"><b>@item.services_provider_name</b></small>
-                                <small class="text-truncate case-text" data-content="@item.services_sub_name">
-                                    <a href="http://192.168.34.9:81/Case?CaseId=@item.data_services_info_id.Replace("#","")" target="_blank">@item.services_sub_name</a>                                    
+                                <small class="text-truncate" data-content="@item.ServicesProviderName"><b>@item.ServicesProviderName</b></small>
+                                <small class="text-truncate case-text" data-content="@item.ServicesSubName">
+                                    <a href="~/Case?CaseId=@item.DataServicesInfoId.Replace("#","")" target="_blank">@item.ServicesSubName</a>                                    
                                 </small>
                             </td>
                             <td class="text-nowrap">
-                                <small class="text-truncate" data-content="@item.mfc_name">@item.mfc_name</small>
-                                <small class="text-truncate" data-content="@item.employees_fio">@item.employees_fio</small>
+                                <small class="text-truncate" data-content="@item.MfcName">@item.MfcName</small>
+                                <small class="text-truncate" data-content="@item.EmployeesFio">@item.EmployeesFio</small>
                             </td>
                         </tr>
                     }

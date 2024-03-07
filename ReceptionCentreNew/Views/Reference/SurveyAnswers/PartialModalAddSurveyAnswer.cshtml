@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Domain.Concrete.spr_survey_answer
+﻿@model ReceptionCentreNew.Data.Context.App.SprSurveyAnswer
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -11,19 +11,19 @@
         <div class="modal-body">
             @using (Ajax.BeginForm("SubmitSurveyAnswerSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "successAdd();" }, new { @id = "AddSurveyAnswerForm", @class = "form-horizontal" }))
             {
-                @Html.HiddenFor(model=>model.spr_survey_question_id)
+                @Html.HiddenFor(model=>model.SprSurveyQuestionId)
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.answer, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
+                        @Html.LabelFor(model => model.Answer, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
                         <div class="col-md-8">
-                            @Html.TextBoxFor(model => model.answer, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.answer) } })
+                            @Html.TextBoxFor(model => model.Answer, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.Answer) } })
                         </div>
                     </div>
                 </div>
             }
         </div>
         <div class="modal-footer">
-            @using (Ajax.BeginForm("PartialTableSurveyAnswers", "Reference", new { surveyQuestionId = Model.spr_survey_question_id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-horizontal" }))
+            @using (Ajax.BeginForm("PartialTableSurveyAnswers", "Reference", new { surveyQuestionId = Model.SprSurveyQuestionId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-horizontal" }))
             {
                 <button type="submit" class="btn btn-cancel waves-effect waves-light"><i class="fa fa-times m-r-5"></i> Отмена</button>
             }

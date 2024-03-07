@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Models.CallsViewModel
+﻿@model  CallsViewModel
 
 <div class="card-box p-0">
     @if (Model.CallList.Any())
@@ -13,44 +13,44 @@
                     <input type="text" id="searchTextCalls" class="form-control pl-0 border-0" placeholder="Поиск звонков" aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
                 </div>
                 <tbody>
-                    @foreach (var item in Model.CallList.OrderByDescending(o => o.out_date_call))
+                    @foreach (var item in Model.CallList.OrderByDescending(o => o.OutDateCall))
                     {
                         <tr>
                             <td class="vertical-middle p-l-20-important text-nowrap">
-                                @if (item.out_call_type == 2)
+                                @if (item.OutCallType == 2)
                                 {<i class="md md-call-received"></i> }
                                 else
                                 {<i class="md md-call-made"></i>}
-                                @Html.DisplayFor(m => item.out_phone_number)
+                                @Html.DisplayFor(m => item.OutPhoneNumber)
                             </td>
                             <td class="vertical-middle">
-                                @Html.DisplayFor(m => item.out_time_talk)
+                                @Html.DisplayFor(m => item.OutTimeTalk)
                             </td>
                             <td class="vertical-middle">
-                                @item.out_date_call.Value.ToString("yyyy.MM.dd HH:mm")
+                                @item.OutDateCall.ToString("yyyy.MM.dd HH:mm")
                             </td>
                             <td class="vertical-middle">
-                                @Html.DisplayFor(m => item.applicant_name)
+                                @Html.DisplayFor(m => item.ApplicantName)
                             </td>
                             <td class="vertical-middle p-r-20-important text-right" style="font-size: 22px;line-height: 22px;">
-                                @if (item.out_save_ftp)
+                                @if (item.OutSaveFtp)
                                 {
-                                    <button type="button" class="btn btn-link btn-audio" data-id="@item.out_id"><i class="md md-play-circle-outline"></i></button>
+                                    <button type="button" class="btn btn-link btn-audio" data-id="@item.OutId"><i class="md md-play-circle-outline"></i></button>
                                 }
-                                @if (item.out_number_appeal == null)
+                                @if (item.OutNumberAppeal == null)
                                 {
                                     if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
                                     {
-                                        <button type="button" title="Создать обращение на основе звонка" class="btn waves-effect waves-light btn-sm bg-custom" onclick="window.open('@Url.Action("NewAppeal", "Appeal", new { callId = item.out_id })')"><i class="fa fa-plus" style="color:white;"></i></button>
+                                        <button type="button" title="Создать обращение на основе звонка" class="btn waves-effect waves-light btn-sm bg-custom" onclick="window.open('@Url.Action("NewAppeal", "Appeal", new { callId = item.OutId })')"><i class="fa fa-plus" style="color:white;"></i></button>
                                     }
                                 }
                                 else
                                 {
-                                    <button type="button" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger" onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.out_number_appeal})')"><i class="fa fa-chevron-right"></i></button>
+                                    <button type="button" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger" onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.OutNumberAppeal})')"><i class="fa fa-chevron-right"></i></button>
                                 }
-                                <button type="button" class="btn waves-effect waves-light btn-sm bg-custom" onclick="onCallModalBtnClick('@item.out_phone_number')"><i class="md md-call" style="color:white;"></i></button>
+                                <button type="button" class="btn waves-effect waves-light btn-sm bg-custom" onclick="onCallModalBtnClick('@item.OutPhoneNumber')"><i class="md md-call" style="color:white;"></i></button>
                                 
-                                <button type="button" class="on-default btn btn-link btn-audio" data-tooltip-info='{ "appeal_number": "@item.out_number_appeal", "employees_fio": "@item.out_employees_name"}'>
+                                <button type="button" class="on-default btn btn-link btn-audio" data-tooltip-info='{ "appeal_number": "@item.OutNumberAppeal", "EmployeesFio": "@item.OutEmployeesName"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                             </td>
@@ -98,7 +98,7 @@
                         var tooltipInfo = $(this).data('tooltipInfo');
                         return "<div class='text-left'>" +
                             "<strong>Номер дела:</strong> " + tooltipInfo['appeal_number'] + "</br>" +
-                            "<strong>Сотрудник:</strong> " + tooltipInfo['employees_fio'] + "</br>" +
+                            "<strong>Сотрудник:</strong> " + tooltipInfo['EmployeesFio'] + "</br>" +
                             "</div>";
                     },
                     html: true,
