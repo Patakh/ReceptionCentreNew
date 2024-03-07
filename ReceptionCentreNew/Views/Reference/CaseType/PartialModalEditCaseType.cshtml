@@ -13,25 +13,24 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitCaseTypeSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "caseTypeContainer", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditCaseTypeForm", @class = "form-horizontal" }))
-            {
+            <form id="EditCaseTypeForm" asp-controller="Reference" asp-action="SubmitCaseTypeSave" method="post" data-ajax="true" data-ajax-update="#caseTypeContainer" data-ajax-success="$('#newModal').modal('hide'); successEdit();" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="TypeName" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
+                            <input asp-for="TypeName" class="form-control required" placeholder="@Html.DisplayNameFor(model => model.TypeName)" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="CommenttModify" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.CommenttModify) } })
+                            <input asp-for="CommenttModify" class="form-control" placeholder="@Html.DisplayNameFor(model => model.CommenttModify)" />
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>

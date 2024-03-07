@@ -11,20 +11,19 @@ using ReceptionCentreNew.Data.Context.App.Abstract;
 namespace ReceptionCentreNew.Controllers
 {
     [ClientErrorHandler]
-    [Authorize(Roles = "superadmin, admin")]
+  //  [Authorize(Roles = "superadmin, admin")]
     public partial class ReferenceController : Controller
     {
         public int PageSize = 10;
-
-        #region Инициализация Repository
+         
         private IRepository _repository;
         private string? UserName;
         public ReferenceController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
-        }
-        #endregion
+        } 
+
         // GET: Reference
         public IActionResult Main()
         {
@@ -43,7 +42,7 @@ namespace ReceptionCentreNew.Controllers
             var CaseType = _repository.SprType;
             CaseType = !isRemove ? CaseType.Where(o => o.IsRemove != true) : CaseType;
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new ()
             {
                 SprCaseTypeList = CaseType.OrderBy(a => a.TypeName),
                 PageInfo = new PageInfo
@@ -146,7 +145,7 @@ namespace ReceptionCentreNew.Controllers
             var CaseTypeDifficulty = _repository.SprTypeDifficulty;
             CaseTypeDifficulty = !isRemove ? CaseTypeDifficulty.Where(o => o.IsRemove != true) : CaseTypeDifficulty;
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new ()
             {
                 SprCaseTypeDifficultyList = CaseTypeDifficulty.OrderBy(a => a.TypeName),
                 PageInfo = new PageInfo
@@ -255,7 +254,7 @@ namespace ReceptionCentreNew.Controllers
                 || (h.Answer != null ? h.Answer.ToString().Contains(item) : false)
                 || (h.DateAdd != null ? h.DateAdd.Value.ToString().Contains(item) : false)));
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new ()
             {
                 SprQuestionList = Question.OrderBy(a => a.Question),
                 PageInfo = new PageInfo

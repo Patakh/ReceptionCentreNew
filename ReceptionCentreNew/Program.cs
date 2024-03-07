@@ -1,13 +1,13 @@
 using AisReception.Data.Context.App;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.WebSockets;
+using Microsoft.AspNetCore.Builder;
+using SmartBreadcrumbs.Extensions;
 using Microsoft.EntityFrameworkCore; 
 using ReceptionCentreNew.Areas.Identity.User;
 using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Data.Context.Identity;
-using ReceptionCentreNew.Hubs;
-using ReceptionCentreNew.Models;
+using ReceptionCentreNew.Hubs;  
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,8 +47,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews(); 
 builder.Services.AddScoped<IRepository, EFRepository>();
 builder.Services.AddScoped<IHubContext, NotificationHub>();
-builder.Services.AddSignalR(); 
-
+builder.Services.AddSignalR();
+ 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -71,7 +71,7 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapHub<NotificationHub>("/NotificationHub"); 
+app.MapHub<NotificationHub>("/NotificationHub");
  
 app.MapControllerRoute(
     name: "default",

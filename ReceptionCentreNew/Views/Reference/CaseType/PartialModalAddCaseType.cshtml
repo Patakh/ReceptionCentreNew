@@ -13,17 +13,16 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitCaseTypeSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "caseTypeContainer", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @Id = "AddCaseTypeForm", @class = "form-horizontal" }))
-            {
+            <form id="AddCaseTypeForm" asp-controller="Reference" asp-action="SubmitCaseTypeSave" data-ajax="true" data-ajax-update="#caseTypeContainer" data-ajax-success="$('#newModal').modal('hide'); successAdd();" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="TypeName" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
+                            <input asp-for="TypeName" class="form-control required" placeholder="@Html.DisplayNameFor(model => model.TypeName)" />
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>

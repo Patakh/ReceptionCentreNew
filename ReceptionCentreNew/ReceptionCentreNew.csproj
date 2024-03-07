@@ -9,23 +9,80 @@
 
   <ItemGroup>
     <Compile Remove="obj\**" />
+    <Compile Remove="Views\Account\**" />
+    <Compile Remove="Views\Api\**" />
+    <Compile Remove="Views\Appeal\**" />
+    <Compile Remove="Views\Call\**" />
+    <Compile Remove="Views\Email\**" />
+    <Compile Remove="Views\Manage\**" />
+    <Compile Remove="Views\Notification\**" />
+    <Compile Remove="Views\Question\**" />
+    <Compile Remove="Views\Reference\CaseTypeDifficulty\**" />
+    <Compile Remove="Views\Reference\Employees\**" />
+    <Compile Remove="Views\Reference\Questions\**" />
+    <Compile Remove="Views\Reference\SurveyAnswers\**" />
+    <Compile Remove="Views\Reference\SurveyQuestions\**" />
+    <Compile Remove="Views\Report\**" />
+    <Compile Remove="Views\SMS\**" />
+    <Compile Remove="Views\Statistics\**" />
+    <Compile Remove="Views\System\**" />
     <Content Remove="obj\**" />
+    <Content Remove="Views\Account\**" />
+    <Content Remove="Views\Api\**" />
+    <Content Remove="Views\Appeal\**" />
+    <Content Remove="Views\Call\**" />
+    <Content Remove="Views\Email\**" />
+    <Content Remove="Views\Manage\**" />
+    <Content Remove="Views\Notification\**" />
+    <Content Remove="Views\Question\**" />
+    <Content Remove="Views\Reference\CaseTypeDifficulty\**" />
+    <Content Remove="Views\Reference\Employees\**" />
+    <Content Remove="Views\Reference\Questions\**" />
+    <Content Remove="Views\Reference\SurveyAnswers\**" />
+    <Content Remove="Views\Reference\SurveyQuestions\**" />
+    <Content Remove="Views\Report\**" />
+    <Content Remove="Views\SMS\**" />
+    <Content Remove="Views\Statistics\**" />
+    <Content Remove="Views\System\**" />
     <EmbeddedResource Remove="obj\**" />
+    <EmbeddedResource Remove="Views\Account\**" />
+    <EmbeddedResource Remove="Views\Api\**" />
+    <EmbeddedResource Remove="Views\Appeal\**" />
+    <EmbeddedResource Remove="Views\Call\**" />
+    <EmbeddedResource Remove="Views\Email\**" />
+    <EmbeddedResource Remove="Views\Manage\**" />
+    <EmbeddedResource Remove="Views\Notification\**" />
+    <EmbeddedResource Remove="Views\Question\**" />
+    <EmbeddedResource Remove="Views\Reference\CaseTypeDifficulty\**" />
+    <EmbeddedResource Remove="Views\Reference\Employees\**" />
+    <EmbeddedResource Remove="Views\Reference\Questions\**" />
+    <EmbeddedResource Remove="Views\Reference\SurveyAnswers\**" />
+    <EmbeddedResource Remove="Views\Reference\SurveyQuestions\**" />
+    <EmbeddedResource Remove="Views\Report\**" />
+    <EmbeddedResource Remove="Views\SMS\**" />
+    <EmbeddedResource Remove="Views\Statistics\**" />
+    <EmbeddedResource Remove="Views\System\**" />
     <None Remove="obj\**" />
+    <None Remove="Views\Account\**" />
+    <None Remove="Views\Api\**" />
+    <None Remove="Views\Appeal\**" />
+    <None Remove="Views\Call\**" />
+    <None Remove="Views\Email\**" />
+    <None Remove="Views\Manage\**" />
+    <None Remove="Views\Notification\**" />
+    <None Remove="Views\Question\**" />
+    <None Remove="Views\Reference\CaseTypeDifficulty\**" />
+    <None Remove="Views\Reference\Employees\**" />
+    <None Remove="Views\Reference\Questions\**" />
+    <None Remove="Views\Reference\SurveyAnswers\**" />
+    <None Remove="Views\Reference\SurveyQuestions\**" />
+    <None Remove="Views\Report\**" />
+    <None Remove="Views\SMS\**" />
+    <None Remove="Views\Statistics\**" />
+    <None Remove="Views\System\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Views\Account\ConfirmEmail.cshtml" />
-    <Content Remove="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Remove="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Remove="Views\Account\ForgotPassword.cshtml" />
-    <Content Remove="Views\Account\ForgotPasswordConfirmation.cshtml" />
-    <Content Remove="Views\Account\ResetPassword.cshtml" />
-    <Content Remove="Views\Account\ResetPasswordConfirmation.cshtml" />
-    <Content Remove="Views\Account\SendCode.cshtml" />
-    <Content Remove="Views\Account\VerifyCode.cshtml" />
-    <Content Remove="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Remove="Views\Call\Modal\NewAppealResult.cshtml" />
     <Content Remove="Views\Common\Play_Audio.cshtml" />
     <Content Remove="Views\Common\Play_Audio_File.cshtml" />
   </ItemGroup>
@@ -38,6 +95,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
@@ -52,6 +110,7 @@
     <PackageReference Include="Npgsql" Version="8.0.0" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
     <PackageReference Include="OpenPop.NET" Version="2.0.6.1120" />
+    <PackageReference Include="SmartBreadcrumbs" Version="3.6.1" />
     <PackageReference Include="System.Composition" Version="8.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
@@ -70,132 +129,23 @@
 
   <ItemGroup>
     <None Include="Properties\serviceDependencies.local.json.user" />
-    <None Include="Views\Account\Login.cshtml" />
-    <None Include="Views\Account\Register.cshtml" />
-    <None Include="Views\Api\Cases.cshtml" />
-    <None Include="Views\Api\Customers.cshtml" />
-    <None Include="Views\Api\Hashtags.cshtml" />
-    <None Include="Views\Api\ServicesInfo.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Calls\PartialModalAttachCall.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Calls\PartialModalCallTo.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Calls\PartialTableCalls.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\ChangeLogs\PartialTableChangeLogs.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Comments\MessageTemplates\PartialModalAddMessageTemplate.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Comments\MessageTemplates\PartialModalEditMessageTemplate.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Comments\MessageTemplates\PartialTableMessageTemplates.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Comments\PartialTableComments.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Emails\PartialModalAttachEmail.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Emails\PartialModalSendEmail.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Emails\PartialTableEmails.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Files\PartialModalAddFile.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Files\PartialTableFiles.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\RouteStages\PartialModalNextRouteStage.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\RouteStages\PartialTableRouteStages.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Sms\PartialModalAttachSms.cshtml" />
-    <None Include="Views\Appeal\AppealDetails\Sms\PartialTableSms.cshtml" />
-    <None Include="Views\Appeal\AppealInfo.cshtml" />
-    <None Include="Views\Appeal\AppealInfoModal.cshtml" />
-    <None Include="Views\Appeal\Appeals.cshtml" />
-    <None Include="Views\Appeal\EditAppeal.cshtml" />
-    <None Include="Views\Appeal\EditAppealModal.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\NewAppeal.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\newPartialAttachCall.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\newPartialAttachEmail.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\newPartialAttachSms.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\newPartialModalAddTextAppealTemplates.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\newPartialModalAppendTextAppealTemplates.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\_PartialCall.cshtml" />
-    <None Include="Views\Appeal\NewAppeal\_PartialEmail.cshtml" />
-    <None Include="Views\Appeal\PartialTableAppeals.cshtml" />
     <None Include="Views\CallBack\_Table.cshtml" />
-    <None Include="Views\Call\Calls.cshtml" />
-    <None Include="Views\Call\Modal\Commentts.cshtml" />
-    <None Include="Views\Call\Modal\LastAppeals.cshtml" />
-    <None Include="Views\Call\Modal\NewAppeal.cshtml" />
-    <None Include="Views\Call\Modal\Questions.cshtml" />
-    <None Include="Views\Call\Modal\SurveyQuestion.cshtml" />
-    <None Include="Views\Call\Modal\UserInfo.cshtml" />
-    <None Include="Views\Call\PartialTableCalls.cshtml" />
-    <None Include="Views\Email\Emails.cshtml" />
-    <None Include="Views\Email\PartialModalReadEmail.cshtml" />
-    <None Include="Views\Email\PartialTableEmails.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
-    <None Include="Views\Manage\AddPhoneNumber.cshtml" />
-    <None Include="Views\Manage\ChangePassword.cshtml" />
-    <None Include="Views\Manage\Index.cshtml" />
-    <None Include="Views\Manage\ManageLogins.cshtml" />
-    <None Include="Views\Manage\SetPassword.cshtml" />
-    <None Include="Views\Manage\VerifyPhoneNumber.cshtml" />
-    <None Include="Views\Notification\Notifications.cshtml" />
-    <None Include="Views\Notification\PartialTableNotifications.cshtml" />
-    <None Include="Views\Question\Questions.cshtml" />
-    <None Include="Views\Reference\CaseTypeDifficulty\Main.cshtml" />
-    <None Include="Views\Reference\CaseTypeDifficulty\PartialModalAddCaseTypeDifficulty.cshtml" />
-    <None Include="Views\Reference\CaseTypeDifficulty\PartialModalEditCaseTypeDifficulty.cshtml" />
-    <None Include="Views\Reference\CaseTypeDifficulty\PartialTableCaseTypeDifficulty.cshtml" />
     <None Include="Views\Reference\CaseType\Main.cshtml" />
     <None Include="Views\Reference\CaseType\PartialModalAddCaseType.cshtml" />
     <None Include="Views\Reference\CaseType\PartialModalEditCaseType.cshtml" />
     <None Include="Views\Reference\CaseType\PartialTableCaseType.cshtml" />
-    <None Include="Views\Reference\Employees\Departments\PartialModalAddDepartment.cshtml" />
-    <None Include="Views\Reference\Employees\Departments\PartialModalEditDepartment.cshtml" />
-    <None Include="Views\Reference\Employees\Departments\PartialTableDepartments.cshtml" />
-    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialModalAddEmployeeJobPos.cshtml" />
-    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialModalEditEmployeeJobPos.cshtml" />
-    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialTableEmployeeJobPos.cshtml" />
-    <None Include="Views\Reference\Employees\EmployeeRoles\PartialModalAddEmployeeRole.cshtml" />
-    <None Include="Views\Reference\Employees\EmployeeRoles\PartialTableEmployeeRoles.cshtml" />
-    <None Include="Views\Reference\Employees\Employees\PartialModalAddEmployee.cshtml" />
-    <None Include="Views\Reference\Employees\Employees\PartialModalEditEmployee.cshtml" />
-    <None Include="Views\Reference\Employees\Employees\PartialTableEmployees.cshtml" />
-    <None Include="Views\Reference\Employees\Main.cshtml" />
-    <None Include="Views\Reference\Questions\Main.cshtml" />
-    <None Include="Views\Reference\Questions\PartialModalAddQuestion.cshtml" />
-    <None Include="Views\Reference\Questions\PartialModalEditQuestion.cshtml" />
-    <None Include="Views\Reference\Questions\PartialTableQuestions.cshtml" />
-    <None Include="Views\Reference\SurveyAnswers\PartialModalAddSurveyAnswer.cshtml" />
-    <None Include="Views\Reference\SurveyAnswers\PartialModalEditSurveyAnswer.cshtml" />
-    <None Include="Views\Reference\SurveyAnswers\PartialTableSurveyAnswers.cshtml" />
-    <None Include="Views\Reference\SurveyQuestions\Main.cshtml" />
-    <None Include="Views\Reference\SurveyQuestions\PartialModalAddSurveyQuestion.cshtml" />
-    <None Include="Views\Reference\SurveyQuestions\PartialModalEditSurveyQuestion.cshtml" />
-    <None Include="Views\Reference\SurveyQuestions\PartialTableSurveyQuestions.cshtml" />
-    <None Include="Views\Report\Index.cshtml" />
-    <None Include="Views\Report\ReportCategory\_Filter.cshtml" />
-    <None Include="Views\Report\ReportCategory\_Table.cshtml" />
-    <None Include="Views\Report\ReportTreatment\_Filter.cshtml" />
-    <None Include="Views\Report\ReportTreatment\_Table.cshtml" />
-    <None Include="Views\Report\Report_Appeals\_Page.cshtml" />
-    <None Include="Views\Report\Report_Appeals\_Table.cshtml" />
-    <None Include="Views\Report\Report_Calls\_Page.cshtml" />
-    <None Include="Views\Report\Report_Calls\_Table.cshtml" />
-    <None Include="Views\Report\Statistics_Appeals\_Page.cshtml" />
-    <None Include="Views\Report\Statistics_Appeals\_Table.cshtml" />
-    <None Include="Views\Report\Statistics_Calls\_Page.cshtml" />
-    <None Include="Views\Report\Statistics_Calls\_Table.cshtml" />
     <None Include="Views\Shared\LayoutPartial\_FooterPartial.cshtml" />
+    <None Include="Views\Shared\LayoutPartial\_HeaderPartial.cshtml" />
     <None Include="Views\Shared\LayoutPartial\_LayoutModals.cshtml" />
+    <None Include="Views\Shared\LayoutPartial\_MainMenuPartial.cshtml" />
+    <None Include="Views\Shared\LayoutPartial\_MenuLeft.cshtml" />
     <None Include="Views\Shared\Template\Pdf.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_LoginPartial.cshtml" />
     <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
-    <None Include="Views\SMS\PartialTableSms.cshtml" />
-    <None Include="Views\SMS\Sms.cshtml" />
     <None Include="Views\Sources\In.cshtml" />
-    <None Include="Views\Statistics\AppealsCall.cshtml" />
-    <None Include="Views\Statistics\AppealsCategory.cshtml" />
-    <None Include="Views\Statistics\AppealsCount.cshtml" />
-    <None Include="Views\Statistics\AppealsTreatment.cshtml" />
-    <None Include="Views\Statistics\AppealsType.cshtml" />
-    <None Include="Views\Statistics\AppealsTypeDifficulty.cshtml" />
-    <None Include="Views\System\ChangeLogs\Main.cshtml" />
-    <None Include="Views\System\ChangeLogs\PartialTableChangeLogs.cshtml" />
-    <None Include="Views\System\Errors\Main.cshtml" />
-    <None Include="Views\System\Errors\PartialTableErrors.cshtml" />
-    <None Include="Views\System\Settings\PartialModalEditSettting.cshtml" />
-    <None Include="Views\System\Settings\PartialTableSettings.cshtml" />
-    <None Include="Views\System\Settings\Settings.cshtml" />
     <None Include="wwwroot\js\admin\admin-layout.js" />
   </ItemGroup>
 
