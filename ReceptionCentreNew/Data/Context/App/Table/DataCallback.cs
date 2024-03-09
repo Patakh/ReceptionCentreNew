@@ -1,4 +1,6 @@
-﻿namespace ReceptionCentreNew.Data.Context.App;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Таблица хранения заказных звонков
@@ -13,26 +15,31 @@ public partial class DataCallback
     /// <summary>
     /// Дата на которую заказан звонок
     /// </summary>
+    [Display(Name = "Дата на которую заказан звонок")]
     public DateTime DateOrder { get; set; }
 
     /// <summary>
     /// Номер телефона заявителя
     /// </summary>
+    [Display(Name = "Номер телефона заявителя")]
     public string PhoneNumber { get; set; } = null!;
 
     /// <summary>
     /// Владелец номера телефона
     /// </summary>
+    [Display(Name = "Владелец номера телефона")]
     public string? CustomerFio { get; set; }
 
     /// <summary>
     /// Статус звонка (1 - Новый звонок, 2 - Обработан, 3 - Не отвеченный)
     /// </summary>
+    [Display(Name = "Статус звонка (1 - Новый звонок, 2 - Обработан, 3 - Не отвеченный)")]
     public int Status { get; set; }
 
     /// <summary>
     /// Количество попыток
     /// </summary>
+    [Display(Name = "Количество попыток")]
     public int CountTry { get; set; }
 
     /// <summary>

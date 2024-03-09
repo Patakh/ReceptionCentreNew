@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ReceptionCentreNew.Data.Context.App;
 
@@ -16,11 +17,13 @@ public partial class SprEmployeesRoleJoin
     /// <summary>
     /// связь с пользователями, SprEmployees id
     /// </summary>
+    [Display(Name = "Сотрудник")]
     public Guid SprEmployeesId { get; set; }
 
     /// <summary>
     /// связь с ролью, SprEmployeesRole id
     /// </summary>
+    [Display(Name = "Роль")]
     public int SprEmployeesRoleId { get; set; }
 
     /// <summary>
@@ -36,6 +39,7 @@ public partial class SprEmployeesRoleJoin
     /// <summary>
     /// комментарий
     /// </summary>
+    [Display(Name = "Комментарии")]
     public string? Commentt { get; set; }
 
     public virtual SprEmployees SprEmployees { get; set; } = null!;

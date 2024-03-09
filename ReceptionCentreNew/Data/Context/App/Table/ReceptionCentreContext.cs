@@ -12,19 +12,7 @@ public partial class ReceptionCentreContext : DbContext
     public ReceptionCentreContext()
     {
     }
-
-    public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
-
-    public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
-
-    public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
-
-    public virtual DbSet<AspNetUserLogins> AspNetUserLogins { get; set; }
-
-    public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
-
-    public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
-
+      
     public virtual DbSet<DataAppeal> DataAppeal { get; set; }
 
     public virtual DbSet<DataAppealCall> DataAppealCall { get; set; }
@@ -103,72 +91,7 @@ public partial class ReceptionCentreContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresExtension("uuid-ossp");
-
-        modelBuilder.Entity<AspNetRoleClaims>(entity =>
-        {
-            entity.HasIndex(e => e.RoleId, "IX_AspNetRoleClaims_RoleId");
-
-            entity.HasOne(d => d.Role).WithMany(p => p.AspNetRoleClaims).HasForeignKey(d => d.RoleId);
-        });
-
-        modelBuilder.Entity<AspNetRoles>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedName, "RoleNameIndex").IsUnique();
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.Name).HasMaxLength(256);
-            entity.Property(e => e.NormalizedName).HasMaxLength(256);
-        });
-
-        modelBuilder.Entity<AspNetUserClaims>(entity =>
-        {
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserClaims_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserClaims).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserLogins>(entity =>
-        {
-            entity.HasKey(e => new { e.LoginProvider, e.ProviderKey });
-
-            entity.HasIndex(e => e.UserId, "IX_AspNetUserLogins_UserId");
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserLogins).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUserTokens>(entity =>
-        {
-            entity.HasKey(e => new { e.UserId, e.LoginProvider, e.Name });
-
-            entity.HasOne(d => d.User).WithMany(p => p.AspNetUserTokens).HasForeignKey(d => d.UserId);
-        });
-
-        modelBuilder.Entity<AspNetUsers>(entity =>
-        {
-            entity.HasIndex(e => e.NormalizedEmail, "EmailIndex");
-
-            entity.HasIndex(e => e.NormalizedUserName, "UserNameIndex").IsUnique();
-
-            entity.Property(e => e.Id).ValueGeneratedNever();
-            entity.Property(e => e.DateAdd).HasColumnType("timestamp without time zone");
-            entity.Property(e => e.DateModify).HasColumnType("timestamp without time zone");
-            entity.Property(e => e.Email).HasMaxLength(256);
-            entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
-            entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-            entity.Property(e => e.UserName).HasMaxLength(256);
-
-            entity.HasMany(d => d.Role).WithMany(p => p.User)
-                .UsingEntity<Dictionary<string, object>>(
-                    "AspNetUserRoles",
-                    r => r.HasOne<AspNetRoles>().WithMany().HasForeignKey("RoleId"),
-                    l => l.HasOne<AspNetUsers>().WithMany().HasForeignKey("UserId"),
-                    j =>
-                    {
-                        j.HasKey("UserId", "RoleId");
-                        j.HasIndex(new[] { "RoleId" }, "IX_AspNetUserRoles_RoleId");
-                    });
-        });
-
+         
         modelBuilder.Entity<DataAppeal>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("data_appeal_pkey");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ReceptionCentreNew.Data.Context.App;
 
@@ -26,11 +27,13 @@ public partial class DataAppealRoutesStage
     /// <summary>
     /// Дата начала
     /// </summary>
+    [Column(TypeName = "date")]
     public DateOnly DateStart { get; set; }
 
     /// <summary>
     /// Дата окончания
     /// </summary>
+    [Column(TypeName = "date")]
     public DateOnly? DateStop { get; set; }
 
     /// <summary>
