@@ -1,16 +1,12 @@
-﻿@model  EmployeeViewModel
-   
+﻿@model EmployeeViewModel
+
 <div class="card-box p-0">
     <div class="row">
         <div class="col-sm-10">
-
         </div>
         <div class="col-sm-2">
             <div class="text-right">
-                @using (Ajax.BeginForm("PartialModalAddEmployee", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                {
-                    <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                }
+                <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
             </div>
         </div>
     </div>
@@ -31,13 +27,12 @@
                         <th>@Html.DisplayNameFor(model => model.SprEmployees.First().EmployeesName)</th>
                         <th>@Html.DisplayNameFor(model => model.SprEmployees.First().SprEmployeesJobPosId)</th>
                         <th>@Html.DisplayNameFor(model => model.SprEmployees.First().CanTakeAppeal)</th>
-
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in Model.SprEmployees)
                     {
-                        <tr data-employee-id="@item.id" class="@(item.IsRemove == true ? "danger" : "")">
+                        <tr data-employee-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
                             <td class="number-row p-l-20-important">
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
@@ -51,25 +46,20 @@
                                 @(item.CanTakeAppeal == true ? "Да" : "Нет")
                             </td>
                             <td class="actions vertical-middle-important text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@item.EmployeesName", "EmployeesLogin": "@item.EmployeesLogin", "employees_fio_add": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "set_date": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;"
+                                data-tooltip-info='{"EmployeesFio": "@item.EmployeesName","EmployeesLogin": "@item.EmployeesLogin","EmployeesNameAdd": "@(item.EmployeesNameAdd)","IpAddressModify": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
-                                @using (Ajax.BeginForm("PartialTableEmployeeRoles", "Reference", new { employeeId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                {
-                                    <button class="on-default btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Роли">
-                                        <i class="md md-people-outline"></i>
-                                        <span class="badge badge-xs">@(item.SprEmployeesRoleJoin.Any() ? (object)item.SprEmployeesRoleJoin.Count : null)</span>
-                                    </button>
-                                }
+                                <button class="on-default btn btn-link" onclick="ShowRole('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Роли">
+                                    <i class="md md-people-outline"></i>
+                                    <span class="badge badge-xs">@(item.SprEmployeesRoleJoin.Any() ? (object)item.SprEmployeesRoleJoin.Count : null)</span>
+                                </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
                                     if (item.IsRemove != true)
                                     {
-                                        using (Ajax.BeginForm("PartialModalEditEmployee", "Reference", new { employeeId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                        {
-                                            <button class="edit-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Изменение"><i class="ion-edit"></i></button>
-                                        }
-                                        <button class="remove-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Удаление"><i class="ion-trash-b"></i></button>
+                                        <button class="edit-row btn btn-link" onclick="Edit('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Изменение"><i class="ion-edit"></i></button>
+                                        <button class="remove-row btn btn-link" onclick="Remove('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Удаление"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
@@ -104,19 +94,69 @@
 </div>
 
 <script>
-    $(document).ready(function () {
-                var filtering = $('#employeesTable');
-                filtering.footable();
-                $('#employeesTable #filter_count').text($('#employeesTable.footable tbody tr:not(.footable-filtered)').length);
-                $('#employeesTable #tr_count').text($('#employeesTable.footable tbody tr').length);
+    function Add() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddEmployee", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
 
-                // Search input
-                $('#searchTextEmployees').keyup(function (evt) {
-                    evt.preventDefault();
-                    filtering.trigger('footable_filter', { filter: $(this).val() });
-                    $('#employeesTable #filter_count').text($('#employeesTable.footable tbody tr:not(.footable-filtered)').length);
-                });
-            });
+    function Edit(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditEmployee",
+            data: { employeeId: id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }
+
+    function Remove(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitEmployeeDelete", "Reference")',
+            data: { employeeId: id },
+            success: function (data) {
+                successDelete();
+                $('#employeesPillContainer').html(data);
+            }
+        });
+    }
+
+    function ShowRole(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableEmployeeRoles", "Reference")',
+            data: { employeeId: id },
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        var filtering = $('#employeesTable');
+        filtering.footable();
+        $('#employeesTable #filter_count').text($('#employeesTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#employeesTable #tr_count').text($('#employeesTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextEmployees').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#employeesTable #filter_count').text($('#employeesTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+    });
 
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
@@ -124,13 +164,13 @@
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                    "<strong>ФИО</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>ФИО</strong>: " + tooltipInfo['EmployeesName'] + "</br>" +
                     "<strong>Логин</strong>: " + tooltipInfo['EmployeesLogin'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['employees_fio_add'] + "</br>" +
-                    "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesNameAdd'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
-                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['IpAddressModify'] + "</br>" +
                     (tooltipInfo['IsRemove'] ?
                         "<hr class='m-t-5 m-b-5'>" +
                         "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
@@ -154,7 +194,7 @@
             }
         });
     });
-      
+
 
     $('#showEmployeeRemoves').click(function () {
         $.ajax({
@@ -192,10 +232,10 @@
         });
     });
 
-            // Добавляем возможность выбора строки в таблице
-            $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
-                    $(this).siblings('tr:not(.thead-row)').removeClass('active');
-                    $(this).addClass('active');
-            });
+    // Добавляем возможность выбора строки в таблице
+    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+        $(this).siblings('tr:not(.thead-row)').removeClass('active');
+        $(this).addClass('active');
+    });
 </script>
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ReceptionCentreNew.Data.Context.App;
 
@@ -16,6 +17,7 @@ public partial class SprType
     /// <summary>
     /// Наименование типа
     /// </summary>
+    [DisplayName("Наименование")]
     public string TypeName { get; set; } = null!;
 
     /// <summary>
@@ -46,6 +48,7 @@ public partial class SprType
     /// <summary>
     /// Комментарий при изменении
     /// </summary>
+    [DisplayName("Причина изменения")]
     public string? CommenttModify { get; set; }
 
     /// <summary>

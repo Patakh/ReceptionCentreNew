@@ -1,7 +1,7 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprType
+﻿@model SprType
 <script>
     $(document).ready(function () {
-        $('#AddCaseTypeForm').validate();
+       $('#AddCaseTypeForm').validate();
     });
 </script>
 <div class="modal-dialog modal-lg" role="document">
@@ -13,21 +13,38 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitCaseTypeSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "caseTypeContainer", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @Id = "AddCaseTypeForm", @class = "form-horizontal" }))
-            {
+            <form id="AddCaseTypeForm" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="TypeName" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
+                            <input asp-for="TypeName" class="form-control required" placeholder="@Html.DisplayNameFor(model => model.TypeName)" />
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="AddCaseTypeForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+<script>
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitCaseTypeSave",
+            data: $("#AddCaseTypeForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successAdd();
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }); 
+</script>

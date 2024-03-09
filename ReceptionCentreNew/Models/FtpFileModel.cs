@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using FluentFTP;
-using ReceptionCentreNew;
-using ReceptionCentreNew.Models;
+using ReceptionCentreNew; 
 
 public class FtpFileModel
 {

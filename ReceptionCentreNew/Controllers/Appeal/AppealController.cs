@@ -323,8 +323,7 @@ public partial class AppealController : Controller
     /// <summary>
     /// Добавление
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalAddEmployeesMessageTemplate(string number)
     {
         ViewBag.AppealNumber = number;

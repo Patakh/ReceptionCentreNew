@@ -15,10 +15,10 @@ public class HomeController : Controller
     public int PageSize = 10;
     private IRepository _repository;
 
-    public HomeController()
+    public HomeController(IRepository repo)
     {
-     //   _repository = repo;
-    }
+      _repository = repo;
+    } 
 
     public IActionResult Index(string PhoneNumber)
     {

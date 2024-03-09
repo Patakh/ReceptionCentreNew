@@ -3,7 +3,6 @@ using ReceptionCentreNew.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Areas.Identity.User;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
@@ -16,21 +15,23 @@ namespace ReceptionCentreNew.Controllers
     {
         public int PageSize = 10;
 
-        #region Инициализация Repository
         private IRepository _repository;
+        private SprEmployees _employee;
         private string? UserName;
+
         public ReferenceController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
-            UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
+            _employee = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name);
+            UserName = _employee.EmployeesName;
         }
-        #endregion
+
         // GET: Reference
         public IActionResult Main()
         {
             return View();
         }
-        
+
         #region |-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-[  Тип обращения  ]-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|
 
         public IActionResult CaseType()
@@ -43,7 +44,7 @@ namespace ReceptionCentreNew.Controllers
             var CaseType = _repository.SprType;
             CaseType = !isRemove ? CaseType.Where(o => o.IsRemove != true) : CaseType;
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new()
             {
                 SprCaseTypeList = CaseType.OrderBy(a => a.TypeName),
                 PageInfo = new PageInfo
@@ -60,11 +61,10 @@ namespace ReceptionCentreNew.Controllers
         /// <summary>
         /// Добавление
         /// </summary>
-        /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
+        /// <returns>частичное представление модального окна</returns> 
         public IActionResult PartialModalAddCaseType()
         {
-            return PartialView("CaseType/PartialModalAddCaseType", new SprType { EmployeesNameAdd = UserName });            
+            return PartialView("CaseType/PartialModalAddCaseType", new SprType { EmployeesNameAdd = UserName });
         }
 
         /// <summary>
@@ -127,9 +127,8 @@ namespace ReceptionCentreNew.Controllers
         public IActionResult SubmitCaseTypeDelete(Guid caseTypeID)
         {
             SprType deleteCaseType = _repository.SprType.SingleOrDefault(so => so.Id == caseTypeID);
-
             deleteCaseType.IsRemove = true;
-            _repository.Update(deleteCaseType);
+            _repository.Delete(deleteCaseType);
             return RedirectToAction("PartialTableCaseType");
         }
         #endregion
@@ -146,7 +145,7 @@ namespace ReceptionCentreNew.Controllers
             var CaseTypeDifficulty = _repository.SprTypeDifficulty;
             CaseTypeDifficulty = !isRemove ? CaseTypeDifficulty.Where(o => o.IsRemove != true) : CaseTypeDifficulty;
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new()
             {
                 SprCaseTypeDifficultyList = CaseTypeDifficulty.OrderBy(a => a.TypeName),
                 PageInfo = new PageInfo
@@ -164,17 +163,15 @@ namespace ReceptionCentreNew.Controllers
         /// Добавление
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
         public IActionResult PartialModalAddCaseTypeDifficulty()
         {
-            return PartialView("CaseTypeDifficulty/PartialModalAddCaseTypeDifficulty", new SprTypeDifficulty { EmployeesNameAdd = UserName});
+            return PartialView("CaseTypeDifficulty/PartialModalAddCaseTypeDifficulty", new SprTypeDifficulty { EmployeesNameAdd = UserName });
         }
 
         /// <summary>
         /// Изменение
         /// </summary>
-        /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
+        /// <returns>частичное представление модального окна</returns> 
         public IActionResult PartialModalEditCaseTypeDifficulty(Guid caseTypeDifficultyID)
         {
             return PartialView("CaseTypeDifficulty/PartialModalEditCaseTypeDifficulty", _repository.SprTypeDifficulty.SingleOrDefault(st => st.Id == caseTypeDifficultyID));
@@ -184,8 +181,7 @@ namespace ReceptionCentreNew.Controllers
         /// Сохраняет изменнения или добавляет
         /// </summary>
         /// <param name="caseTypeDifficulty">объект</param>
-        /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
+        /// <returns>частичное представление таблицы</returns> 
         public IActionResult SubmitCaseTypeDifficultySave(SprTypeDifficulty caseTypeDifficulty)
         {
             if (ModelState.IsValid)
@@ -210,8 +206,7 @@ namespace ReceptionCentreNew.Controllers
         /// Восстанавливает запись по указанному Id
         /// </summary>
         /// <param name="subjectID">Id</param>
-        /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
+        /// <returns>частичное представление таблицы</returns> 
         public IActionResult SubmitCaseTypeDifficultyRecovery(Guid caseTypeDifficultyID)
         {
             SprTypeDifficulty recoveryCaseTypeDifficulty = _repository.SprTypeDifficulty.SingleOrDefault(so => so.Id == caseTypeDifficultyID);
@@ -227,12 +222,12 @@ namespace ReceptionCentreNew.Controllers
         /// <param name="subjectID">Id</param>
         /// <returns>частичное представление таблицы</returns>
         [HttpPost]
-        public IActionResult SubmitCaseTypeDifficultyDelete(Guid caseTypeDifficultyID)
+        public IActionResult SubmitCaseTypeDifficultyDelete(Guid caseTypeDifficultyId)
         {
-            SprTypeDifficulty deleteCaseTypeDifficulty = _repository.SprTypeDifficulty.SingleOrDefault(so => so.Id == caseTypeDifficultyID);
+            SprTypeDifficulty deleteCaseTypeDifficulty = _repository.SprTypeDifficulty.SingleOrDefault(so => so.Id == caseTypeDifficultyId);
 
             deleteCaseTypeDifficulty.IsRemove = true;
-            _repository.Update(deleteCaseTypeDifficulty);
+            _repository.Delete(deleteCaseTypeDifficulty);
             return RedirectToAction("PartialTableCaseTypeDifficulty");
         }
         #endregion
@@ -255,7 +250,7 @@ namespace ReceptionCentreNew.Controllers
                 || (h.Answer != null ? h.Answer.ToString().Contains(item) : false)
                 || (h.DateAdd != null ? h.DateAdd.Value.ToString().Contains(item) : false)));
 
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new()
             {
                 SprQuestionList = Question.OrderBy(a => a.Question),
                 PageInfo = new PageInfo
@@ -273,7 +268,6 @@ namespace ReceptionCentreNew.Controllers
         /// Добавление
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
         public IActionResult PartialModalAddQuestion()
         {
             return PartialView("Questions/PartialModalAddQuestion", new SprQuestion { EmployeesNameAdd = UserName });
@@ -283,10 +277,9 @@ namespace ReceptionCentreNew.Controllers
         /// Изменение
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
-        public IActionResult PartialModalEditQuestion(Guid questionId)
+        public IActionResult PartialModalEditQuestion(Guid id)
         {
-            return PartialView("Questions/PartialModalEditQuestion", _repository.SprQuestion.SingleOrDefault(st => st.Id == questionId));
+            return PartialView("Questions/PartialModalEditQuestion", _repository.SprQuestion.SingleOrDefault(st => st.Id == id));
         }
 
         /// <summary>
@@ -294,26 +287,20 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="Question"></param>
         /// <returns></returns>
-        [HttpPost]
-        //[ValidateInput(false)]
         public IActionResult SubmitQuestionSave(SprQuestion request)
         {
-            if (ModelState.IsValid)
+            if (request.Id == Guid.Empty)
             {
-                if (request.Id == Guid.Empty)
-                {
-                    request.DateAdd = DateTime.Now;
-                    _repository.Insert(request);
-                }
-                else
-                {
-                    request.EmployeesNameModify = UserName;
-                    request.DateModify = DateTime.Now;
-                    _repository.Update(request);
-                }
-                return RedirectToAction("PartialTableQuestions");
+                request.DateAdd = DateTime.Now;
+                _repository.Insert(request);
             }
-            throw new Exception("Ошибка валидации!");
+            else
+            {
+                request.EmployeesNameModify = UserName;
+                request.DateModify = DateTime.Now;
+                _repository.Update(request);
+            }
+            return RedirectToAction("PartialTableQuestions");
         }
 
         /// <summary>
@@ -321,7 +308,6 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="questionId">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
         public IActionResult SubmitQuestionRecovery(Guid questionId)
         {
             SprQuestion recoveryQuestion = _repository.SprQuestion.SingleOrDefault(so => so.Id == questionId);
@@ -337,15 +323,14 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="questionId">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
-        public IActionResult SubmitQuestionDelete(Guid questionId)
+        public IActionResult SubmitQuestionDelete(Guid id)
         {
-            SprQuestion deleteQuestion = _repository.SprQuestion.SingleOrDefault(so => so.Id == questionId);
+            SprQuestion deleteQuestion = _repository.SprQuestion.SingleOrDefault(so => so.Id == id);
 
             deleteQuestion.IsRemove = true;
             deleteQuestion.DateModify = DateTime.Now;
             deleteQuestion.EmployeesNameModify = UserName;
-            _repository.Update(deleteQuestion);
+            _repository.Delete(deleteQuestion);
             return RedirectToAction("PartialTableQuestions");
         }
 
@@ -361,9 +346,8 @@ namespace ReceptionCentreNew.Controllers
         public IActionResult PartialTableSurveyQuestions(bool isRemove = false, int page = 1)
         {
             ViewBag.IsRemove = isRemove;
-            var SurveyQuestion = _repository.SprSurveyQuestion.Include(i=>i.SprSurveyAnswer);
-            SurveyQuestion = (Microsoft.EntityFrameworkCore.Query.IIncludableQueryable<SprSurveyQuestion, ICollection<SprSurveyAnswer>>)(!isRemove ? SurveyQuestion.Where(o => o.IsRemove != true) : SurveyQuestion);
-
+            var SurveyQuestion = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(o => o.IsRemove != true);
+           
             ReferenceViewModel model = new ReferenceViewModel
             {
                 SprSurveyQuestionList = SurveyQuestion.OrderBy(a => a.Question),
@@ -382,7 +366,7 @@ namespace ReceptionCentreNew.Controllers
         /// Добавление
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
+
         public IActionResult PartialModalAddSurveyQuestion()
         {
             return PartialView("SurveyQuestions/PartialModalAddSurveyQuestion", new SprSurveyQuestion { EmployeesNameAdd = UserName });
@@ -392,48 +376,41 @@ namespace ReceptionCentreNew.Controllers
         /// Изменение
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
-        public IActionResult PartialModalEditSurveyQuestion(Guid questionId)
+
+        public IActionResult PartialModalEditSurveyQuestion(Guid id)
         {
-            return PartialView("SurveyQuestions/PartialModalEditSurveyQuestion", _repository.SprSurveyQuestion.SingleOrDefault(st => st.Id == questionId));
+            return PartialView("SurveyQuestions/PartialModalEditSurveyQuestion", _repository.SprSurveyQuestion.SingleOrDefault(st => st.Id == id));
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Question"></param>
-        /// <returns></returns>
-        [HttpPost]
-        //[ValidateInput(false)]
+        /// <returns></returns> 
         public IActionResult SubmitSurveyQuestionSave(SprSurveyQuestion request)
         {
-            if (ModelState.IsValid)
+            if (request.Id == Guid.Empty)
             {
-                if (request.Id == Guid.Empty)
-                {
-                    request.DateAdd = DateTime.Now;
-                    _repository.Insert(request);
-                }
-                else
-                {
-                    request.EmployeesNameModify = UserName;
-                    request.DateModify = DateTime.Now;
-                    _repository.Update(request);
-                }
-                return RedirectToAction("PartialTableSurveyQuestions");
+                request.DateAdd = DateTime.Now;
+                _repository.Insert(request);
             }
-            throw new Exception("Ошибка валидации!");
+            else
+            {
+                request.EmployeesNameModify = UserName;
+                request.DateModify = DateTime.Now;
+                _repository.Update(request);
+            }
+            return RedirectToAction("PartialTableSurveyQuestions");
         }
 
         /// <summary>
         /// Восстанавливает запись по указанному Id
         /// </summary>
-        /// <param name="questionId">Id</param>
+        /// <param name="id">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
-        public IActionResult SubmitSurveyQuestionRecovery(Guid questionId)
+        public IActionResult SubmitSurveyQuestionRecovery(Guid id)
         {
-            SprSurveyQuestion recoverySurveyQuestion = _repository.SprSurveyQuestion.SingleOrDefault(so => so.Id == questionId);
+            SprSurveyQuestion recoverySurveyQuestion = _repository.SprSurveyQuestion.SingleOrDefault(so => so.Id == id);
 
             recoverySurveyQuestion.IsRemove = false;
             _repository.Update(recoverySurveyQuestion);
@@ -443,15 +420,14 @@ namespace ReceptionCentreNew.Controllers
         /// <summary>
         /// Удаляет запись по указанному Id
         /// </summary>
-        /// <param name="questionId">Id</param>
+        /// <param name="id">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
-        public IActionResult SubmitSurveyQuestionDelete(Guid questionId)
+        public IActionResult SubmitSurveyQuestionDelete(Guid id)
         {
-            SprSurveyQuestion deleteSurveyQuestion = _repository.SprSurveyQuestion.SingleOrDefault(so => so.Id == questionId);
+            SprSurveyQuestion deleteSurveyQuestion = _repository.SprSurveyQuestion.SingleOrDefault(so => so.Id == id);
 
             deleteSurveyQuestion.IsRemove = true;
-            _repository.Update(deleteSurveyQuestion);
+            _repository.Delete(deleteSurveyQuestion);
             return RedirectToAction("PartialTableSurveyQuestions");
         }
         #endregion
@@ -459,12 +435,12 @@ namespace ReceptionCentreNew.Controllers
 
         #region Ответы
 
-        public IActionResult PartialTableSurveyAnswers(Guid surveyQuestionId, bool isRemove = false, int page = 1)
+        public IActionResult PartialTableSurveyAnswers(Guid id, bool isRemove = false, int page = 1)
         {
             ViewBag.IsRemove = isRemove;
-            var SurveyAnswer = _repository.SprSurveyAnswer.Where(w=>w.SprSurveyQuestionId== surveyQuestionId);
+            var SurveyAnswer = _repository.SprSurveyAnswer.Where(w => w.SprSurveyQuestionId == id);
             SurveyAnswer = !isRemove ? SurveyAnswer.Where(o => o.IsRemove != true) : SurveyAnswer;
-            ViewBag.SurveyQuestionId = surveyQuestionId;
+            ViewBag.SurveyQuestionId = id;
             ReferenceViewModel model = new ReferenceViewModel
             {
                 SprSurveyAnswerList = SurveyAnswer.OrderBy(a => a.Answer),
@@ -483,20 +459,18 @@ namespace ReceptionCentreNew.Controllers
         /// Добавление
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
-        public IActionResult PartialModalAddSurveyAnswer(Guid surveyQuestionId)
+        public IActionResult PartialModalAddSurveyAnswer(Guid id)
         {
-            return PartialView("SurveyAnswers/PartialModalAddSurveyAnswer", new SprSurveyAnswer { SprSurveyQuestionId=surveyQuestionId, EmployeesNameAdd = UserName });
+            return PartialView("SurveyAnswers/PartialModalAddSurveyAnswer", new SprSurveyAnswer { SprSurveyQuestionId = id, EmployeesNameAdd = UserName });
         }
 
         /// <summary>
         /// Изменение
         /// </summary>
         /// <returns>частичное представление модального окна</returns>
-        [HttpPost]
-        public IActionResult PartialModalEditSurveyAnswer(Guid surveyAnswerId)
+        public IActionResult PartialModalEditSurveyAnswer(Guid id)
         {
-            return PartialView("SurveyAnswers/PartialModalEditSurveyAnswer", _repository.SprSurveyAnswer.SingleOrDefault(st => st.Id == surveyAnswerId));
+            return PartialView("SurveyAnswers/PartialModalEditSurveyAnswer", _repository.SprSurveyAnswer.SingleOrDefault(st => st.Id == id));
         }
 
         /// <summary>
@@ -504,26 +478,21 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="ansver"></param>
         /// <returns></returns>
-        [HttpPost]
         public IActionResult SubmitSurveyAnswerSave(SprSurveyAnswer request)
         {
-            if (ModelState.IsValid)
+            if (request.Id == Guid.Empty)
             {
-                if (request.Id == Guid.Empty)
-                {
-                    request.DateAdd = DateTime.Now;
-                    request.EmployeesNameAdd = UserName;
-                    _repository.Insert(request);
-                }
-                else
-                {
-                    request.DateModify = DateTime.Now;
-                    request.EmployeesNameModify = UserName;
-                    _repository.Update(request);
-                }
-                return RedirectToAction("PartialTableSurveyAnswers", new { surveyQuestionId = request.SprSurveyQuestionId});
+                request.DateAdd = DateTime.Now;
+                request.EmployeesNameAdd = UserName;
+                _repository.Insert(request);
             }
-            throw new Exception("Ошибка валидации!");
+            else
+            {
+                request.DateModify = DateTime.Now;
+                request.EmployeesNameModify = UserName;
+                _repository.Update(request);
+            }
+            return RedirectToAction("PartialTableSurveyAnswers", new { surveyQuestionId = request.SprSurveyQuestionId });
         }
 
         /// <summary>
@@ -531,7 +500,6 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="ansverId">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
         public IActionResult SubmitSurveyAnswerRecovery(Guid surveyAnswerId)
         {
             SprSurveyAnswer recoverySurveyAnswer = _repository.SprSurveyAnswer.SingleOrDefault(so => so.Id == surveyAnswerId);
@@ -545,12 +513,11 @@ namespace ReceptionCentreNew.Controllers
         /// </summary>
         /// <param name="avnserId">Id</param>
         /// <returns>частичное представление таблицы</returns>
-        [HttpPost]
-        public IActionResult SubmitSurveyAnswerDelete(Guid surveyAnswerId)
+        public IActionResult SubmitSurveyAnswerDelete(Guid id)
         {
-            SprSurveyAnswer deleteSurveyAnswer = _repository.SprSurveyAnswer.SingleOrDefault(so => so.Id == surveyAnswerId);
+            SprSurveyAnswer deleteSurveyAnswer = _repository.SprSurveyAnswer.SingleOrDefault(so => so.Id == id);
             deleteSurveyAnswer.IsRemove = true;
-            _repository.Update(deleteSurveyAnswer);
+            _repository.Delete(deleteSurveyAnswer);
             return RedirectToAction("PartialTableSurveyAnswers", new { surveyQuestionId = deleteSurveyAnswer.SprSurveyQuestionId });
         }
         #endregion

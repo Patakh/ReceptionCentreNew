@@ -1,9 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprTypeDifficulty
-<script>
-    $(document).ready(function () {
-        $('#EditCaseTypeDifficultyForm').validate();
-    });
-</script>
+﻿@model SprTypeDifficulty 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -13,37 +8,56 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitCaseTypeDifficultySave", "Reference", Model, new AjaxOptions { UpdateTargetId = "caseTypeDifficultyContainer", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditCaseTypeDifficultyForm", @class = "form-horizontal" }))
-            {
+            <form id="EditCaseTypeDifficultyForm" class="form-horizontal">
+                <input type="hidden" asp-for="Id" class="form-control"/>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.TypeName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="TypeName" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.TypeName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.TypeName) } })
+                            <input asp-for="TypeName" class="form-control required" placeholder="TypeName" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.CountDay, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="CountDay" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.CountDay, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.CountDay) } })
+                            <input asp-for="CountDay" class="form-control required" placeholder="CountDay" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="CommenttModify" class="col-md-4 control-label text-right"></label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.CommenttModify, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.CommenttModify) } })
+                            <input asp-for="CommenttModify" class="form-control" placeholder="CommenttModify" />
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="EditCaseTypeDifficultyForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+<script>
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitCaseTypeDifficultySave",
+            data: $("#EditCaseTypeDifficultyForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successEdit()
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+
+</script>

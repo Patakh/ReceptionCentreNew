@@ -1,5 +1,7 @@
-﻿@{
-    string[] fio = ["Абдурашидов", "Шамиль"];
+﻿@using System.Security.Claims
+@{
+    var fio = Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserData)?.Value.Split(' ');
+
 }
 <div class="topbar">
     <div class="topbar-left">
@@ -67,7 +69,7 @@
                             <i class="md md-call"></i>
                         </a>
                     }
-                    <a class="dropdown-item notify-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                    <a class="dropdown-item notify-item" asp-action="Logout" asp-controller="Account" method="post">
                         <i class="md md-settings-power"></i> <span>Выход</span>
                     </a>
                 </div>

@@ -1,4 +1,4 @@
-﻿@model  ReferenceViewModel
+﻿@model ReferenceViewModel
 <style>
     .row {
         margin: 0px;
@@ -28,10 +28,7 @@
         </div>
         <input type="text" id="searchTextQuestions" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on" value="@ViewBag.Search">
         <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
-        @using (Ajax.BeginForm("PartialModalAddQuestion", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "" }))
-        {
-            <button type="submit" class="btn btn-link" style="padding-top:5px; padding-right:10px;"><i class="fa fa-plus" style="font-size: 20px;"></i></button>
-        }
+        <button type="button" onclick="Add()" class="btn btn-link" style="padding-top:5px; padding-right:10px;"><i class="fa fa-plus" style="font-size: 20px;"></i></button>
     </div>
     <div class="row">
         @if (Model.SprQuestionList.Any())
@@ -46,7 +43,7 @@
                                     <b> @item.Question </b>
                                 </div>
                                 <div class="col text-right">
-                                    <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                    <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": "@(item.IsRemove)"}'>
                                         <i class="ion-ios7-information-outline"></i>
                                     </button>
                                 </div>
@@ -65,11 +62,8 @@
                                     {
                                         if (item.IsRemove != true)
                                         {
-                                            using (Ajax.BeginForm("PartialModalEditQuestion", "Reference", new { FormMethod = "POST", questionId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                            {
-                                                <button class="btn btn-link edit-row"><i class="ion-edit"></i></button>
-                                            }
-                                            <button class="btn btn-link remove-row" data-question-id="@item.Id"><i class="ion-trash-b"></i></button>
+                                            <button type="button" class="edit-row btn btn-link" onclick="Edit('@(item.Id)')"><i class="ion-edit"></i></button>
+                                            <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                         }
                                         else
                                         {
@@ -96,20 +90,48 @@
             <tr>
                 <td class="text-left">
                     <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>
-                </td>
-                <td>
-                    @if (Model.SprQuestionList.Count() > 10)
-                    {
-                        <div class="pagination pagination-split footable-pagination justify-content-end" id="datatable-editable_paginate">
-                            @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableQuestions", "Reference", new { page = x.CurrentPage, search = ViewBag.Search, isRemove = ViewBag.IsRemove }, new AjaxOptions { UpdateTargetId = "questionsContainer" }))
-                        </div>
-                    }
-                </td>
+                </td> 
             </tr>
         </table>
     </div>
 </div>
 <script>
+    function Add() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddQuestion", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+    function Edit(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditQuestion",
+            data: { id : id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }
+    function Remove(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitQuestionDelete", "Reference")',
+            data: { id: id },
+            success: function (data) {
+                successDelete();
+                $('#employeesPillContainer').html(data);
+            }
+        });
+    }
+
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
@@ -126,20 +148,20 @@
             html: true,
             placement: "left"
         });
-        });
+    });
 
-        $('#searchTextQuestions').change(function () {
-             $.ajax({
-                 url: '@Url.Action("PartialTableQuestions", "Reference")',
-                 type: 'Post',
-                 data: { search: $(this).val(), isRemove:'@ViewBag.IsRemove'},
-                 success: function (data) {
-                     $('#questionsContainer').html(data);
-                     $('#searchTextQuestions').focus();
-                     var tmpStr = $('#searchTextQuestions').val();
-                     $('#searchTextQuestions').val('');
-                     $('#searchTextQuestions').val(tmpStr);
-                 }
+    $('#searchTextQuestions').change(function () {
+        $.ajax({
+            url: '@Url.Action("PartialTableQuestions", "Reference")',
+            type: 'Post',
+            data: { search: $(this).val(), isRemove: '@ViewBag.IsRemove' },
+            success: function (data) {
+                $('#questionsContainer').html(data);
+                $('#searchTextQuestions').focus();
+                var tmpStr = $('#searchTextQuestions').val();
+                $('#searchTextQuestions').val('');
+                $('#searchTextQuestions').val(tmpStr);
+            }
         });
     });
 
@@ -158,27 +180,14 @@
         var questionId = $(this).data('questionId');
         var paramObject = {
             url: '@Url.Action("SubmitQuestionRecovery", "Reference")',
-            params: { questionId: questionId, search:'@ViewBag.Search', isRemove:'@ViewBag.IsRemove', page:'@Model.PageInfo.CurrentPage' },
+            params: { questionId: questionId, search: '@ViewBag.Search', isRemove: '@ViewBag.IsRemove', page: '@Model.PageInfo.CurrentPage' },
             onSuccess: function (data) {
                 $('#questionsContainer').html(data);
             }
         }
         removeRecovery(paramObject);
     });
-
-    $('#questionsContainer button.remove-row').click(function () {
-        var questionId = $(this).data('questionId');
-        console.log(questionId);
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitQuestionDelete", "Reference")',
-            data: { questionId: questionId, search:'@ViewBag.Search', isRemove:'@ViewBag.IsRemove', page:'@Model.PageInfo.CurrentPage' },
-            success: function (data) {
-                successDelete();
-                $('#questionsContainer').html(data);
-            }
-        });
-    });
+     
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {

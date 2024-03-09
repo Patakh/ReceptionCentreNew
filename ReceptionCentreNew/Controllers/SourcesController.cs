@@ -1,12 +1,9 @@
 ﻿using ReceptionCentreNew.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ReceptionCentreNew.Areas.Identity.User;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Data.Context.App;
-using Microsoft.AspNetCore.Mvc.Razor;
-
 namespace ReceptionCentreNew.Controllers;
 public class SourcesController : Controller
 {
@@ -16,7 +13,7 @@ public class SourcesController : Controller
     public SourcesController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
         _repository = repo;
-        _employee = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email);
+        _employee = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name);
     }
     public IActionResult In()
     {

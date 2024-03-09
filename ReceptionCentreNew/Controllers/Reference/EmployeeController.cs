@@ -3,35 +3,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
-using Microsoft.EntityFrameworkCore.Query;
+using System.Web.Helpers;
 
 namespace ReceptionCentreNew.Controllers;
 public partial class ReferenceController
 {
-    // GET: Employee
     public IActionResult Employees()
     {
         return View("Employees/Main");
     }
-    #region |-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-[  Сотрудники  ]-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|
 
     /// <summary>
     /// Добавление Сотрудника
     /// </summary>
     /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+
     public IActionResult PartialModalAddEmployee()
     {
         ViewBag.EmployeeJobPos = new SelectList(_repository.SprEmployeesJobPos, "Id", "JobPosName");
         ViewBag.EmployeeDepartments = new SelectList(_repository.SprEmployeesDepartment, "Id", "DepartmentName");
-        return PartialView("Employees/Employees/PartialModalAddEmployee", new SprEmployees { EmployeesNameAdd = UserName });
+        return PartialView("Employees/Employees/PartialModalAddEmployee", new SprEmployees { EmployeesNameAdd = UserName, SprEmployeesDepartment = new(), SprEmployeesJobPos = new() });
     }
 
     /// <summary>
     /// Изменение данных Сотрудника
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalEditEmployee(Guid employeeId)
     {
         ViewBag.EmployeeJobPos = new SelectList(_repository.SprEmployeesJobPos, "Id", "JobPosName");
@@ -44,35 +41,30 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employee">объект Сотрудника</param>
     /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
-    public IActionResult SubmitEmployeeSave(SprEmployees employee)
+
+    public async Task<IActionResult> SubmitEmployeeSave(SprEmployees employee)
     {
-        if (ModelState.IsValid)
+        if (employee.Id == Guid.Empty)
         {
-            if (employee.Id == Guid.Empty)
-            {
-                ///   employee.EmployeesPass = Crypto.HashPassword(employee.EmployeesPass);
-                employee.EmployeesNameAdd = UserName;
-                employee.DateAdd = DateTime.Now;
-                _repository.Insert(employee);
-            }
-            else
-            {
-                employee.EmployeesNameModify = UserName;
-                employee.DateModify = DateTime.Now;
-                _repository.Update(employee);
-            }
-            return RedirectToAction("PartialTableEmployees");
+            employee.EmployeesPass = Crypto.HashPassword(employee.EmployeesPass);
+            employee.EmployeesNameAdd = UserName;
+            employee.DateAdd = DateTime.Now;
+            _repository.Insert(employee);
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            employee.EmployeesNameModify = UserName;
+            employee.DateModify = DateTime.Now;
+            _repository.Update(employee);
+        }
+        return RedirectToAction("PartialTableEmployees");
     }
 
     /// <summary>
     /// Восстанавливает запись по указанному Id
     /// </summary>
     /// <param name="employeeId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeRecovery(Guid employeeId)
     {
         SprEmployees recoveryEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId);
@@ -85,15 +77,14 @@ public partial class ReferenceController
     /// Удаляет запись по указанному Id
     /// </summary>
     /// <param name="employeeId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeDelete(Guid employeeId)
     {
         SprEmployees deleteEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId);
         deleteEmployee.IsRemove = true;
         deleteEmployee.EmployeesNameModify = UserName;
         deleteEmployee.DateModify = DateTime.Now;
-        _repository.Update(deleteEmployee);
+        _repository.Delete(deleteEmployee);
         return RedirectToAction("PartialTableEmployees");
     }
 
@@ -101,11 +92,7 @@ public partial class ReferenceController
     {
         ViewBag.IsRemove = isRemove;
         ViewBag.Search = search;
-        var employees = _repository.SprEmployees.Include(se => se.SprEmployeesJobPos).Include(i => i.SprEmployeesRoleJoin);
-        employees = (IIncludableQueryable<SprEmployees, ICollection<SprEmployeesRoleJoin>>)(!isRemove ? employees.Where(o => o.IsRemove != true) : employees);
-
-        employees = string.IsNullOrEmpty(search) ? employees :
-           search.ToLower().Split().Aggregate(employees, (current, item) => (IIncludableQueryable<SprEmployees, ICollection<SprEmployeesRoleJoin>>)current.Where(h => h.EmployeesName.ToLower().Contains(item)));
+        var employees = _repository.SprEmployees.Include(se => se.SprEmployeesJobPos).Include(i => i.SprEmployeesRoleJoin).Where(o => o.IsRemove != true);
 
         EmployeeViewModel model = new()
         {
@@ -121,14 +108,11 @@ public partial class ReferenceController
         return PartialView("Employees/Employees/PartialTableEmployees", model);
     }
 
-    #endregion
-
     #region |-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-[  Роли сотрудника  ]-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|
     /// <summary>
     /// Добавление роль Сотрудника
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalAddEmployeeRole(Guid employeeId)
     {
         ViewBag.EmployeeId = employeeId;
@@ -140,8 +124,7 @@ public partial class ReferenceController
     /// Сохраняет изменнения или добавляет роль сотрудника
     /// </summary>
     /// <param name="employeeRole">объект роль Сотрудника</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeRoleSave(SprEmployeesRoleJoin employeeRole)
     {
         if (ModelState.IsValid)
@@ -163,8 +146,7 @@ public partial class ReferenceController
     /// Удаляет запись по указанному Id
     /// </summary>
     /// <param name="employeeRoleId">Id роли Сотрудника</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeRoleDelete(Guid employeeRoleId)
     {
         var employeeRole = _repository.SprEmployeesRoleJoin.SingleOrDefault(ser => ser.Id == employeeRoleId);
@@ -191,8 +173,7 @@ public partial class ReferenceController
     /// <summary>
     /// Добавление
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalAddDepartment()
     {
         return PartialView("Employees/Departments/PartialModalAddDepartment", new SprEmployeesDepartment { EmployeesNameAdd = UserName });
@@ -201,8 +182,7 @@ public partial class ReferenceController
     /// <summary>
     /// Изменение
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalEditDepartment(Guid departmentId)
     {
         return PartialView("Employees/Departments/PartialModalEditDepartment", _repository.SprEmployeesDepartment.SingleOrDefault(ed => ed.Id == departmentId));
@@ -212,8 +192,7 @@ public partial class ReferenceController
     /// Сохраняет изменнения или добавляет
     /// </summary>
     /// <param name="department">объект</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitDepartmentSave(SprEmployeesDepartment department)
     {
         if (ModelState.IsValid)
@@ -239,8 +218,7 @@ public partial class ReferenceController
     /// Восстанавливает запись по указанному Id
     /// </summary>
     /// <param name="departmentId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitDepartmentRecovery(Guid departmentId)
     {
         SprEmployeesDepartment recoveryDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(so => so.Id == departmentId);
@@ -254,8 +232,7 @@ public partial class ReferenceController
     /// Удаляет запись по указанному Id
     /// </summary>
     /// <param name="departmentId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitDepartmentDelete(Guid departmentId)
     {
         SprEmployeesDepartment deleteDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(sed => sed.Id == departmentId);
@@ -263,7 +240,7 @@ public partial class ReferenceController
         deleteDepartment.IsRemove = true;
         deleteDepartment.EmployeesNameModify = UserName;
         deleteDepartment.DateModify = DateTime.Now;
-        _repository.Update(deleteDepartment);
+        _repository.Delete(deleteDepartment);
         return RedirectToAction("PartialTableDepartments");
     }
 
@@ -294,8 +271,7 @@ public partial class ReferenceController
     /// <summary>
     /// Добавление
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalAddEmployeeJobPos()
     {
         return PartialView("Employees/EmployeeJobPos/PartialModalAddEmployeeJobPos", new SprEmployeesJobPos { EmployeesNameAdd = UserName });
@@ -304,8 +280,7 @@ public partial class ReferenceController
     /// <summary>
     /// Изменение
     /// </summary>
-    /// <returns>частичное представление модального окна</returns>
-    [HttpPost]
+    /// <returns>частичное представление модального окна</returns> 
     public IActionResult PartialModalEditEmployeeJobPos(Guid employeeJobPosId)
     {
         return PartialView("Employees/EmployeeJobPos/PartialModalEditEmployeeJobPos", _repository.SprEmployeesJobPos.SingleOrDefault(ed => ed.Id == employeeJobPosId));
@@ -315,8 +290,7 @@ public partial class ReferenceController
     /// Сохраняет изменнения или добавляет
     /// </summary>
     /// <param name="employeeJobPos">объект</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeJobPosSave(SprEmployeesJobPos employeeJobPos)
     {
         if (ModelState.IsValid)
@@ -335,15 +309,14 @@ public partial class ReferenceController
             }
             return RedirectToAction("PartialTableEmployeeJobPos");
         }
-        throw new Exception("Ошибка валидации!");
+        return View(employeeJobPos);
     }
 
     /// <summary>
     /// Восстанавливает запись по указанному Id
     /// </summary>
     /// <param name="employeeJobPosId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeJobPosRecovery(Guid employeeJobPosId)
     {
         SprEmployeesJobPos recoveryEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == employeeJobPosId);
@@ -357,14 +330,13 @@ public partial class ReferenceController
     /// Удаляет запись по указанному Id
     /// </summary>
     /// <param name="employeeJobPosId">Id</param>
-    /// <returns>частичное представление таблицы</returns>
-    [HttpPost]
+    /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeJobPosDelete(Guid employeeJobPosId)
     {
         SprEmployeesJobPos deleteEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == employeeJobPosId);
 
         deleteEmployeeJobPos.IsRemove = true;
-        _repository.Update(deleteEmployeeJobPos);
+        _repository.Delete(deleteEmployeeJobPos);
         return RedirectToAction("PartialTableEmployeeJobPos");
     }
 

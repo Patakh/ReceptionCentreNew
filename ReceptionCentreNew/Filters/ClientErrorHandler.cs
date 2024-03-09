@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using ReceptionCentreNew.Data.Context.App;
 using System.Net;
-using System.Net.Mime;
-using ReceptionCentreNew.Data.Context.App;
-
+using System.Net.Mime; 
 namespace ReceptionCentreNew.Filters;
 public class ClientErrorHandler : Attribute, IExceptionFilter
 { 

@@ -1,15 +1,11 @@
-﻿@model  EmployeeViewModel
+﻿@model EmployeeViewModel
 <div class="card-box p-0">
     <div class="row">
         <div class="col-sm-10">
-
         </div>
         <div class="col-sm-2">
             <div class="text-right">
-                @using (Ajax.BeginForm("PartialModalAddEmployeeJobPos", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                {
-                    <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                }
+                <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button> 
             </div>
         </div>
     </div>
@@ -28,7 +24,7 @@
                     <tr>
                         <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
                         <th>@Html.DisplayNameFor(model => model.SprEmployeesJobPosList.First().JobPosName)</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
@@ -42,18 +38,18 @@
                                 <span>@Html.DisplayFor(i => item.JobPosName)</span><br>
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="text-custom btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"JobPosName": @Json.Encode(item.JobPosName), "EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.CommenttModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                <button type="button" class="text-custom btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"JobPosName": "@(item.JobPosName)", "EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.CommenttModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
                                     if (item.IsRemove != true)
                                     {
-                                        using (Ajax.BeginForm("PartialModalEditEmployeeJobPos", "Reference", new { employeeJobPosId = item.Id }, new AjaxOptions { UpdateTargetId = "myModal", OnSuccess = "$('#myModal').modal('show');" }, new { @class = "form-submit" }))
-                                        {
-                                            <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
-                                        }
-                                        <button class="remove-row btn btn-link"><i class="ion-trash-b"></i></button>
+                                        <form id="@item.Id" class="form-submit">
+                                            <button type="button" class="edit-row btn btn-link" onclick="Edit('@item.Id')"><i class="ion-edit"></i></button>
+                                        </form>
+
+                                        <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
@@ -88,6 +84,42 @@
 </div>
 
 <script>
+    function Add() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddEmployeeJobPos", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+    function Edit(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditEmployeeJobPos",
+            data: { employeeJobPosId: id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }
+    function Remove(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitEmployeeJobPosDelete", "Reference")',
+            data: { employeeJobPosId: id },
+            success: function (data) {
+                successDelete();
+                $('#departmentsPillContainer').html(data);
+            }
+        });
+    }
+
     $(document).ready(function () {
         var filtering = $('#employeesJobsTable');
         filtering.footable();
@@ -101,7 +133,10 @@
             $('#employeesJobsTable #filter_count').text($('#employeesJobsTable.footable tbody tr:not(.footable-filtered)').length);
         });
     });
-     $(function () {
+
+
+
+    $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -110,14 +145,14 @@
                     "<strong>Наименование</strong>: " + tooltipInfo['JobPosName'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
-                    "<strong>Дата добавления</strong>: " + tooltipInfo['set_date'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
                     (tooltipInfo['IsRemove'] ?
-                            "<hr class='m-t-5 m-b-5'>" +
-                            "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
-                            "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
-                            "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
+                        "<hr class='m-t-5 m-b-5'>" +
+                        "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
+                        "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
+                        "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
                     "</div>";
             },
             html: true,
@@ -125,7 +160,7 @@
         });
     });
 
-                    $('#showEmployeeJobRemoves').click(function () {
+    $('#showEmployeeJobRemoves').click(function () {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialTableEmployeeJobPos", "Reference")',
@@ -148,22 +183,10 @@
         removeRecovery(paramObject);
     });
 
-    $('#jobPosPillContainer table td button.remove-row').click(function () {
-        var employeeJobPosId = $(this).closest('tr').data('employeeJobPosId');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitEmployeeJobPosDelete", "Reference")',
-            data: { employeeJobPosId: employeeJobPosId },
-            success: function (data) {
-                successDelete();
-                $('#jobPosPillContainer').html(data);
-            }
-        });
-    });
 
     // Добавляем возможность выбора строки в таблице
-    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {        
-            $(this).siblings('tr:not(.thead-row)').removeClass('active');
-            $(this).addClass('active');
+    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+        $(this).siblings('tr:not(.thead-row)').removeClass('active');
+        $(this).addClass('active');
     });
 </script>

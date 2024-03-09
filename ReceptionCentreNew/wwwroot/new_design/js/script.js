@@ -19,30 +19,7 @@ function connect() {
     };
 };
 var i = 0;
-$.ajax({
-    async: true,
-    url: 'Socket/SocketJitsi',
-    type: 'POST',
-    success: function (data) {
-        console.log(data);
-    }
-});
-$.ajax({
-    async: true,
-    url: 'Common/GetEmails',
-    type: 'POST',
-    success: function (data) {
-        $('#menu_input_email').text(data);
-    }
-});
-$.ajax({
-    async: true,
-    url: 'Common/GetNotifications',
-    type: 'POST',
-    success: function (data) {
-        $('#menu_input_notification').text(data);
-    }
-});
+
 
 // unblock when ajax activity stops
 $(document).ajaxStart(function () {
@@ -203,7 +180,33 @@ $(document).ready(function () {
             })
         });
     }
+    if (window.location.pathname === '/') {
+        $.ajax({
+            async: true,
+            url: 'Socket/SocketJitsi',
+            type: 'POST',
+            success: function (data) {
+                console.log(data);
+            }
+        });
+        $.ajax({
+            async: true,
+            url: 'Common/GetEmails',
+            type: 'POST',
+            success: function (data) {
+                $('#menu_input_email').text(data);
+            }
+        });
 
+        $.ajax({
+            async: true,
+            url: 'Common/GetNotifications',
+            type: 'POST',
+            success: function (data) {
+                $('#menu_input_notification').text(data);
+            }
+        });
+    }
 });
 // Callback
 $('#callBackHeadBtn').on('click', function (e) {

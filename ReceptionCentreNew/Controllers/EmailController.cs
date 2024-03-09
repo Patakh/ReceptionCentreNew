@@ -2,8 +2,7 @@
 using ReceptionCentreNew.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using ReceptionCentreNew.Areas.Identity.User;
+using Microsoft.AspNetCore.Mvc.Rendering; 
 using ReceptionCentreNew.Data.Context.App;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;

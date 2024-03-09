@@ -14,11 +14,10 @@
 
                     </div>
                     <div class="col-sm-2">
-                        <div class="text-right">
-                            @using (Ajax.BeginForm("PartialModalAddEmployeeRole", "Reference", new { employeeId = ViewBag.EmployeeId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                            {
-                                <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                            }
+                        <div class="text-right"> 
+                            <form id="partialModalForm" class="form-submit">
+                                <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -46,7 +45,7 @@
                                         <td class="actions text-right">
                                             @if (User.IsInRole("superadmin"))
                                             {
-                                                <button class="btn btn-link remove-row"><i class="ion-trash-b"></i></button>
+                                                <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                             }
                                         </td>
                                     </tr>
@@ -68,16 +67,32 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
     <script>
+        function Add() {
+            $.ajax({
+                url: '@Url.Action("PartialModalAddEmployeeRole", "Reference")',
+                type: 'GET',
+                success: function (data) {
+                    $('#newModal').html(data);
+                    $('#newModal').modal('show');
+                }
+            });
+        } 
+        function Remove(id) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitEmployeeRoleDelete", "Reference")',
+                data: { employeeRoleId: id },
+                success: function (data) {
+                    successDelete();
+                    $('#employeeRolesContainer').html(data);
+                }
+            });
+        }
         $(document).ready(function () {
             var filteringRole = $('#employeesRoleTable');
             filteringRole.footable();            
         });
-
-    $('#employeeRolesContainer table td button.remove-row').click(function () {
-        var employeeRoleId = $(this).closest('tr').data('employeeRoleId');
-        removeData('@Url.Action("SubmitEmployeeRoleDelete", "Reference")', { employeeRoleId: employeeRoleId }, function (data) { $('#employeeRolesContainer').html(data); });
-    });
-
+          
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
         $(this).siblings('tr:not(.thead-row)').removeClass('active');

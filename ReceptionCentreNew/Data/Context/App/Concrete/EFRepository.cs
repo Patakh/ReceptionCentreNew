@@ -1,14 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Data.Context.App.Abstract;
-using ReceptionCentreNew.Data.Context.App;
+using ReceptionCentreNew.Data.Context.App.Abstract; 
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
 
 namespace AisReception.Data.Context.App;
 public partial class EFRepository : IRepository
 {
-    private ReceptionCentreContext _context = new(); 
-
+    private ReceptionCentreContext _context;
+    public EFRepository()
+    {
+        _context = new();
+    }
     public IQueryable<SprCategory> SprCategory => _context.SprCategory.OrderBy(o => o.Sort);
     public IQueryable<SprEmployees> SprEmployees => _context.SprEmployees;
     public IQueryable<SprEmployeesDepartment> SprEmployeesDepartment => _context.SprEmployeesDepartment;
@@ -102,14 +105,13 @@ public partial class EFRepository : IRepository
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <param name="entity"></param>
-    public void Update<TEntity>(TEntity entity)
-        where TEntity : class
-    { 
-        _context.Entry(entity).State = EntityState.Modified;
-
-        _context.SaveChanges();
+  
+    public void Update<TEntity>(TEntity entity) where TEntity : class
+    {
+        _context.Update(entity);
+        _context.SaveChanges(); // Предполагая, что в вашем репозитории есть метод для сохранения изменений
     }
-
+     
     /// <summary>
     /// Универсальный метод удаления данных
     /// </summary>
