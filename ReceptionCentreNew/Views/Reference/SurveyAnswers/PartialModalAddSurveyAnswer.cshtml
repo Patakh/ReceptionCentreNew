@@ -9,8 +9,7 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitSurveyAnswerSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "successAdd();" }, new { @id = "AddSurveyAnswerForm", @class = "form-horizontal" }))
-            {
+            <form id="AddSurveyAnswerForm" class="form-horizontal">
                 @Html.HiddenFor(model=>model.SprSurveyQuestionId)
                 <div class="form-group form-group-sm">
                     <div class="row">
@@ -20,14 +19,28 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
-            @using (Ajax.BeginForm("PartialTableSurveyAnswers", "Reference", new { surveyQuestionId = Model.SprSurveyQuestionId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-horizontal" }))
-            {
-                <button type="submit" class="btn btn-cancel waves-effect waves-light"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            }
-            <button type="submit" form="AddSurveyAnswerForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" class="btn btn-cancel waves-effect waves-light"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script> 
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitSurveyAnswerSave",
+            data: $("#AddSurveyAnswerForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successAdd();
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script> 

@@ -1,8 +1,6 @@
 ﻿using ReceptionCentreNew.Filters;
 using ReceptionCentreNew.Hubs;
-using ReceptionCentreNew.Models;
 using ReceptionCentreNew.Models.WebApi;
-using System.Net;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -220,7 +218,7 @@ public class WebApiController : ApiController
         }
         catch (Exception ex)
         {
-            Logger.Log(path, $"Error {ex.Message}");
+           Logger.Log(path, $"Error {ex.Message}");
             return null;
         }
     }

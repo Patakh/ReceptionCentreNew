@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ReceptionCentreNew.Areas.Identity.User;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 
@@ -16,7 +15,7 @@ public class SMSController : Controller
     public SMSController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
         _repository = repo;
-        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
+        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
     }
     #endregion
 

@@ -19,6 +19,30 @@
                 }
             })
         });
+
+        function addCaseType() {
+            $.ajax({
+                url: '@Url.Action("PartialModalAddCaseType", "Reference")',
+                type: 'GET',
+                success: function (data) {
+                    $('#newModal').html(data);
+                    $('#newModal').modal('show');
+                }
+            });
+        }
+         
+        function removeCaseType(id) {
+            console.log(id)
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCaseTypeDelete", "Reference")',
+                data: { caseTypeId: caseTypeId },
+                success: function (data) {
+                    successDelete();
+                    $('#caseTypeDifficultyContainer').html(data);
+                }
+            });
+        }
     </script>
     <!--Тип обращения-->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>

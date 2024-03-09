@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReceptionCentreNew.Data.Context.App;
 using Microsoft.AspNetCore.Identity;
-using ReceptionCentreNew.Areas.Identity.User;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 
 namespace ReceptionCentreNew.Controllers.Appeal;
@@ -17,7 +16,7 @@ public partial class AppealController : Controller
     public AppealController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
         _repository = repo;
-        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
+        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
     }
     #endregion
     // GET: NewApeeal

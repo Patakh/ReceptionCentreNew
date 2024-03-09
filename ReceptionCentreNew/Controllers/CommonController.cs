@@ -1,10 +1,8 @@
-﻿using ReceptionCentreNew.Filters;
-using ReceptionCentreNew.Models;
+﻿using ReceptionCentreNew.Filters; 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Areas.Identity.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Text;
@@ -12,6 +10,9 @@ using System.Security.Cryptography;
 using OpenPop.Mime;
 using OpenPop.Pop3;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using System.Data;
+using ReceptionCentreNew.Models;
+using FluentFTP.Helpers;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -24,8 +25,8 @@ namespace ReceptionCentreNew.Controllers
         private string? UserName;
         public CommonController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
-            _repository = repo;
-             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
+            _repository = repo; 
+            UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
         }
         #endregion
 

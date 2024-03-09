@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
-using ReceptionCentreNew.Areas.Identity.User;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using ReceptionCentreNew.Models;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -17,7 +17,7 @@ namespace ReceptionCentreNew.Controllers
         public QuestionController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
-            UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == userManager.GetUserAsync(signInManager.Context.User).Result.Email).EmployeesName;
+            UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
         }
         #endregion
         // GET: Question

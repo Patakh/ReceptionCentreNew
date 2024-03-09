@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprSurveyQuestion
+﻿@model SprSurveyQuestion
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -9,8 +9,7 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitSurveyQuestionSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "surveyQuestionsContainer", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @id = "AddSurveyQuestionsForm", @class = "form-horizontal" }))
-            {
+            <form id="AddSurveyQuestionsForm" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
                         @Html.LabelFor(model => model.Question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
@@ -19,11 +18,28 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="AddSurveyQuestionsForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitSurveyQuestionSave",
+            data: $("#AddSurveyQuestionsForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successAdd();
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script> 

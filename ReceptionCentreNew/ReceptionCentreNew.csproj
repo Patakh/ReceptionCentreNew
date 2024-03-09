@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Context\Identity\**" />
     <Compile Remove="obj\**" />
-    <Compile Remove="Views\Account\**" />
     <Compile Remove="Views\Api\**" />
     <Compile Remove="Views\Appeal\**" />
     <Compile Remove="Views\Call\**" />
@@ -17,17 +17,12 @@
     <Compile Remove="Views\Manage\**" />
     <Compile Remove="Views\Notification\**" />
     <Compile Remove="Views\Question\**" />
-    <Compile Remove="Views\Reference\CaseTypeDifficulty\**" />
-    <Compile Remove="Views\Reference\Employees\**" />
-    <Compile Remove="Views\Reference\Questions\**" />
-    <Compile Remove="Views\Reference\SurveyAnswers\**" />
-    <Compile Remove="Views\Reference\SurveyQuestions\**" />
     <Compile Remove="Views\Report\**" />
     <Compile Remove="Views\SMS\**" />
     <Compile Remove="Views\Statistics\**" />
     <Compile Remove="Views\System\**" />
+    <Content Remove="Data\Context\Identity\**" />
     <Content Remove="obj\**" />
-    <Content Remove="Views\Account\**" />
     <Content Remove="Views\Api\**" />
     <Content Remove="Views\Appeal\**" />
     <Content Remove="Views\Call\**" />
@@ -35,17 +30,12 @@
     <Content Remove="Views\Manage\**" />
     <Content Remove="Views\Notification\**" />
     <Content Remove="Views\Question\**" />
-    <Content Remove="Views\Reference\CaseTypeDifficulty\**" />
-    <Content Remove="Views\Reference\Employees\**" />
-    <Content Remove="Views\Reference\Questions\**" />
-    <Content Remove="Views\Reference\SurveyAnswers\**" />
-    <Content Remove="Views\Reference\SurveyQuestions\**" />
     <Content Remove="Views\Report\**" />
     <Content Remove="Views\SMS\**" />
     <Content Remove="Views\Statistics\**" />
     <Content Remove="Views\System\**" />
+    <EmbeddedResource Remove="Data\Context\Identity\**" />
     <EmbeddedResource Remove="obj\**" />
-    <EmbeddedResource Remove="Views\Account\**" />
     <EmbeddedResource Remove="Views\Api\**" />
     <EmbeddedResource Remove="Views\Appeal\**" />
     <EmbeddedResource Remove="Views\Call\**" />
@@ -53,17 +43,12 @@
     <EmbeddedResource Remove="Views\Manage\**" />
     <EmbeddedResource Remove="Views\Notification\**" />
     <EmbeddedResource Remove="Views\Question\**" />
-    <EmbeddedResource Remove="Views\Reference\CaseTypeDifficulty\**" />
-    <EmbeddedResource Remove="Views\Reference\Employees\**" />
-    <EmbeddedResource Remove="Views\Reference\Questions\**" />
-    <EmbeddedResource Remove="Views\Reference\SurveyAnswers\**" />
-    <EmbeddedResource Remove="Views\Reference\SurveyQuestions\**" />
     <EmbeddedResource Remove="Views\Report\**" />
     <EmbeddedResource Remove="Views\SMS\**" />
     <EmbeddedResource Remove="Views\Statistics\**" />
     <EmbeddedResource Remove="Views\System\**" />
+    <None Remove="Data\Context\Identity\**" />
     <None Remove="obj\**" />
-    <None Remove="Views\Account\**" />
     <None Remove="Views\Api\**" />
     <None Remove="Views\Appeal\**" />
     <None Remove="Views\Call\**" />
@@ -71,15 +56,14 @@
     <None Remove="Views\Manage\**" />
     <None Remove="Views\Notification\**" />
     <None Remove="Views\Question\**" />
-    <None Remove="Views\Reference\CaseTypeDifficulty\**" />
-    <None Remove="Views\Reference\Employees\**" />
-    <None Remove="Views\Reference\Questions\**" />
-    <None Remove="Views\Reference\SurveyAnswers\**" />
-    <None Remove="Views\Reference\SurveyQuestions\**" />
     <None Remove="Views\Report\**" />
     <None Remove="Views\SMS\**" />
     <None Remove="Views\Statistics\**" />
     <None Remove="Views\System\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Areas\Identity\Pages\Account\Login.cshtml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,12 +75,14 @@
     <PackageReference Include="EPPlus" Version="7.0.9" />
     <PackageReference Include="FluentFTP" Version="49.0.2" />
     <PackageReference Include="Microsoft.AspNet.SignalR" Version="2.4.3" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
+    <PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
@@ -114,13 +100,15 @@
     <PackageReference Include="System.Composition" Version="8.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
     <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+    <PackageReference Include="System.Security.Cryptography.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Text.Json" Version="9.0.0-preview.1.24080.9" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Account\" />
+    <Folder Include="Areas\Identity\Pages\Account\Manage\" />
     <Folder Include="Controllers\Api\" />
-    <Folder Include="Migrations\" />
     <Folder Include="TransformWebConfig\transformed\Views\" />
     <Folder Include="Views\Common\" />
     <Folder Include="Views\Shared\Components\" />
@@ -129,13 +117,42 @@
 
   <ItemGroup>
     <None Include="Properties\serviceDependencies.local.json.user" />
+    <None Include="Views\Account\Login.cshtml" />
+    <None Include="Views\Account\Register.cshtml" />
     <None Include="Views\CallBack\_Table.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
+    <None Include="Views\Reference\CaseTypeDifficulty\Main.cshtml" />
+    <None Include="Views\Reference\CaseTypeDifficulty\PartialModalAddCaseTypeDifficulty.cshtml" />
+    <None Include="Views\Reference\CaseTypeDifficulty\PartialModalEditCaseTypeDifficulty.cshtml" />
+    <None Include="Views\Reference\CaseTypeDifficulty\PartialTableCaseTypeDifficulty.cshtml" />
     <None Include="Views\Reference\CaseType\Main.cshtml" />
     <None Include="Views\Reference\CaseType\PartialModalAddCaseType.cshtml" />
     <None Include="Views\Reference\CaseType\PartialModalEditCaseType.cshtml" />
     <None Include="Views\Reference\CaseType\PartialTableCaseType.cshtml" />
+    <None Include="Views\Reference\Employees\Departments\PartialModalAddDepartment.cshtml" />
+    <None Include="Views\Reference\Employees\Departments\PartialModalEditDepartment.cshtml" />
+    <None Include="Views\Reference\Employees\Departments\PartialTableDepartments.cshtml" />
+    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialModalAddEmployeeJobPos.cshtml" />
+    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialModalEditEmployeeJobPos.cshtml" />
+    <None Include="Views\Reference\Employees\EmployeeJobPos\PartialTableEmployeeJobPos.cshtml" />
+    <None Include="Views\Reference\Employees\EmployeeRoles\PartialModalAddEmployeeRole.cshtml" />
+    <None Include="Views\Reference\Employees\EmployeeRoles\PartialTableEmployeeRoles.cshtml" />
+    <None Include="Views\Reference\Employees\Employees\PartialModalAddEmployee.cshtml" />
+    <None Include="Views\Reference\Employees\Employees\PartialModalEditEmployee.cshtml" />
+    <None Include="Views\Reference\Employees\Employees\PartialTableEmployees.cshtml" />
+    <None Include="Views\Reference\Employees\Main.cshtml" />
+    <None Include="Views\Reference\Questions\Main.cshtml" />
+    <None Include="Views\Reference\Questions\PartialModalAddQuestion.cshtml" />
+    <None Include="Views\Reference\Questions\PartialModalEditQuestion.cshtml" />
+    <None Include="Views\Reference\Questions\PartialTableQuestions.cshtml" />
+    <None Include="Views\Reference\SurveyAnswers\PartialModalAddSurveyAnswer.cshtml" />
+    <None Include="Views\Reference\SurveyAnswers\PartialModalEditSurveyAnswer.cshtml" />
+    <None Include="Views\Reference\SurveyAnswers\PartialTableSurveyAnswers.cshtml" />
+    <None Include="Views\Reference\SurveyQuestions\Main.cshtml" />
+    <None Include="Views\Reference\SurveyQuestions\PartialModalAddSurveyQuestion.cshtml" />
+    <None Include="Views\Reference\SurveyQuestions\PartialModalEditSurveyQuestion.cshtml" />
+    <None Include="Views\Reference\SurveyQuestions\PartialTableSurveyQuestions.cshtml" />
     <None Include="Views\Shared\LayoutPartial\_FooterPartial.cshtml" />
     <None Include="Views\Shared\LayoutPartial\_HeaderPartial.cshtml" />
     <None Include="Views\Shared\LayoutPartial\_LayoutModals.cshtml" />

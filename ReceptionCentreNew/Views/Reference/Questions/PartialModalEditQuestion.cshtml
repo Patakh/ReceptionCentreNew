@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprQuestion
+﻿@model  SprQuestion
 <link href="~/new_design/plugins/trumbowyg/ui/trumbowyg.min.css" rel="stylesheet" />
 <style>
     .trumbowyg-box {
@@ -8,7 +8,7 @@
 
 <script>
     $(document).ready(function () {
-        $('#answer').trumbowyg({
+        $('#Answer').trumbowyg({
             lang: 'ru',
             btns: [['viewHTML'],
             ['undo', 'redo'], // Only supported in Blink browsers
@@ -21,9 +21,9 @@
             ['removeformat'],
             ['fullscreen']
             ]
-        });        
+        });
     });
-</script> 
+</script>
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -34,8 +34,8 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitQuestionSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "questionsContainer", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditQuestionForm", @class = "form-horizontal" }))
-            {
+            <form id="EditQuestionForm" class="form-horizontal">
+                <input type="hidden" asp-for="Id" />
                 <div class="form-group form-group-sm">
                     <div class="row">
                         @Html.LabelFor(model => model.Question, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
@@ -47,12 +47,7 @@
                 <div class="form-group form-group-sm">
                     <div class="row">
                         <div class="col-md-12">
-                            <textarea class="input p-t-10 required" rows="10" id="answer" name="answer" placeholder="Ответ" style="height: auto; resize: vertical;">@Model.Answer</textarea>
-
-                            @*@Html.LabelFor(model => model.answer, new Dictionary<string, object> { { "class", "col-md-2 control-label text-right" } })
-        <div class="col-md-8">
-            @Html.TextBoxFor(model => model.answer, new Dictionary<string, object> { { "class", "" }, { "placeholder", Html.DisplayNameFor(model => model.answer) }, { "style", "height: auto; resize: vertical" } })
-        </div>*@
+                            <textarea class="input p-t-10 required" rows="10" asp-for="Answer" placeholder="Ответ" style="height: auto; resize: vertical;">@Model.Answer</textarea>
                         </div>
                     </div>
                 </div>
@@ -64,11 +59,28 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="EditQuestionForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script> 
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitQuestionSave",
+            data: $("#EditQuestionForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successEdit()
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script> 

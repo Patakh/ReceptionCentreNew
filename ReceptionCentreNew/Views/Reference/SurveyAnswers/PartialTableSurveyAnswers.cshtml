@@ -1,4 +1,4 @@
-﻿@model  ReferenceViewModel
+﻿@model ReferenceViewModel
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -11,14 +11,10 @@
             <div class="card-box p-0">
                 <div class="row">
                     <div class="col-sm-9">
-
                     </div>
                     <div class="col-sm-3">
                         <div class="text-right">
-                            @using (Ajax.BeginForm("PartialModalAddSurveyAnswer", "Reference", new { surveyQuestionId = ViewBag.SurveyQuestionId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                            {
-                                <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                            }
+                            <button type="button" onclick="Add('@(ViewBag.SurveyQuestionId)')" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
                         </div>
                     </div>
                 </div>
@@ -45,18 +41,15 @@
                                             <span>@Html.DisplayFor(i => item.Answer)</span><br>
                                         </td>
                                         <td class="actions text-right">
-                                            <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                            <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": "@(item.IsRemove)"}'>
                                                 <i class="ion-ios7-information-outline"></i>
                                             </button>
                                             @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                             {
                                                 if (item.IsRemove != true)
-                                                {
-                                                    using (Ajax.BeginForm("PartialModalEditSurveyAnswer", "Reference", new { FormMethod = "POST", surveyAnswerId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                                    {
-                                                        <button class="btn btn-link edit-row"><i class="ion-edit"></i></button>
-                                                    }
-                                                    <button class="btn btn-link remove-row"><i class="ion-trash-b"></i></button>
+                                                { 
+                                                    <button type="button" class="edit-row btn btn-link" onclick="Edit('@(item.Id)')"><i class="ion-edit"></i></button>
+                                                    <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button> 
                                                 }
                                                 else
                                                 {
@@ -95,80 +88,101 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
     <script>
-    $(document).ready(function () {
-        var filtering = $('#SurveyAnswersTable');
-        filtering.footable();
-        $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
-        $('#SurveyAnswersTable #tr_count').text($('#SurveyAnswersTable.footable tbody tr').length);
-
-        // Search input
-        $('#searchTextSurveyAnswers').keyup(function (evt) {
-            evt.preventDefault();
-            filtering.trigger('footable_filter', { filter: $(this).val() });
+        function Add(id) {
+            $.ajax({
+                url: '@Url.Action("PartialModalAddSurveyAnswer", "Reference")',
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $('#newModal').html(data);
+                    $('#newModal').modal('show');
+                }
+            });
+        }
+        function Edit(id) {
+            $.ajax({
+                type: "POST",
+                url: "/Reference/PartialModalEditSurveyAnswer",
+                data: { id: id },
+                success: function (response) {
+                    $('#newModal').html(response);
+                    $('#newModal').modal('show');
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+        function Remove(id) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitSurveyAnswerDelete", "Reference")',
+                data: { id: id },
+                success: function (data) {
+                    successDelete();
+                    $('#newModal').html(data);
+                }
+            });
+        }
+        $(document).ready(function () {
+            var filtering = $('#SurveyAnswersTable');
+            filtering.footable();
             $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
-        });
-    });
+            $('#SurveyAnswersTable #tr_count').text($('#SurveyAnswersTable.footable tbody tr').length);
 
-     $(function () {
-        $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
-        $('button[data-tooltip-info]').tooltip({
-            title: function () {
-                var tooltipInfo = $(this).data('tooltipInfo');
-                return "<div class='text-left'>" +
-                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
-                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
-                    "<hr class='m-t-5 m-b-5'>" +
-                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                    "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
-                    "</div>";
-            },
-            html: true,
-            placement: "left"
+            // Search input
+            $('#searchTextSurveyAnswers').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
+            });
         });
-    });
+
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+            $('button[data-tooltip-info]').tooltip({
+                title: function () {
+                    var tooltipInfo = $(this).data('tooltipInfo');
+                    return "<div class='text-left'>" +
+                        "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                        "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
+                        "<hr class='m-t-5 m-b-5'>" +
+                        "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                        "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
+                        "</div>";
+                },
+                html: true,
+                placement: "left"
+            });
+        });
 
         $('.modal-body #showRemoves').click(function () {
-        var surveyQuestionId = '@ViewBag.SurveyQuestionId';
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableSurveyAnswers", "Reference")',
-            data: { surveyQuestionId:surveyQuestionId, isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#newModal').html(data);
-            }
+            var surveyQuestionId = '@ViewBag.SurveyQuestionId';
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableSurveyAnswers", "Reference")',
+                data: { surveyQuestionId: surveyQuestionId, isRemove: '@(!ViewBag.IsRemove)' },
+                success: function (data) {
+                    $('#newModal').html(data);
+                }
+            });
         });
-    });
 
         $('.modal-body table td button.recovery-row').click(function () {
-        var surveyAnswerId = $(this).closest('tr').data('surveyAnswerId');
-        var paramObject = {
-            url: '@Url.Action("SubmitSurveyAnswerRecovery", "Reference")',
-            params: { surveyAnswerId: surveyAnswerId },
-            onSuccess: function (data) {
-                $('#newModal').html(data);
+            var surveyAnswerId = $(this).closest('tr').data('surveyAnswerId');
+            var paramObject = {
+                url: '@Url.Action("SubmitSurveyAnswerRecovery", "Reference")',
+                params: { surveyAnswerId: surveyAnswerId },
+                onSuccess: function (data) {
+                    $('#newModal').html(data);
+                }
             }
-        }
-        removeRecovery(paramObject);
-    });
-
-        $('.modal-body table td button.remove-row').click(function () {
-        var surveyAnswerId = $(this).closest('tr').data('surveyAnswerId');
-        console.log(surveyAnswerId);
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitSurveyAnswerDelete", "Reference")',
-            data: { surveyAnswerId: surveyAnswerId },
-            success: function (data) {
-                successDelete();
-                $('#newModal').html(data);
-            }
+            removeRecovery(paramObject);
+        }); 
+         
+        // Добавляем возможность выбора строки в таблице
+        $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
         });
-    });
-
-
-    // Добавляем возможность выбора строки в таблице
-    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
-        $(this).siblings('tr:not(.thead-row)').removeClass('active');
-        $(this).addClass('active');
-    });
     </script>

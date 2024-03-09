@@ -14,8 +14,7 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitEmployeeJobPosSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "jobPosPillContainer", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @id = "AddEmployeeJobPosForm", @class = "form-horizontal" }))
-            {
+            <form id="AddEmployeeJobPosForm" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
                         @Html.LabelFor(model => model.JobPosName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
@@ -24,11 +23,28 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="AddEmployeeJobPosForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="submit" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitEmployeeJobPosSave",
+            data: $("#AddEmployeeJobPosForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successAdd();
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script>

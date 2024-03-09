@@ -5,11 +5,10 @@
 
         </div>
         <div class="col-sm-2">
-            <div class="text-right">
-                @using (Ajax.BeginForm("PartialModalAddDepartment", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                {
-                    <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                }
+            <div class="text-right"> 
+                <form id="partialModalForm" class="form-submit">
+                    <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                </form>
             </div>
         </div>
     </div>
@@ -41,18 +40,15 @@
                                 @Html.DisplayFor(i => item.DepartmentName)
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"DepartmentName": @Json.Encode(item.DepartmentName), "EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "set_date": "@Html.DisplayFor(i=>item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"DepartmentName": "@(item.DepartmentName)", "EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "set_date": "@Html.DisplayFor(i=>item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
                                     if (item.IsRemove != true)
-                                    {
-                                        using (Ajax.BeginForm("PartialModalEditDepartment", "Reference", new { departmentId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                        {
-                                            <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
-                                        }
-                                        <button class="remove-row btn btn-link"><i class="ion-trash-b"></i></button>
+                                    {  
+                                        <button type="button" class="edit-row btn btn-link" onclick="Edit('@item.Id')"><i class="ion-edit"></i></button>
+                                        <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
@@ -87,6 +83,42 @@
 </div>
 
 <script>
+    function Add() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddDepartment", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+    function Edit(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditDepartment",
+            data: { departmentId: id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }
+    function Remove(id) { 
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitDepartmentDelete", "Reference")',
+            data: { departmentId: id },
+            success: function (data) {
+                successDelete();
+                $('#departmentsPillContainer').html(data);
+            }
+        });
+    }
+
     $(document).ready(function () {
         var filtering = $('#departmentsTable');
         filtering.footable();
@@ -99,7 +131,7 @@
             filtering.trigger('footable_filter', { filter: $(this).val() });
             $('#departmentsTable #filter_count').text($('#departmentsTable.footable tbody tr:not(.footable-filtered)').length);
         });
-    });
+    }); 
 
      $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
@@ -147,19 +179,7 @@
         }
         removeRecovery(paramObject);
     });
-
-    $('#departmentsPillContainer table td button.remove-row').click(function () {
-        var departmentId = $(this).closest('tr').data('departmentId');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitDepartmentDelete", "Reference")',
-            data: { departmentId: departmentId },
-            success: function (data) {
-                successDelete();
-                $('#departmentsPillContainer').html(data);
-            }
-        });
-    });
+     
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {

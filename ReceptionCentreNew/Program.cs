@@ -1,25 +1,23 @@
 using AisReception.Data.Context.App;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Builder;
-using SmartBreadcrumbs.Extensions;
-using Microsoft.EntityFrameworkCore; 
-using ReceptionCentreNew.Areas.Identity.User;
+using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Data.Context.App.Abstract;
-using ReceptionCentreNew.Data.Context.Identity;
-using ReceptionCentreNew.Hubs;  
+using ReceptionCentreNew.Data.Context.App.Abstract; 
+using ReceptionCentreNew.Hubs;
+using Microsoft.AspNetCore.Identity;
+using ReceptionCentreNew.Models;
+using ReceptionCentreNew.Models.Account;
+using ReceptionCentreNew.Providers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ReceptionCentreContext>(options =>
-options.UseNpgsql(connectionString));
+options.UseNpgsql(connectionString)); 
 
-builder.Services.AddDbContext<AuthenticationContext>(options =>
-options.UseNpgsql(connectionString));
-
-builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
+builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
     options.User.RequireUniqueEmail = true;
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -41,14 +39,32 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     options.Tokens.EmailConfirmationTokenProvider = "Email";
     options.Tokens.ChangeEmailTokenProvider = "Email";
 })
-    .AddEntityFrameworkStores<AuthenticationContext>();
+    .AddEntityFrameworkStores<ReceptionCentreContext>()
+    .AddSignInManager<ApplicationSignInManager>()
+    .AddUserManager<ApplicationUserManager>()
+    .AddDefaultTokenProviders();
  
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-builder.Services.AddControllersWithViews(); 
+builder.Services.AddControllersWithViews();
+
 builder.Services.AddScoped<IRepository, EFRepository>();
 builder.Services.AddScoped<IHubContext, NotificationHub>();
-builder.Services.AddSignalR();
+  
+builder.Services.AddScoped<IUserPasswordStore<ApplicationUser>, CustomMembershipProvider>(); 
+builder.Services.AddScoped<IUserRoleStore<ApplicationUser>, CustomRoleProvider>();
  
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
+    {
+        option.Cookie.Name = CookieAuthenticationDefaults.AuthenticationScheme;
+    });
+
+builder.Services.AddSignalR();
+
+builder.Services.AddRazorPages();
+ 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -62,15 +78,17 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
- 
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
+app.UseAuthentication();
 
+app.UseAuthorization();
+ 
 app.MapHub<NotificationHub>("/NotificationHub");
  
 app.MapControllerRoute(

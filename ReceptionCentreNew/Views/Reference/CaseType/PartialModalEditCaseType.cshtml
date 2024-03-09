@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprType
+﻿@model SprType
 <script>
     $(document).ready(function () {
         $('#EditCaseTypeForm').validate();
@@ -13,7 +13,8 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="EditCaseTypeForm" asp-controller="Reference" asp-action="SubmitCaseTypeSave" method="post" data-ajax="true" data-ajax-update="#caseTypeContainer" data-ajax-success="$('#newModal').modal('hide'); successEdit();" class="form-horizontal">
+            <form id="EditCaseTypeForm" class="form-horizontal">
+                <input type="hidden" asp-for="Id"/>
                 <div class="form-group form-group-sm">
                     <div class="row">
                         <label asp-for="TypeName" class="col-md-4 control-label text-right"></label>
@@ -34,7 +35,26 @@
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="EditCaseTypeForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+<script>
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitCaseTypeSave",
+            data: $("#EditCaseTypeForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successEdit()
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+
+</script>

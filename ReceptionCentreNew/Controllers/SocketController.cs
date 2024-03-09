@@ -125,6 +125,7 @@ namespace ReceptionCentreNew.Controllers
             }
         }
 
+        [HttpPost]
         public IActionResult SocketJitsi()
         {
             if (!serverSocket.IsBound)

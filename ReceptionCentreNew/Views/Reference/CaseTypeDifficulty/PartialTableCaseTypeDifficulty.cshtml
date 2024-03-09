@@ -6,10 +6,9 @@
         </div>
         <div class="col-sm-2">
             <div class="text-right">
-                @using (Ajax.BeginForm("PartialModalAddCaseTypeDifficulty", "Reference", null, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                {
-                    <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                }
+                <form id="partialModalAddCaseTypeDifficultyForm">
+                    <button type="button" class="btn btn-mfc waves-effect waves-light" onclick="addCaseTypeDifficulty()"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                </form>
             </div>
         </div>
     </div>
@@ -39,18 +38,15 @@
                                 <span>@Html.DisplayFor(i => item.CountDay) дн.</span><br>
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.IpAddressModify ?? "-"), "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "DateModify": "@Html.DisplayFor(i => item.DateModify)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
-                                    if (item.IsRemove != true)
-                                    {
-                                        using (Ajax.BeginForm("PartialModalEditCaseTypeDifficulty", "Reference", new { FormMethod = "POST", caseTypeDifficultyId = item.Id }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                                        {
-                                            <button class="edit-row btn btn-link"><i class="ion-edit"></i></button>
-                                        }
-                                        <button class="remove-row btn btn-link"><i class="ion-trash-b"></i></button>
+                                    @if (!item.IsRemove)
+                                    { 
+                                        <button type="button" class="edit-row btn btn-link" onclick="editCaseTypeDifficulty('@item.Id')"><i class="ion-edit"></i></button>
+                                        <button class="remove-row btn btn-link" onclick="removeCaseTypeDifficulty('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
@@ -99,7 +95,9 @@
         });
     });
 
+
      $(function () {
+          
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -138,19 +136,6 @@
             }
         }
         removeRecovery(paramObject);
-    });
-
-    $('#caseTypeDifficultyContainer table td button.remove-row').click(function () {
-        var caseTypeDifficultyId = $(this).closest('tr').data('caseTypeDifficultyId');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitCaseTypeDifficultyDelete", "Reference")',
-            data: { caseTypeDifficultyId: caseTypeDifficultyId },
-            success: function (data) {
-                successDelete();
-                $('#caseTypeDifficultyContainer').html(data);
-            }
-        });
     });
 
     // Добавляем возможность выбора строки в таблице

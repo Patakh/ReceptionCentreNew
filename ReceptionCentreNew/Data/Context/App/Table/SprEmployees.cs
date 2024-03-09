@@ -1,9 +1,11 @@
-﻿namespace ReceptionCentreNew.Data.Context.App;
+﻿using ReceptionCentreNew.Models;
+
+namespace ReceptionCentreNew.Data.Context.App;
 
 /// <summary>
 /// Сотрудники
 /// </summary>
-public partial class SprEmployees
+public partial class SprEmployees  
 {
     /// <summary>
     /// Первичный ключ

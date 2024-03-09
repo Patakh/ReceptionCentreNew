@@ -32,8 +32,8 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitEmployeeSave", "Reference", Model, new AjaxOptions { UpdateTargetId = "employeesPillContainer", OnSuccess = "$('#newModal').modal('hide');" }, new { @id = "EditEmployeeForm", @class = "form-horizontal" }))
-            {
+            <form id="AddEmployeeForm" class="form-horizontal">
+                <input type="hidden" asp-for="Id"/>
                 <div class="form-group row">
                     <label class="col-md-4 col-xl-4 col-form-label text-right">Должность</label>
                     <div class="col-md-6 col-xl-6">
@@ -69,7 +69,7 @@
                         @Html.TextBoxFor(model => model.EmployeesLogin, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", "Введите логин" } })
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light btn-block-xs" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
@@ -77,3 +77,23 @@
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    $(document).ready(function () {
+        $(".select2-nosearch").select2();
+    });
+    $("#saveButton").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/SubmitEmployeeSave",
+            data: $("#AddEmployeeForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successEdit()
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script> 

@@ -2,12 +2,10 @@
     ViewBag.Title = "Сложность обращения";
 }
 
-
 <!-- Сложность обращения -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 <div id="caseTypeDifficultyContainer">
-    @*@Html.Action("PartialTableCaseTypeDifficulty", "Reference")*@
 </div>
 @section scripts {
     <script>
@@ -20,7 +18,46 @@
                     $('#caseTypeDifficultyContainer').html(data);
                 }
             })
-        });
+        }); 
+
+        function editCaseTypeDifficulty(id) { 
+            $.ajax({
+                type: "POST",
+                url: "/Reference/PartialModalEditCaseTypeDifficulty",
+                data: { caseTypeDifficultyId: id },
+                success: function (response) {
+                    $('#newModal').html(response);
+                    $('#newModal').modal('show');
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+
+        function addCaseTypeDifficulty() {
+            $.ajax({
+                url: '@Url.Action("PartialModalAddCaseTypeDifficulty", "Reference")',
+                type: 'GET',
+                success: function (data) {
+                    $('#newModal').html(data);
+                    $('#newModal').modal('show');
+                }
+            });
+        }
+
+        function removeCaseTypeDifficulty(id) {
+            console.log(id)
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitCaseTypeDifficultyDelete", "Reference")',
+                data: { caseTypeDifficultyId: id },
+                success: function (data) {
+                    successDelete();
+                    $('#caseTypeDifficultyContainer').html(data);
+                }
+            });
+        }
     </script>
     <!--Сложность обращения-->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
