@@ -85,22 +85,18 @@ namespace ReceptionCentreNew.Controllers
         [HttpPost]
         public IActionResult SubmitCaseTypeSave(SprType caseType)
         {
-            if (ModelState.IsValid)
+            if (caseType.Id == Guid.Empty)
             {
-                if (caseType.Id == Guid.Empty)
-                {
-                    caseType.DateAdd = DateTime.Now;
-                    _repository.Insert(caseType);
-                }
-                else
-                {
-                    caseType.EmployeesNameModify = UserName;
-                    caseType.DateModify = DateTime.Now;
-                    _repository.Update(caseType);
-                }
-                return RedirectToAction("PartialTableCaseType");
+                caseType.DateAdd = DateTime.Now;
+                _repository.Insert(caseType);
             }
-            throw new Exception("Ошибка валидации!");
+            else
+            {
+                caseType.EmployeesNameModify = UserName;
+                caseType.DateModify = DateTime.Now;
+                _repository.Update(caseType);
+            }
+            return RedirectToAction("PartialTableCaseType");
         }
 
         /// <summary>
@@ -184,22 +180,18 @@ namespace ReceptionCentreNew.Controllers
         /// <returns>частичное представление таблицы</returns> 
         public IActionResult SubmitCaseTypeDifficultySave(SprTypeDifficulty caseTypeDifficulty)
         {
-            if (ModelState.IsValid)
+            if (caseTypeDifficulty.Id == Guid.Empty)
             {
-                if (caseTypeDifficulty.Id == Guid.Empty)
-                {
-                    caseTypeDifficulty.DateAdd = DateTime.Now;
-                    _repository.Insert(caseTypeDifficulty);
-                }
-                else
-                {
-                    caseTypeDifficulty.EmployeesNameModify = UserName;
-                    caseTypeDifficulty.DateModify = DateTime.Now;
-                    _repository.Update(caseTypeDifficulty);
-                }
-                return RedirectToAction("PartialTableCaseTypeDifficulty");
+                caseTypeDifficulty.DateAdd = DateTime.Now;
+                _repository.Insert(caseTypeDifficulty);
             }
-            throw new Exception("Ошибка валидации!");
+            else
+            {
+                caseTypeDifficulty.EmployeesNameModify = UserName;
+                caseTypeDifficulty.DateModify = DateTime.Now;
+                _repository.Update(caseTypeDifficulty);
+            }
+            return RedirectToAction("PartialTableCaseTypeDifficulty");
         }
 
         /// <summary>
@@ -347,7 +339,7 @@ namespace ReceptionCentreNew.Controllers
         {
             ViewBag.IsRemove = isRemove;
             var SurveyQuestion = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(o => o.IsRemove != true);
-           
+
             ReferenceViewModel model = new ReferenceViewModel
             {
                 SprSurveyQuestionList = SurveyQuestion.OrderBy(a => a.Question),

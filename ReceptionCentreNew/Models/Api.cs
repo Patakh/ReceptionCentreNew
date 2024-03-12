@@ -20,44 +20,44 @@ public class LsServices
 
 public class ServicesSubDocuments
 {
-    public string Name { get; set; }
-    public string Needs { get; set; }
-    public string Type { get; set; }
+    public string name { get; set; }
+    public string needs { get; set; }
+    public string type { get; set; }
 }
 public class ServicesSubFailure
 {
-    public string FailureText { get; set; }
-    public string Commentt { get; set; }
-    public string LegalAct { get; set; }
+    public string failure_text { get; set; }
+    public string commentt { get; set; }
+    public string legal_act { get; set; }
 }
 
 public class ServicesSubResult
 {
-    public string Name { get; set; }
-    public string Result { get; set; }
-    public string Method { get; set; }
-    public string PeriodProvider { get; set; }
-    public string PeriodMfc { get; set; }
+    public string name { get; set; }
+    public string result { get; set; }
+    public string method { get; set; }
+    public string period_provider { get; set; }
+    public string period_mfc { get; set; }
 }
 public class ServicesSubStop
 {
-    public string Text { get; set; }
-    public string CountDay { get; set; }
-    public string Commentt { get; set; }
-    public string WeekName { get; set; }
+    public string text { get; set; }
+    public string count_day { get; set; }
+    public string commentt { get; set; }
+    public string week_name { get; set; }
 }
 public class ServicesSubTariff
 {
-    public string Type { get; set; }
-    public string Tariff { get; set; }
-    public string CountDayProcessing { get; set; }
-    public string CountDayExecution { get; set; }
-    public string CountDayReturn { get; set; }
-    public string Week { get; set; }
+    public string type { get; set; }
+    public string tariff { get; set; }
+    public string count_day_processing { get; set; }
+    public string count_day_execution { get; set; }
+    public string count_day_return { get; set; }
+    public string week { get; set; }
 }
 public class ServicesSubWay
 {
-    public string NameWay { get; set; }
+    public string name_way { get; set; }
 }
 public class ServicesSubInfo
 {
@@ -86,12 +86,12 @@ public class HashtagServicesList
 
 public class ServicesSubCustomers
 {
-    public string CustomerFio { get; set; }
-    public DateTime? DocumentBirthDate { get; set; }
-    public string CustomerSex { get; set; }
-    public string CustomerAddress { get; set; }
-    public string CustomerEmail { get; set; }
-    public string CustomerSnils { get; set; }
+    public string customer_fio { get; set; }
+    public DateTime? document_birth_date { get; set; }
+    public string customer_sex { get; set; }
+    public string customer_address { get; set; }
+    public string customer_email { get; set; }
+    public string customer_snils { get; set; }
 }
 
 public class ServicesSubCustomerData

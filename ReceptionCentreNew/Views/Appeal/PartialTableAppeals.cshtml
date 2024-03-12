@@ -1,4 +1,4 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 
 <!-- Все обращения -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
@@ -13,14 +13,17 @@
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
+
     .text-muted {
         color: #6c757d !important;
     }
-    .font-500{
-        font-weight:500;
+
+    .font-500 {
+        font-weight: 500;
     }
-    .font-15{
-        font-size:15px;
+
+    .font-15 {
+        font-size: 15px;
     }
 </style>
 
@@ -42,74 +45,84 @@
 
                     foreach (var item in Model.DataAppealSelectList.OrderByDescending(o => o.OutDateAdd))
                     {
-                <tr data-number-appeal="@item.OutNumberAppeal" @*onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.OutNumberAppeal})')"*@>
-                    <td class="text-center p-r-0">
-                        <h3 data-tooltip="@item.OutCategory"><i class="@(item.OutCategory=="Жалоба"?"md md-report-problem text-danger":item.OutCategory=="Предложение"?"md md-chat text-success":item.OutCategory=="Вопрос"?"md md-help text-custom":item.OutCategory=="Отзыв"?"md md-rate-review text-info":item.OutCategory=="Оповещение"?"md md-announcement text-warning":"")"></i></h3>
-                    </td>
-                    <td>
-                        <span>#@item.OutNumberAppeal</span><br />
-                        <span class=""><i class="fa fa-calendar m-r-5"></i>@item.OutDateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateAdd.Value.ToShortTimeString()</span><br />
-                        @if (item.OutMfcName != null)
-                        {
-                            <div class="clip" style="max-width:185px;" data-tooltip="@item.OutMfcName"><img src="/Content/images/logo.png" height="15" style="opacity:0.6"> @item.OutMfcName</div>
-                        }
-                        @*<span class="text-muted font-12">@(item.OutCaseNumber != null ? '#' + item.OutCaseNumber.Trim('#') : "")</span>*@
-                        @if (item.OutCaseNumber != null)
-                        {
-                            if (item.OutCaseNumber != null)
-                            {
-                                string[] n = item.OutCaseNumber.Split(' ');
-                                foreach (var cases in n)
+                        <tr data-number-appeal="@item.OutNumberAppeal" @*onclick="window.open('@Url.Action("AppealInfo", "Appeal", new {number = item.OutNumberAppeal})')"*@>
+                            <td class="text-center p-r-0">
+                                <h3 data-tooltip="@item.OutCategory"><i class="@(item.OutCategory=="Жалоба"?"md md-report-problem text-danger":item.OutCategory=="Предложение"?"md md-chat text-success":item.OutCategory=="Вопрос"?"md md-help text-custom":item.OutCategory=="Отзыв"?"md md-rate-review text-info":item.OutCategory=="Оповещение"?"md md-announcement text-warning":"")"></i></h3>
+                            </td>
+                            <td>
+                                <span>#@item.OutNumberAppeal</span><br />
+                                <span class=""><i class="fa fa-calendar m-r-5"></i>@item.OutDateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateAdd.Value.ToShortTimeString()</span><br />
+                                @if (item.OutMfcName != null)
                                 {
-                                    if (cases.Length != 0)
+                                    <div class="clip" style="max-width:185px;" data-tooltip="@item.OutMfcName"><img src="/Content/images/logo.png" height="15" style="opacity:0.6"> @item.OutMfcName</div>
+                                }
+                                @*<span class="text-muted font-12">@(item.OutCaseNumber != null ? '#' + item.OutCaseNumber.Trim('#') : "")</span>*@
+                                @if (item.OutCaseNumber != null)
+                                {
+                                    if (item.OutCaseNumber != null)
                                     {
-                                        <a class="" href="http://192.168.34.9:81/Case?CaseId=@cases.Replace("#","")" target="_blank">@cases.Replace("#", "")</a>
+                                        string[] n = item.OutCaseNumber.Split(' ');
+                                        foreach (var cases in n)
+                                        {
+                                            if (cases.Length != 0)
+                                            {
+                                                <a class="" href="http://192.168.34.9:81/Case?CaseId=@cases.Replace("#","")" target="_blank">@cases.Replace("#", "")</a>
+                                            }
+                                        }
                                     }
                                 }
-                            }
-                        }
-                    </td>
-                    <td>
-                        <b class="case-text m-b-5" style="font-size:15px" title="@item.OutTextAppeal" data-tooltip="@item.OutTextAppeal">
-                            @(item.OutTextAppeal.Length > 230 ? item.OutTextAppeal.Substring(0, 230) + "..." : item.OutTextAppeal)
-                        </b>
-                        <span class="text-muted"><i class="md md-person"></i> @(item.OutApplicantName?.ToString())</span>
-                        @if (item.OutPhoneNumber != null)
-                        {<span class="text-muted"> <i class="md md-call"></i> @(item.OutPhoneNumber)</span>}
-                        @if (item.OutEmail != null)
-                        {<span class="text-muted"> <span style="top:-1px;">&#64;</span> @(item.OutEmail?.ToString() ?? "-")</span>}
-                    </td>
+                            </td>
+                            <td>
+                                <b class="case-text m-b-5" style="font-size:15px" title="@item.OutTextAppeal" data-tooltip="@item.OutTextAppeal">
+                                    @(item.OutTextAppeal.Length > 230 ? item.OutTextAppeal.Substring(0, 230) + "..." : item.OutTextAppeal)
+                                </b>
+                                <span class="text-muted"><i class="md md-person"></i> @(item.OutApplicantName?.ToString())</span>
+                                @if (item.OutPhoneNumber != null)
+                                {
+                                    <span class="text-muted"> <i class="md md-call"></i> @(item.OutPhoneNumber)</span>
+                                }
+                                @if (item.OutEmail != null)
+                                {
+                                    <span class="text-muted"> <span style="top:-1px;">&#64;</span> @(item.OutEmail?.ToString() ?? "-")</span>
+                                }
+                            </td>
 
-                    <td>
-                        @{int d = 0; TimeSpan tms = (item.OutDateRegulation - DateTime.Now).Value;}
-                        @if (item.OutDateExecution != null)
-                        { }
-                        else
-                        {
-                            d = (item.OutDateRegulation - DateTime.Now).Value.Days;
-                            <div class="text-nowrap m-b-5" data-tooltip="Регламентная дата"><i class="fa fa-calendar m-r-5"></i>@item.OutDateRegulation.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateRegulation.Value.ToShortTimeString()</div>                            
-                            if (d < 0)
-                            {
-                                <span class="text-nowrap" data-tooltip="Просрочка"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span><br />
-                            }
-                            else
-                            {
-                                <span class="text-nowrap" data-tooltip="Время до просрочки"><i class="md  md-av-timer m-r-5"></i><span>@(tms.Days) дн. @(tms.Hours) ч. @(tms.Minutes) мин.</span></span><br />
-                            }
+                            <td>
+                                @{
+                                    int d = 0; TimeSpan tms = (item.OutDateRegulation - DateTime.Now).Value;
+                                }
+                                @if (item.OutDateExecution != null)
+                                { }
+                                else
+                                {
+                                    d = (item.OutDateRegulation - DateTime.Now).Value.Days;
+                                    <div class="text-nowrap m-b-5" data-tooltip="Регламентная дата"><i class="fa fa-calendar m-r-5"></i>@item.OutDateRegulation.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@item.OutDateRegulation.Value.ToShortTimeString()</div>
+                                    if (d < 0)
+                                    {
+                                        <span class="text-nowrap" data-tooltip="Просрочка"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span>
 
-                        }
-                    </td>
-                    <td class="p-l-r-0" @*style="max-width:200px; min-width:180px;"*@>
-                        
-                        <span data-tooltip="@item.OutEmployeesName" class="font-12 label @(item.OutStatusName.ToString() == "Исполнено" ? "label-success" : item.OutStatusName.ToString() == "Ошибка" ? "label-danger" : item.OutStatusName.ToString() == "Прекращено" ? "label-mfc" : item.OutStatusName.ToString() == "На исполнении" ? "label-warning" : "label-default") ">@Html.DisplayFor(m => item.OutStatusName)</span>
-                        @if (item.OutDateExecution == null)
-                        {
-                            <div style="height:5px;"></div>
-                            <span data-tooltip="@item.OutEmployeesNameCurrent" class="text-nowrap @(item.OutStageNameCurrent.ToString() == "Исполнено" ? "label label-success":"")">@item.OutStageNameCurrent</span>
-                        }
-                    </td>
-                    <td style="max-width:55px; min-width:50px"><i class=" d-block h1 text-primary ti-angle-right"></i></td>
-                </tr>
+                                        <br />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-nowrap" data-tooltip="Время до просрочки"><i class="md  md-av-timer m-r-5"></i><span>@(tms.Days) дн. @(tms.Hours) ч. @(tms.Minutes) мин.</span></span>
+
+                                        <br />
+                                    }
+
+                                }
+                            </td>
+                            <td class="p-l-r-0" @*style="max-width:200px; min-width:180px;"*@>
+
+                                <span data-tooltip="@item.OutEmployeesName" class="font-12 label @(item.OutStatusName.ToString() == "Исполнено" ? "label-success" : item.OutStatusName.ToString() == "Ошибка" ? "label-danger" : item.OutStatusName.ToString() == "Прекращено" ? "label-mfc" : item.OutStatusName.ToString() == "На исполнении" ? "label-warning" : "label-default") ">@Html.DisplayFor(m => item.OutStatusName)</span>
+                                @if (item.OutDateExecution == null)
+                                {
+                                    <div style="height:5px;"></div>
+                                    <span data-tooltip="@item.OutEmployeesNameCurrent" class="text-nowrap @(item.OutStageNameCurrent.ToString() == "Исполнено" ? "label label-success":"")">@item.OutStageNameCurrent</span>
+                                }
+                            </td>
+                            <td style="max-width:55px; min-width:50px"><i class=" d-block h1 text-primary ti-angle-right"></i></td>
+                        </tr>
                     }
                 }
                 else
@@ -128,7 +141,33 @@
                     </td>
                     <td colspan="5">
                         <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                            @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableAppeals", "Appeal", new { page = x.CurrentPage, search = ViewBag.Search, sprEmployeeId = ViewBag.SprEmployeesId, sprTypeId = ViewBag.SprTypeId, sprTypeDifficultyId = ViewBag.SprTypeDifficultyId, sprSubjectId = ViewBag.SprSubjectId, sprStatusId = ViewBag.SprStatusId, sprCategoryId = ViewBag.SprCategoryId, period = ViewBag.Period }, new AjaxOptions { UpdateTargetId = "appealsTableContainer" }))
+                            @{
+                                var pageParameters = new
+                                {
+                                    page = Model.PageInfo.CurrentPage,
+                                    search = ViewBag.Search,
+                                    sprEmployeeId = ViewBag.SprEmployeesId,
+                                    sprTypeId = ViewBag.SprTypeId,
+                                    sprTypeDifficultyId = ViewBag.SprTypeDifficultyId,
+                                    sprSubjectId = ViewBag.SprSubjectId,
+                                    sprStatusId = ViewBag.SprStatusId,
+                                    sprCategoryId = ViewBag.SprCategoryId,
+                                    period = ViewBag.Period
+                                };
+                                var x = Model.PageInfo;
+                            }
+                            <a asp-controller="Appeal" asp-action="PartialTableAppeals" asp-route-page="@x.CurrentPage"
+                               asp-route-search="@ViewBag.Search"
+                               asp-route-sprEmployeeId="@ViewBag.SprEmployeeId"
+                               asp-route-sprTypeId="@ViewBag.SprTypeId"
+                               asp-route-sprTypeDifficultyId="@ViewBag.SprTypeDifficultyId"
+                               asp-route-sprSubjectId="@ViewBag.SprSubjectId"
+                               asp-route-sprStatusId="@ViewBag.SprStatusId"
+                               asp-route-sprCategoryId="@ViewBag.SprCategoryId"
+                               asp-route-period="@ViewBag.Period"
+                               data-ajax="true"
+                               data-ajax-method="GET"
+                               data-ajax-update="#appealsTableContainer">@x.NameLink</a>
                         </div>
                     </td>
                 </tr>

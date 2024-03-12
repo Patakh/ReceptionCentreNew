@@ -1,4 +1,4 @@
-﻿@model  EmployeeViewModel
+﻿@model EmployeeViewModel
 <script>
     $(document).ready(function () {
         var filtering = $('#messageTemplatesTable');
@@ -6,7 +6,7 @@
         $('#filter_count').text($('#messageTemplatesTable.footable tbody tr:not(.footable-filtered)').length);
         $('#messageTemplatesTable #tr_count').text($('#messageTemplatesTable.footable tbody tr').length);
     });
-     $(function () {
+    $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -17,10 +17,10 @@
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
                     (tooltipInfo['IsRemove'] ?
-                            "<hr class='m-t-5 m-b-5'>" +
-                            "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
-                            "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
-                            "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
+                        "<hr class='m-t-5 m-b-5'>" +
+                        "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
+                        "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
+                        "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
                     "</div>";
             },
             html: true,
@@ -28,22 +28,22 @@
         });
     });
 
-                $('#templates #showRemoves').click(function () {
+    $('#templates #showRemoves').click(function () {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialTableEmployeesMessageTemplate", "Appeal")',
-            data: { isRemove: '@(!ViewBag.IsRemove)', number:'@ViewBag.AppealNumber'  },
+            data: { isRemove: '@(!ViewBag.IsRemove)', number: '@ViewBag.AppealNumber' },
             success: function (data) {
                 $('#newModal').html(data);
             }
         });
     });
 
-                $('#messageTemplatesTable td button.recovery-row').click(function () {
+    $('#messageTemplatesTable td button.recovery-row').click(function () {
         var templateId = $(this).closest('tr').data('templateId');
         var paramObject = {
             url: '@Url.Action("SubmiEmployeesMessageTemplateRecovery", "Appeal")',
-            params: { templateId: templateId, number:'@ViewBag.AppealNumber' },
+            params: { templateId: templateId, number: '@ViewBag.AppealNumber' },
             onSuccess: function (data) {
                 $('#newModal').html(data);
             }
@@ -51,25 +51,25 @@
         removeRecovery(paramObject);
     });
 
-      $('#messageTemplatesTable td button.remove-row').click(function () {
+    $('#messageTemplatesTable td button.remove-row').click(function () {
         var templateId = $(this).closest('tr').data('templateId');
         $.ajax({
             type: 'POST',
             url: '@Url.Action("SubmitEmployeesMessageTemplateDelete", "Appeal")',
-            data: { templateId: templateId, number:'@ViewBag.AppealNumber' },
+            data: { templateId: templateId, number: '@ViewBag.AppealNumber' },
             success: function (data) {
                 successDelete();
                 $('#newModal').html(data);
             }
-          });
-      });
+        });
+    });
 
-        $('#messageTemplatesTable td button.edit-row').click(function () {
+    $('#messageTemplatesTable td button.edit-row').click(function () {
         var templateId = $(this).closest('tr').data('templateId');
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialModalEditEmployeesMessageTemplate", "Appeal")',
-            data: { templateId: templateId, number:'@ViewBag.AppealNumber' },
+            data: { templateId: templateId, number: '@ViewBag.AppealNumber' },
             success: function (data) {
                 $('#newModal').modal('show');
                 $('#newModal').html(data);
@@ -89,14 +89,10 @@
 
             <div class="row">
                 <div class="col-sm-10">
-
                 </div>
                 <div class="col-sm-2">
                     <div class="text-right">
-                        @using (Ajax.BeginForm("PartialModalAddEmployeesMessageTemplate", "Appeal", new { number = ViewBag.AppealNumber }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                        {
-                            <button type="submit" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                        }
+                        <button type="button" onclick="Add('@ViewBag.AppealNumber')" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
                     </div>
                 </div>
             </div>
@@ -140,7 +136,7 @@
                                                 <button class="btn btn-link on-default recovery-row" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                             }
                                         }
-                                        <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": @Json.Encode(item.EmployeesNameAdd), "employees_fio_modifi": @Json.Encode(item.EmployeesNameModify ?? "-"), "set_date": "@Html.DisplayFor(i=>item.DateAdd)", "IsRemove": @Json.Encode(item.IsRemove)}'>
+                                        <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.EmployeesNameModify ?? "-")"", "set_date": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                             <i class="ion-ios7-information-outline"></i>
                                         </button>
                                     </td>
@@ -174,13 +170,34 @@
             </div>
 
             <div class="modal-footer">
-                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = ViewBag.AppealNumber, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess= "$('a[href=\"#notes\"]').click()"}, new { @id = "backToAppealInfo", @class = "" }))
-                {
-                    <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
-                }
+                <button type="button" onclick="Back('@ViewBag.AppealNumber')" class="btn btn-secondary waves-effect waves-light">Назад</button>
                 <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
     </div>
 </div>
-
+<script>
+    function Add(number) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialModalAddEmployeesMessageTemplate", "Appeal")',
+            data: { number: number },
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    } 
+    function Back(number) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableEmployeesMessageTemplate", "Appeal")',
+            data: { number: number }
+            ,
+            success: function (data) {
+                $('#newModal').modal('show');
+                successEdit();
+            }
+        });
+    }
+</script>

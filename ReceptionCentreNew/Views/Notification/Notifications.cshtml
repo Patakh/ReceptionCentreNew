@@ -6,21 +6,20 @@
 <!-- Все оповещения -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 
 <div class="card-box p-3">
-    @using (Ajax.BeginForm("PartialTableNotifications", "Notification", null, new AjaxOptions { UpdateTargetId = "notificationsTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
-    {
+    <form class="form-horizontal" id="NotificationForm">
         <div class="collapse show" id="collapseExample" style="">
             <div class="row p-l-r-10">
                 <div class="form-group col-sm-4">
                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
                     @Html.DropDownList("period", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                                   new SelectListItem {Text = "Неделя", Value = "2"},
-                                                   new SelectListItem {Text = "Месяц", Value = "3"},
-                                                   new SelectListItem {Text = "Год", Value = "4"},
-                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Сегодня", Value = "1"},
+                    new SelectListItem {Text = "Неделя", Value = "2"},
+                    new SelectListItem {Text = "Месяц", Value = "3"},
+                    new SelectListItem {Text = "Год", Value = "4"},
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-4">
                     <label class="font-12 text-muted p-t-0 m-b-0">Тип уведомления</label>
@@ -29,9 +28,9 @@
                 <div class="form-group col-sm-4">
                     <label class="font-12 text-muted p-t-0 m-b-0">Активные / неактивные</label>
                     @Html.DropDownList("IsActive", new SelectList(new List<SelectListItem>
-                                   { new SelectListItem {Text = "Да", Value = "true", Selected=true},
-                                       new SelectListItem {Text = "Нет", Value = "false"}
-                                   }, "Value", "Text", "true"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Да", Value = "true", Selected=true},
+                    new SelectListItem {Text = "Нет", Value = "false"}
+                    }, "Value", "Text", "true"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
             </div>
             <hr class="m-t-10 m-b-10" />
@@ -46,20 +45,30 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_notifications" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_notifications" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
-    }
+    </form>
 </div>
 <div id="notificationsTableContainer">
-    @*@Html.Action("PartialTableNotifications", "Notification", new { IsActive=true})*@
 </div>
 @section scripts {
     <script>
-    $(document).ready(function () {
-        $(".select2").select2();
-        $('#button_find_notifications').click();
-    });
+        function Search() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableNotifications", "Notification")',
+                data: $("#NotificationForm").serialize(),
+                success: function (data) {
+                    $('#notificationsTableContainer').html(data);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $(".select2").select2();
+            Search();
+        });
 
     </script>
     <!-- Все звонки -->

@@ -11,8 +11,7 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitEmployeesMessageTemplateSave", "Appeal", Model, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show'); successEdit();" }, new { @id = "EditMessageTemplatesForm", @class = "form-horizontal" }))
-            {
+            <form id="EditMessageTemplatesForm" class="form-horizontal">
                 <input type="hidden" name="number" value="@ViewBag.AppealNumber" />
                 <div class="form-group form-group-sm">
                     <div class="row">
@@ -30,14 +29,36 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
             <div class="modal-footer">
-                @using (Ajax.BeginForm("PartialTableEmployeesMessageTemplate", "Appeal", new { number = ViewBag.AppealNumber }, new AjaxOptions { UpdateTargetId = "newModal" }, new { @id = "backToMessageTemplates", @class = "" }))
-                {
-                    <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
-                }
-                <button type="submit" form="EditMessageTemplatesForm" class="btn btn-primary waves-effect waves-light">Сохранить</button>
+                <button type="button" onclick="Back('@ViewBag.AppealNumber')" class="btn btn-secondary waves-effect waves-light">Назад</button>
+                <button type="button" onclick="Add()" class="btn btn-primary waves-effect waves-light">Сохранить</button>
             </div>
         </div>
     </div>
 </div>
+<script>
+    function Add() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitEmployeesMessageTemplateSave", "Appeal")',
+            data: $("#addEmailForm").serialize(),
+            success: function (data) {
+                $('#newModal').modal('show');
+                successEdit();
+            }
+        });
+    } 
+    function Back(number) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableEmployeesMessageTemplate", "Appeal")',
+            data: { number: number }
+            ,
+            success: function (data) {
+                $('#newModal').modal('show');
+                successEdit();
+            }
+        });
+    }
+</script>

@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using ReceptionCentreNew.Hubs;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using ReceptionCentreNew.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ReceptionCentreNew.Controllers
@@ -19,10 +21,13 @@ namespace ReceptionCentreNew.Controllers
         static Socket serverSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP);
         static SHA1 sha1 = SHA1.Create();
         static Socket listeningSocket;
-        private readonly IHubContext<NotificationHub> _hubContext;
-        public SocketController(IHubContext<NotificationHub> hubContext)
+        private readonly IHubContext<NotificationHub> HubContext;
+        public SignInManager<ApplicationUser> SignInManager;
+        public SocketController(IHubContext<NotificationHub> hubContext, SignInManager<ApplicationUser> signInManager)
         {
-            _hubContext = hubContext;
+            SignInManager = signInManager;
+            HubContext = hubContext;
+            _User = SignInManager.Context.User.Identity.Name;
         }
 
         // GET: Socket
@@ -130,11 +135,11 @@ namespace ReceptionCentreNew.Controllers
         {
             if (!serverSocket.IsBound)
             {
-                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 8086));
+                serverSocket.Bind(new IPEndPoint(IPAddress.Any, 8889));
                 serverSocket.Listen(128);
                 serverSocket.BeginAccept(null, 0, OnAccept, null);
             }
-            _User = User.Identity.Name;
+            _User = SignInManager.Context.User.Identity.Name;
             return Json("server socket jitsi -" + serverSocket.IsBound);
         }
         public async void OnAccept(IAsyncResult result)
@@ -193,7 +198,7 @@ namespace ReceptionCentreNew.Controllers
                         client.Send(sendy);
 
                         string phone = BitConverter.ToString(sss[0]);
-                        await SignalRAlertsAsync(phone.Replace("'", "").Replace("-3", "").TrimStart('3'));
+                        await signalRAlerts(phone.Replace("'", "").Replace("-3", "").TrimStart('3'));
                     }
                     else
                     {
@@ -201,7 +206,7 @@ namespace ReceptionCentreNew.Controllers
                         string _as = Encoding.UTF8.GetString(subA, 0, subA.Length);
                         string __as = _as.Replace("\0", "");
                         client.Send(Encoding.UTF8.GetBytes(_as));
-                        await SignalRAlertsAsync(__as);
+                        await signalRAlerts(__as);
                     }
 
                 }
@@ -263,11 +268,11 @@ namespace ReceptionCentreNew.Controllers
             }
             return ret;
         }
+
         [AllowAnonymous]
-        public async Task SignalRAlertsAsync(string message)
+        public async Task signalRAlerts(string message)
         {
-           #warning Исправить
-            //  await _hubContext.Clients.User(message).SendAsync("ReturnCallId");
+            await HubContext.Clients.User(_User).SendAsync("incomingCall", message);
         }
     }
 }

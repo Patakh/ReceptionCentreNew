@@ -13,8 +13,7 @@
         </div>
         <div class="modal-body">
             @Model.DataAppeal
-            @using (Ajax.BeginForm("SubmitEmailSave", "Appeal", Model, new AjaxOptions { UpdateTargetId = "notification-messages", OnSuccess = "$('#newModal').modal('hide'); successAdd();" }, new { @id = "AddEmailForm", @class = "form-horizontal" }))
-            {
+            <form id="addEmailForm" class="form-horizontal">
                 <input type="hidden" name="DataAppealId" value="@Model.DataAppealId" />
                 <div class="form-group form-group-sm">
                     <div class="row">
@@ -40,11 +39,24 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="AddEmailForm" class="btn btn-success waves-effect waves-light"> Отправить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" onclick="Add()" class="btn btn-success waves-effect waves-light"> Отправить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    function Add() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitEmailSave", "Appeal")',
+            data: $("#addEmailForm").serialize(),
+            success: function (data) {
+                $('#newModal').modal('hide');
+                successAdd();
+            }
+        });
+    }
+</script>

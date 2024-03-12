@@ -21,7 +21,7 @@
                     </thead>
                     <tbody>
                         @{int i = 0; }
-                        @foreach (ReceptionCentreNew.Data.Context.App.DataAppeal item in ViewBag.LastAppeals)
+                        @foreach (DataAppeal item in ViewBag.LastAppeals)
                         {
                             <tr>
                                 <td>@(++i)</td>
@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                         @{int j = 0; }
-                        @foreach (ReceptionCentreNew.Data.Context.App.DataAppealCall item in ViewBag.LastCalls)
+                        @foreach (DataAppealCall item in ViewBag.LastCalls)
                         {
                             <tr>
                                 <td>@(++j)</td>

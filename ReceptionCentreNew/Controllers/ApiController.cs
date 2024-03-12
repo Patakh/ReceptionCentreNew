@@ -76,7 +76,7 @@ namespace ReceptionCentreNew.Controllers
         }
 
         #region Данные по услуге
-        public PartialViewResult GetServicesInfo(Guid id)
+        public IActionResult GetServicesInfo(Guid id)
         {
             var msgInfo = GetResponseApi("Services/" + id);
             var msgDocuments = GetResponseApi("Services/" + id + "/Documents/1912196");
@@ -106,7 +106,7 @@ namespace ReceptionCentreNew.Controllers
         #endregion
 
         #region Хештеги
-        public PartialViewResult GetHashtag(string search)
+        public IActionResult GetHashtag(string search)
         {
             ViewBag.Search = search;
             if (search != null && search.Replace(" ","") != "")
@@ -124,7 +124,7 @@ namespace ReceptionCentreNew.Controllers
         #endregion
 
         #region Заявители
-        public PartialViewResult GetCustomers(string PhoneNumber)
+        public IActionResult GetCustomers(string PhoneNumber)
         {
             try
             {
@@ -156,7 +156,7 @@ namespace ReceptionCentreNew.Controllers
         #endregion
 
         #region Услуги у заявителя
-        public PartialViewResult GetCustomerCases(string snils)
+        public IActionResult GetCustomerCases(string snils)
         {
             if (snils != null)
             {

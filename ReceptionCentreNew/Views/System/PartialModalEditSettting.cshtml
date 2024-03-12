@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprSetting
+﻿@model SprSetting
 <script>
     $(document).ready(function () {
         $('#EditSettingsForm').validate();
@@ -13,8 +13,7 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitSettingSave", "System", Model, new AjaxOptions { UpdateTargetId = "settings", OnSuccess = "$('#newModal').modal('hide'); successEdit();" }, new { @id = "EditSettingsForm", @class = "form-horizontal" }))
-            {
+            <form id="EditSettingsForm" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
                         @Html.LabelFor(model => model.ParamName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
@@ -39,12 +38,29 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" form="EditSettingsForm" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" onclick="Submit()" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
+    </div>
 
+    <!-- /.modal-content -->
+</div>
+
+<!-- /.modal-dialog -->
+
+<script>
+    function Submit() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitSettingSave", "System")',
+            data: $("#searchHashtagsForm").serialize(),
+            success: function (data) {
+                $('#newModal').modal('hide');
+                successEdit();
+            }
+        });
+    }
+</script>

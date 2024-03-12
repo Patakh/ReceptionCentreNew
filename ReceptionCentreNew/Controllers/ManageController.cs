@@ -1,8 +1,7 @@
 ﻿using ReceptionCentreNew.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Owin.Security;
+using Microsoft.AspNetCore.Mvc; 
 
 namespace ReceptionCentreNew.Controllers;
 [Authorize]

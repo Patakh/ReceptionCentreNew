@@ -19,16 +19,15 @@ namespace ReceptionCentreNew.Controllers
     [ClientErrorHandler]
     [Authorize]
     public class CommonController : Controller
-    {
-        #region Инициализация Repository
+    { 
         private IRepository _repository;
         private string? UserName;
+        public SignInManager<ApplicationUser> SignInManager;
         public CommonController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo; 
             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
-        }
-        #endregion
+        } 
 
         private static string keyCrypt = ConfigurationManager.AppSettings["CryptKey"];
         public class Resultt {
@@ -50,7 +49,7 @@ namespace ReceptionCentreNew.Controllers
         }
         public JsonResult ListenerAsync()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == User.Identity.Name).FirstOrDefault();
+            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault();
             Resultt rez = new();
             using (Pop3Client client = new())
             {                
@@ -136,18 +135,18 @@ namespace ReceptionCentreNew.Controllers
 
         public JsonResult GetNotifications()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == User.Identity.Name).FirstOrDefault();
+            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
             return Json(_repository.DataEmployeesNotification.Where(w => w.SprEmployeesId == employees.Id && w.IsActive == true).Count());
         }
 
         public JsonResult GetEmails()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == User.Identity.Name).FirstOrDefault();
+            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
             return Json(_repository.DataAppealEmail.Where(w => w.DataAppealId == null).Count());
         }
         public JsonResult GetCalls()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == User.Identity.Name).FirstOrDefault();
+            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
             return Json(_repository.DataAppealCall.Where(w => w.DataAppealId == null).Count());
         }
         public JsonResult GetCallsParameters()

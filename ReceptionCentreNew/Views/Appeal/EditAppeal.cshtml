@@ -1,10 +1,10 @@
 ﻿@model DataAppeal
-    <script>
-        $(document).ready(function () {
-            $('#EditAppealForm').validate();
-            $(".select2").select2();
-        });
-    </script>
+<script>
+    $(document).ready(function () {
+        $('#EditAppealForm').validate();
+        $(".select2").select2();
+    });
+</script>
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -14,9 +14,7 @@
             </button>
         </div>
         <div class="modal-body">
-
-            @using (Html.BeginForm("SubmitNewAppealSave", "Appeal", FormMethod.Post, new { @id = "EditAppealForm", @class = "form-horizontal" }))
-            {
+            <form id="EditAppealForm" class="form-horizontal">
                 <input type="hidden" name="id" value="@Model.Id" />
                 <div class="row">
                     <div class="col-12">
@@ -89,16 +87,32 @@
                         </div>
                     </div>
                 </div>
-            }
-
+            </form>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary waves-effect waves-light" data-dismiss="modal">Закрыть</button>
-            <button type="submit" id="btn_submit_edit_appeal" form="EditAppealForm" class="btn btn-primary waves-effect waves-light">Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button id="btn_submit_edit_appeal" type="button" class="btn btn-primary waves-effect waves-light">Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
         @*<div class="modal-footer">
-                <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-                <button type="submit" id="btn_submit_edit_appeal" form="EditAppealForm" class="btn btn-success waves-effect waves-light btn-block-xs"> Сохранить <i class="fa fa-check m-l-5"></i></button>
-            </div>*@
+        <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+        <button type="submit" id="btn_submit_edit_appeal" form="EditAppealForm" class="btn btn-success waves-effect waves-light btn-block-xs"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+        </div>*@
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    $("#btn_submit_edit_appeal").click(function () {
+        $.ajax({
+            type: "POST",
+            url: "/Appeal/SubmitNewAppealSave",
+            data: $("#EditAppealForm").serialize(),
+            success: function (response) {
+                // Handle success response
+                $('#newModal').modal('hide');
+                successEdit()
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    });
+</script>

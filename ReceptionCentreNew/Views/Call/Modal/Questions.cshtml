@@ -1,24 +1,21 @@
-﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.SprQuestion>
+﻿@model List<SprQuestion>
 
 <form>
     <div class="accordion" id="accordion">
-        @{int i = 0; int j = 0; }
         @foreach (var item in Model)
         {
             <div>
-                @{i++;}
-                <div id="heading-@{@i}" class="accordion-head">
+                <div id="heading-@(Model.IndexOf(item))" class="accordion-head">
                     <div class="checkbox checkbox-success checkbox-single">
-                        <input type="checkbox" name="questions_id" value="@item.id">
+                        <input type="checkbox" name="questions_id" value="@item.Id">
                     </div>
-                    <a href="#collapse-@{@i}" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-@{@i}">
-                        @item.question
+                    <a href="#collapse-@(Model.IndexOf(item))" data-toggle="collapse" aria-expanded="false" aria-controls="collapse-@(Model.IndexOf(item))">
+                        @item.Question
                     </a>
                 </div>
-                <div id="collapse-@{@i}" class="accordion-content collapse" aria-labelledby="heading-@{@i}" data-parent="#accordion">
-                    @Html.Raw(item.answer)
+                <div id="collapse-@(Model.IndexOf(item))" class="accordion-content collapse" aria-labelledby="heading-@(Model.IndexOf(item))" data-parent="#accordion">
+                    @Html.Raw(item.Answer)
                 </div>
-                @{j++;}
             </div>
         }
     </div>

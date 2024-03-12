@@ -15,26 +15,26 @@ namespace ReceptionCentreNew.Controllers
     public class NotificationController : Controller
     {
         public int PageSize = 10;
-
-        #region Инициализация Repository
+         
         private IRepository _repository;
         private string? UserName;
+        public SignInManager<ApplicationUser> SignInManager;
         public NotificationController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
+            SignInManager = signInManager;
             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
-        }
-        #endregion
+        } 
         
         public IActionResult Notifications()
         {
             var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
             if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
             {
-                employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name);
+                employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name);
             }
             var notify = _repository.SprNotification;
-            ViewBag.SprTypeNotification = new SelectList(notify, "id", "notification");
+            ViewBag.SprTypeNotification = new SelectList(notify, "Id", "Notification");
             return View();
         }
 
@@ -45,7 +45,7 @@ namespace ReceptionCentreNew.Controllers
             ViewBag.TypeId = sprTypeNotificationId;
             ViewBag.IsActive = IsActive;
 
-            Guid SprEmployeeId = _repository.SprEmployees.Where(w=>w.EmployeesLogin==User.Identity.Name).SingleOrDefault().Id;
+            Guid SprEmployeeId = _repository.SprEmployees.Where(w=>w.EmployeesLogin== SignInManager.Context.User.Identity.Name).SingleOrDefault().Id;
             
             DateTime dateStart;
             switch (period)

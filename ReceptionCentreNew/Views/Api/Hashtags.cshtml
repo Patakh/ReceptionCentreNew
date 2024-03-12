@@ -1,8 +1,8 @@
 ﻿@model IEnumerable<HashtagServicesList>
 <style>
     .list-group-item {
-    background-color:transparent;
-    border:none;
+        background-color: transparent;
+        border: none;
     }
 
     #call-services-info h3 {
@@ -20,51 +20,80 @@
     }
 </style>
 @*<link href="~/social-networks/custom_style.css" rel="stylesheet" />*@
-@using (Ajax.BeginForm("GetHashtag", "Api", null, new AjaxOptions { UpdateTargetId = "call-consultations", OnBegin = "$('#call-consultations-services-list').html('... ждите')" }, new { @id = "searchHashtagsForm", @class = "" }))
-{
+
+<form id="searchHashtagsForm">
     <div class="row" style="margin:0;">
-        <div class="col-md-12" style="padding:0;">            
+        <div class="col-md-12" style="padding:0;">
             <div class="app-search-group" style="width:100%!important;">
                 <input type="text" class="form-control" name="search" id="search" placeholder="#хэштег#хэштег..." value="@ViewBag.Search" style="padding-right:25px">
-                <button type="submit" class="btn btn-search-hashtag btn-link waves-effect waves-light"><i class="fa fa-search" style="color:red"></i></button>
+                <button type="button" onclick="Search()" class="btn btn-search-hashtag btn-link waves-effect waves-light"><i class="fa fa-search" style="color:red"></i></button>
             </div>
         </div>
     </div>
-}
-    <div class="tab-content">
-        <div class="tab-pane active" id="call-consultations-services-list">
-                @if (Model.Any())
+</form>
+<div class="tab-content">
+    <div class="tab-pane active" id="call-consultations-services-list">
+        @if (Model.Any())
+        {
+            <div class="list-group">
+                @foreach (var item in Model)
                 {
-                    <div class="list-group">
-                        @foreach (var item in Model)
-                        {
-                            @Ajax.ActionLink(item.Name, "GetServicesInfo", new { @id = item.Id }, new AjaxOptions { UpdateTargetId = "call-services-info", OnBegin = "$('#call-services-info').html('... ждите')" }, new { @class = "list-group-item services-item" })
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class='nothing'>
-                        @if (@ViewBag.search != null)
-                        {<strong>Нет данных</strong>}<p>Введите один или несколько хэштегов с использованием символа #. <br /> Например: #справка#школа</p>
-                    </div>
+                    <a href="#" class="list-group-item services-item" onclick="getServicesInfo('@item.Id')">@item.Name</a>
                 }
             </div>
-        <div class="tab-pane" id="call-services-info">
-        
-        </div>
-        </div>
-    <script>
-        $('.btn-search-hashtag, #back-to-consultations-services-list').click(function () {
-            $('#call-consultations-services-list').addClass('active');
-            $('#call-services-info').removeClass('active');
+        }
+        else
+        {
+            <div class='nothing'>
+                @if (@ViewBag.search != null)
+                {
+                    <strong>Нет данных</strong>
+                }<p>Введите один или несколько хэштегов с использованием символа #. <br /> Например: #справка#школа</p>
+            </div>
+        }
+    </div>
+    <div class="tab-pane active" id="call-services-info">
+    </div>
+</div>
+<script>
+    function getServicesInfo(id) { 
+        $('#call-services-info').html('... ждите');
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetServicesInfo", "Api")',
+            data: { id: id },
+            success: function (data) {
+                $('#call-services-info').html(data);
+                $('#call-services-info').addClass('active');
+                $('#call-consultations-services-list').removeClass('active');
+            }
         });
-        $(document).on('click', '#back-to-consultations-services-list', function () {
-            $('#call-consultations-services-list').addClass('active');
-            $('#call-services-info').removeClass('active');
+    }
+
+    function Search() { 
+        $('#call-consultations-services-list').html('... ждите');
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("GetHashtag", "Api")',
+            data: $("#searchHashtagsForm").serialize(),
+            success: function (data) {
+                $('#call-consultations').html(data);
+                $('#call-services-info').removeClass('active');
+                $('#call-consultations-services-list').addClass('active');
+            }
         });
-        $(document).on('click','.services-item', function () {
-            $('#call-consultations-services-list').removeClass('active');
-            $('#call-services-info').addClass('active');
+    }
+
+    $('.btn-search-hashtag, #back-to-consultations-services-list').click(function () {
+        $('#call-consultations-services-list').addClass('active');
+        $('#call-services-info').removeClass('active');
     });
-    </script>
+    $(document).on('click', '#back-to-consultations-services-list', function () {
+        $('#call-consultations-services-list').addClass('active');
+        $('#call-services-info').removeClass('active');
+    });
+    $(document).on('click', '.services-item', function () {
+        $('#call-consultations-services-list').removeClass('active');
+        $('#call-services-info').addClass('active');
+    });
+</script>

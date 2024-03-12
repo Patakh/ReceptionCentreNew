@@ -1,13 +1,10 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 <div class="row m-b-15">
     <div class="col-sm-6">
         <h3 class="panel-title">Список сообщений</h3>
     </div>
     <div class="col-sm-6 text-right">
-        @using (Ajax.BeginForm("PartialModalAttachSms", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "myModal", OnSuccess = "$('#myModal').modal('show');" }, new { @class = "form-submit" }))
-        {
-            <button type="submit" class="btn btn-inverse waves-effect waves-light btn-sm "> Прикрепить сообщение <i class="glyphicon glyphicon-paperclip m-l-5"></i></button>
-        }        
+        <button type="button" onclick="AttachSms('@Model.DataAppealId')" class="btn btn-inverse waves-effect waves-light btn-sm "> Прикрепить сообщение <i class="glyphicon glyphicon-paperclip m-l-5"></i></button>
     </div>
 </div>
 <div class="card-box p-0">
@@ -41,13 +38,17 @@
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td>
-                                @if(item.MessageType==2)
-                                {<span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span> }
+                                @if (item.MessageType == 2)
+                                {
+                                    <span><i class="glyphicon glyphicon-envelope" style="color:green"></i></span>
+                                }
                                 else
-                                {<span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span> }
+                                {
+                                    <span><i class="glyphicon glyphicon-envelope" style="color:red"></i></span>
+                                }
                             </td>
                             <td>
-                                @Html.DisplayFor(i => item.DateMessage)                              
+                                @Html.DisplayFor(i => item.DateMessage)
                             </td>
                             <td>
                                 @Html.DisplayFor(i => item.PhoneNumber)
@@ -87,7 +88,7 @@
         </div>
         <div class="col-sm-6">
             <div class="dataTables_paginate paging_simple_numbers" id="datatable-editable_paginate">
-                @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableSms", "Appeal", new { page = x.CurrentPage, search = ViewBag.Search, appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "smsPillContainer" }))
+                @* @Html.PageLinks(Model.PageInfo, x => Html.ActionLink(x.NameLink, "PartialTableSms", "Appeal", new { page = x.CurrentPage, search = ViewBag.Search, appealId = Model.DataAppealId })) *@
             </div>
         </div>
     </div>
@@ -95,16 +96,28 @@
 
 
 <script>
+    function AttachSms(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialModalAttachSms", "Appeal")',
+            data: { appealId: id },
+            success: function (data) {
+                $('#myModal').html(data);
+                $('#myModal').modal('show');
+            }
+        });
+    }
+
     $(function () {
-        
+
         $('a[href="#smsPillContainer"]').find('.badge').text(@Model.DataAppealSmsListCount);
 
         $('button[data-tooltip-info]').tooltip({
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');
                 return "<div class='text-left'>" +
-                            "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>"+
-                       "</div>";
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "</div>";
             },
             html: true,
             placement: "left"
@@ -125,10 +138,10 @@
         var smsId = $(this).closest('tr').data('smsId');
         var param = { smsId: smsId, appealId: '@Model.DataAppealId', attach: false };
         var action = '@Url.Action("SubmitAttachSms", "Appeal")';
-        var _div = 'smsPillContainer';        
+        var _div = 'smsPillContainer';
         reAttachData(action, param, _div);
     });
 
-    
+
 
 </script>

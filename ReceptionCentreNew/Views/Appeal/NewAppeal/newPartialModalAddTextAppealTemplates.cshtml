@@ -1,9 +1,9 @@
-﻿@model  ReceptionCentreNew.Data.Context.App.SprEmployeesTextAppealTemplate
-    <script>
-        $(document).ready(function () {
-            $('#AddTextAppealTemplate').validate();
-        });        
-    </script>
+﻿@model SprEmployeesTextAppealTemplate
+<script>
+    $(document).ready(function () {
+        $('#AddTextAppealTemplate').validate();
+    });
+</script>
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -14,8 +14,7 @@
         </div>
         <div class="modal-body">
             <div class="card-box">
-                @using (Ajax.BeginForm("SubmitNewModalTextAppealTemplateSave", "Appeal", Model, new AjaxOptions { UpdateTargetId = "", OnSuccess = "$('#newModalOver').modal('hide'); successAdd();" }, new { @id = "AddTextAppealTemplate", @class = "form-horizontal" }))
-                {
+                <form class="form-horizontal" id="EditAppealForm">
                     <div class="form-group form-group-sm">
                         <div class="row">
                             @Html.LabelFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "col-md-3 control-label text-right" } })
@@ -24,12 +23,25 @@
                             </div>
                         </div>
                     </div>
-                }
+                </form>
             </div>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-cancel waves-effect waves-light cancel_play" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="submit" id="addTemplate" form="AddTextAppealTemplate" class="btn btn-success waves-effect waves-light btn-block-xs cancel_play"> Добавить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" id="addTemplate" class="btn btn-success waves-effect waves-light btn-block-xs cancel_play"> Добавить <i class="fa fa-check m-l-5"></i></button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    function SubmitNewAppealSave() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitNewModalTextAppealTemplateSave", "Appeal")',
+            data: $("#AddTextAppealTemplate").serialize(),
+            success: function (data) {
+                $('#newModalOver').modal('hide');
+                successAdd();
+            }
+        });
+    }
+</script>

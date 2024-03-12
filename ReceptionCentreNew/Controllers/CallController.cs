@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Identity;
+using NuGet.Protocol.Core.Types;
 
 namespace ReceptionCentreNew.Controllers;
 [ClientErrorHandler]
@@ -13,8 +16,10 @@ namespace ReceptionCentreNew.Controllers;
 public class CallController : Controller
 {
     private IRepository _repository;
-    public CallController(IRepository repo)
+    public SignInManager<ApplicationUser> SignInManager;
+    public CallController(IRepository repo, SignInManager<ApplicationUser> signInManager)
     {
+        SignInManager = signInManager;
         _repository = repo;
     }
 
@@ -22,7 +27,7 @@ public class CallController : Controller
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
 
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName");
         return View();
@@ -69,11 +74,15 @@ public class CallController : Controller
         string ftpServer = settings.SingleOrDefault(ss => ss.ParamName == "ftp_server")?.ParamValue;
         string ftpFolder = settings.SingleOrDefault(ss => ss.ParamName == "ftp_folder_calls")?.ParamValue;
         string ftpLogin = settings.SingleOrDefault(ss => ss.ParamName == "ftp_user")?.ParamValue;
-        string ftpPass = CRPassword.Encrypt(settings.SingleOrDefault(ss => ss.ParamName == "ftp_password")?.ParamValue);
+        string pass = settings.SingleOrDefault(ss => ss.ParamName == "ftp_password")?.ParamValue;
+
+        string ftpPass = CRPassword.Encrypt(pass);
         FtpFileModel ftp = new();
+
         byte[] songbyte = ftp.OpenURI(ftpServer, ftpLogin, ftpPass, "/RECEPTION/" + ftpFolder, Id + ".mp3");
 
-        return base.File(songbyte, "audio/mp3");
+        return File(songbyte, "audio/mp3");
+
     }
 
     public IActionResult UserInfo(string PhoneNumber)
@@ -93,7 +102,7 @@ public class CallController : Controller
         string format_phone = "";
         if (PhoneNumber.Replace(" ", "").Length == 11)
             format_phone = "+7(" + PhoneNumber.Substring(1, 3) + ")" + PhoneNumber.Substring(4, 3) + "-" + PhoneNumber.Substring(7, 2) + "-" + PhoneNumber.Substring(9, 2);
-        
+
         var appeal = _repository.DataAppeal.Where(w => w.PhoneNumber == PhoneNumber || w.PhoneNumber == format_phone && w.ApplicantName.Length > 3).FirstOrDefault();
         DataAppeal model = new();
         model.PhoneNumber = PhoneNumber;
@@ -124,9 +133,10 @@ public class CallController : Controller
 
     public IActionResult LastAppeals(string PhoneNumber)
     {
-        string a = FormatPhoneNumber(PhoneNumber);
+        string a = FormatPhoneNumber(PhoneNumber); 
         ViewBag.LastAppeals = _repository.DataAppeal.Include(i => i.SprStatus).Where(w => w.PhoneNumber == a || w.PhoneNumber == PhoneNumber).OrderByDescending(o => o.DateAdd).Take(5);
         ViewBag.LastCalls = _repository.DataAppealCall.Where(w => w.PhoneNumber == PhoneNumber || w.PhoneNumber == a).OrderByDescending(o => o.DateCall).Take(4).ToArray();
+
         return PartialView("Modal/LastAppeals");
     }
 
@@ -138,35 +148,35 @@ public class CallController : Controller
     [HttpPost]
     public IActionResult SubmitNewAppealSave(DataAppeal dataAppeal)
     {
-        if (ModelState.IsValid)
+        if (dataAppeal.Id == Guid.Empty)
         {
-            if (dataAppeal.Id == Guid.Empty)
-            {
-                Random rand = new();
-                var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
-                dataAppeal.NumberAppeal = string.Format("{0}{3}{1}{2}", "APEL", DateTime.Now.ToString("ddMMyyHHmmssffff"), rand.Next(1, 5), rand.Next(0, 9));
-                dataAppeal.DateAdd = DateTime.Now;
-                dataAppeal.SprEmployeesId = employee?.Id ?? Guid.Empty;
-                dataAppeal.EmployeesNameAdd = employee.EmployeesName;
-                dataAppeal.SprStatusId = 0;
-                dataAppeal.SprRoutesStageIdCurrent = 1;
-                //_repository.Insert(dataAppeal);                    
-            }
-            DataAppeal model = new() { NumberAppeal = dataAppeal.NumberAppeal, PhoneNumber = dataAppeal.PhoneNumber };
-            return PartialView("Modal/NewAppealResult", model);
+            Random rand = new();
+            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+            dataAppeal.NumberAppeal = string.Format("{0}{3}{1}{2}", "APEL", DateTime.Now.ToString("ddMMyyHHmmssffff"), rand.Next(1, 5), rand.Next(0, 9));
+            dataAppeal.DateAdd = DateTime.Now;
+            dataAppeal.SprEmployeesId = employee?.Id ?? Guid.Empty;
+            dataAppeal.EmployeesNameAdd = employee.EmployeesName;
+            dataAppeal.SprStatusId = 0;
+            dataAppeal.SprRoutesStageIdCurrent = 1;
+            //_repository.Insert(dataAppeal);                    
         }
-        throw new Exception("Ошибка валидации!");
+        DataAppeal model = new()
+        {
+            NumberAppeal = dataAppeal.NumberAppeal,
+            PhoneNumber = dataAppeal.PhoneNumber
+        };
+        return PartialView("Modal/NewAppealResult", model);
     }
 
     public IActionResult Questions()
     {
-        IEnumerable<SprQuestion> model = _repository.SprQuestion;
+        List<SprQuestion> model = _repository.SprQuestion.ToList();
         return PartialView("Modal/Questions", model);
     }
 
     public IActionResult SaveQuestions(List<Guid> questions_id, string PhoneNumber)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         if (questions_id != null)
         {
             foreach (var item in questions_id)
@@ -187,12 +197,12 @@ public class CallController : Controller
 
     public IActionResult Survey()
     {
-        IEnumerable<SprSurveyQuestion> model = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(w => w.IsRemove != true).ToArray();
+        List<SprSurveyQuestion> model = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(w => w.IsRemove != true).ToList();
         return PartialView("Modal/SurveyQuestion", model);
     }
     public IActionResult SaveSurveyAnswers(List<Guid> survey_answer_id, string PhoneNumber)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         if (survey_answer_id != null)
         {
             foreach (var item in survey_answer_id)
@@ -221,7 +231,7 @@ public class CallController : Controller
         if (NumberAppeal != null && NumberAppeal != "")
         {
             Guid appealId = _repository.DataAppeal.Where(w => w.NumberAppeal == NumberAppeal).FirstOrDefault().Id;
-            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
             model = new AppealViewModel
             {
                 DataAppealCommenttList = _repository.DataAppealCommentt.Include(i => i.DataAppealCommenttRecipients).Where(dsc => dsc.DataAppealId == appealId).OrderBy(o => o.DateAdd).ToList(),

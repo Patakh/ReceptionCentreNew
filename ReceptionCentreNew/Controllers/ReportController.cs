@@ -3,15 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using Microsoft.AspNetCore.Identity;
 
 namespace ReceptionCentreNew.Controllers;
 public class ReportController : Controller
 {
     private IRepository _repository;
-
-    public ReportController(IRepository repo)
+    public SignInManager<ApplicationUser> SignInManager;
+    public ReportController(IRepository repo, SignInManager<ApplicationUser> signInManager)
     {
+        SignInManager = signInManager;
         _repository = repo;
+        ExcelPackage.LicenseContext = LicenseContext.Commercial;
     }
     public IActionResult Index()
     {
@@ -24,9 +27,9 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         ViewBag.SprCategory = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), "Id", "CategoryName");
@@ -37,7 +40,7 @@ public class ReportController : Controller
         return View("ReportAppeals/_Page");
     }
 
-    public IActionResult Report_AppealsTable(ReportParameters parameters)
+    public IActionResult ReportAppealsTable(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -48,8 +51,9 @@ public class ReportController : Controller
             case 4: dateStart = DateTime.Now.AddYears(-1); break;
             default: dateStart = DateTime.Now.AddYears(-2); break;
         }
+
         var appeals = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
-        AppealViewModel model = new AppealViewModel
+        AppealViewModel model = new()
         {
             DataAppealSelectList = appeals.OrderByDescending(o => o.OutDateAdd)
         };
@@ -60,12 +64,13 @@ public class ReportController : Controller
         ViewBag.Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         ViewBag.Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
         ViewBag.Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+
         return PartialView("ReportAppeals/_Table", model);
     }
 
 
-    public void DownloadExcelReportAppeals(ReportParameters parameters)
+    public IActionResult DownloadExcelReportAppeals(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -84,10 +89,9 @@ public class ReportController : Controller
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
         var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
-        ExcelPackage pck = new ExcelPackage();
-        pck.Load(new FileInfo("~/excel/report/reestr_appeals.xlsx").OpenRead());
+        ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/reestr_appeals.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
         ws.Cells["K4"].Value = PrintEmployee;
@@ -117,12 +121,11 @@ public class ReportController : Controller
             ws.InsertRow(++index, 1, 10);
         }
 
-        using (var memoryStream = new MemoryStream())
-        {
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_обращений.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+        pck.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_обращений.xlsx");
+
     }
     #endregion
 
@@ -132,15 +135,15 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         return View("StatisticsAppeals/_Page");
     }
 
-    public IActionResult Statistics_AppealsTable(ReportParameters parameters)
+    public IActionResult StatisticsAppealsTable(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -158,10 +161,10 @@ public class ReportController : Controller
         };
         ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
         return PartialView("StatisticsAppeals/_Table", model);
     }
-    public void DownloadExcelStatisticAppeals(ReportParameters parameters)
+    public IActionResult DownloadExcelStatisticAppeals(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -180,11 +183,9 @@ public class ReportController : Controller
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
         var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
-
-        ExcelPackage pck = new();
-        pck.Load(new FileInfo("~/excel/report/statistic_appeals.xlsx").OpenRead());
+        ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/statistic_appeals.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
         ws.Cells["F4"].Value = PrintEmployee;
@@ -260,12 +261,12 @@ public class ReportController : Controller
 
         ws.DeleteRow(index + 1);
 
-        using (var memoryStream = new MemoryStream())
-        {
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_обращений.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+
+        pck.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_обращений.xlsx");
+
     }
     #endregion
 
@@ -276,15 +277,15 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         return View("ReportCalls/_Page");
     }
 
-    public IActionResult Report_CallsTable(ReportParameters parameters)
+    public IActionResult ReportCallsTable(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -304,12 +305,12 @@ public class ReportController : Controller
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         ViewBag.Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
         ViewBag.IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
         return PartialView("ReportCalls/_Table", model);
     }
 
 
-    public void DownloadExcelReportCalls(ReportParameters parameters)
+    public IActionResult DownloadExcelReportCalls(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -326,10 +327,9 @@ public class ReportController : Controller
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
         var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
-        ExcelPackage pck = new ExcelPackage();
-        pck.Load(new FileInfo("~/excel/report/reestr_calls.xlsx").OpenRead());
+        ExcelPackage pck = new ExcelPackage(new FileInfo("wwwroot/excel/report/reestr_calls.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
         ws.Cells["E4"].Value = PrintEmployee;
@@ -351,12 +351,11 @@ public class ReportController : Controller
             ws.InsertRow(++index, 1, 10);
         }
 
-        using (var memoryStream = new MemoryStream())
-        {
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_звонков.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+        pck.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_звонков.xlsx");
+
     }
     #endregion
 
@@ -366,13 +365,12 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         return View("StatisticsCalls/_Page");
-
     }
 
     public IActionResult Statistics_CallsTable(ReportParameters parameters)
@@ -393,10 +391,10 @@ public class ReportController : Controller
         };
         ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
         return PartialView("StatisticsCalls/_Table", model);
     }
-    public void DownloadExcelStatisticCalls(ReportParameters parameters)
+    public IActionResult DownloadExcelStatisticCalls(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -413,10 +411,9 @@ public class ReportController : Controller
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
         var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
-        ExcelPackage pck = new();
-        pck.Load(new FileInfo("~/excel/report/statistic_calls.xlsx").OpenRead());
+        ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/statistic_calls.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
         ws.Cells["F4"].Value = PrintEmployee;
@@ -459,12 +456,11 @@ public class ReportController : Controller
 
         ws.DeleteRow(index + 1);
 
-        using (var memoryStream = new MemoryStream())
-        {
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_звонков.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+        pck.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_категориям.xlsx");
+
     }
     #endregion
 
@@ -490,11 +486,11 @@ public class ReportController : Controller
             ReportCategoryList = _repository.FuncReportCategory(dateStart, DateTime.Now.AddDays(1))
         };
         ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
         return PartialView("ReportCategory/_Table", model);
     }
 
-    public void DownloadExcelReportCategory(ReportParameters parameters)
+    public IActionResult DownloadExcelReportCategory(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -505,21 +501,20 @@ public class ReportController : Controller
             case 4: dateStart = DateTime.Now.AddYears(-1); break;
             default: dateStart = DateTime.Now.AddYears(-2); break;
         }
+
         var model = _repository.FuncReportCategory(dateStart, DateTime.Now.AddDays(1)).ToArray();
 
         var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.FirstOrDefault(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name)?.EmployeesName;
 
-        ExcelPackage pck = new();
-        pck.Load(new FileInfo("~/excel/report/report_category.xlsx").OpenRead());
+        var package = new ExcelPackage(new FileInfo("wwwroot/excel/report/report_category.xlsx"));
 
-        var ws = pck.Workbook.Worksheets["Реестр"];
+        var ws = package.Workbook.Worksheets["Реестр"];
         ws.Cells["F4"].Value = PrintEmployee;
         ws.Cells["F5"].Value = DateTime.Now.ToString("G");
         ws.Cells["C4"].Value = $"{Period}";
 
         int q, c, r, p, a;
-        int sum;
         int total_q = model.Sum(s => s.OutCountQuestion);
         int total_c = model.Sum(s => s.OutCountClaim);
         int total_r = model.Sum(s => s.OutCountReview);
@@ -535,18 +530,19 @@ public class ReportController : Controller
             r = report.OutCountReview;
             p = report.OutCountProposals;
             a = report.OutCountAlert;
-            sum = q + c + r + p + a;
 
             ws.Cells["A" + index].Value = report.OutNum;
             ws.Cells["B" + index].Value = report.OutMfcName;
-            ws.Cells["C" + index].Value = report.OutCountQuestion;
-            ws.Cells["D" + index].Value = report.OutCountClaim;
-            ws.Cells["E" + index].Value = report.OutCountReview;
-            ws.Cells["F" + index].Value = report.OutCountProposals;
-            ws.Cells["G" + index].Value = report.OutCountAlert;
-            ws.Cells["H" + index].Value = sum;
+            ws.Cells["C" + index].Value = q;
+            ws.Cells["D" + index].Value = c;
+            ws.Cells["E" + index].Value = r;
+            ws.Cells["F" + index].Value = p;
+            ws.Cells["G" + index].Value = a;
+            ws.Cells["H" + index].Value = q + c + r + p + a;
+
             ws.InsertRow(++index, 1, 8);
         }
+
         ws.Cells["A" + index].Value = "";
         ws.Cells["B" + index].Value = "Итого";
         ws.Cells["C" + index].Value = total_q;
@@ -555,14 +551,12 @@ public class ReportController : Controller
         ws.Cells["F" + index].Value = total_p;
         ws.Cells["G" + index].Value = total_a;
         ws.Cells["H" + index].Value = totalSum;
-        ws.InsertRow(++index, 1, 7);
 
-        using (var memoryStream = new MemoryStream())
-        {
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_категориям.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+        package.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_категориям.xlsx");
+
     }
     #endregion
 
@@ -588,11 +582,11 @@ public class ReportController : Controller
             ReportTreatmentList = _repository.FuncReportTreatment(dateStart, DateTime.Now.AddDays(1))
         };
         ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
         return PartialView("ReportTreatment/_Table", model);
     }
 
-    public void DownloadExcelReportTreatment(ReportParameters parameters)
+    public IActionResult DownloadExcelReportTreatment(ReportParameters parameters)
     {
         DateTime dateStart;
         switch (parameters.Period)
@@ -606,11 +600,10 @@ public class ReportController : Controller
         var model = _repository.FuncReportTreatment(dateStart, DateTime.Now.AddDays(1)).ToArray();
 
         var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().EmployeesName;
+        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
-        ExcelPackage pck = new();
-        pck.Load(new FileInfo("~/excel/report/report_treatment.xlsx").OpenRead());
-         
+        ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/report_treatment.xlsx"));
+
         var ws = pck.Workbook.Worksheets["Реестр"];
         ws.Cells["E4"].Value = PrintEmployee;
         ws.Cells["E5"].Value = DateTime.Now.ToString("G");
@@ -659,12 +652,10 @@ public class ReportController : Controller
         ws.Cells["I" + index].Value = totalSum;
         ws.InsertRow(++index, 1, 7);
 
-        using (var memoryStream = new MemoryStream())
-        { 
-            pck.SaveAs(memoryStream);
-            memoryStream.Position = 0;
-            File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_предмету_обращения.xlsx");
-        }
+        var memoryStream = new MemoryStream();
+        pck.SaveAs(memoryStream);
+        memoryStream.Position = 0;
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_предмету_обращения.xlsx");
     }
     #endregion
 }

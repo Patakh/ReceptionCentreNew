@@ -7,6 +7,8 @@ using System.Text;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Data.Context.App;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Identity;
+using ReceptionCentreNew.Models;
 
 namespace ReceptionCentreNew.Controllers;
 [Authorize]
@@ -14,11 +16,12 @@ public class HomeController : Controller
 {
     public int PageSize = 10;
     private IRepository _repository;
-
-    public HomeController(IRepository repo)
+    public SignInManager<ApplicationUser> SignInManager;
+    public HomeController(IRepository repo, SignInManager<ApplicationUser> signInManager)
     {
-      _repository = repo;
-    } 
+        SignInManager = signInManager;
+        _repository = repo;
+    }
 
     public IActionResult Index(string PhoneNumber)
     {
@@ -52,7 +55,7 @@ public class HomeController : Controller
         if (searchTextArray.Length > 0)
         {
             object result = null;
-            result = searchTextArray.Aggregate(_repository.DataAppeal.Include(i => i.SprStatus), (current, searchTextItem) => (IIncludableQueryable<DataAppeal,SprStatus>)current.Where(
+            result = searchTextArray.Aggregate(_repository.DataAppeal.Include(i => i.SprStatus), (current, searchTextItem) => (IIncludableQueryable<DataAppeal, SprStatus>)current.Where(
                 r => r.NumberAppeal.ToUpper().Contains(searchTextItem)
                 || r.EmployeesNameAdd.ToUpper().Contains(searchTextItem)
                 || r.TextAppeal.ToUpper().Contains(searchTextItem)
@@ -66,7 +69,7 @@ public class HomeController : Controller
     }
     public string GetIncomingCallData(JitsiRequest request)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         Guid? mfc_id = employee.SprEmployeesDepartmentId;
         Guid? employees_id = employee.Id;
         string EmployeeFio = employee.EmployeesName;

@@ -1,9 +1,8 @@
 ﻿@{
-    ViewBag.Title = "Количество звонков";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Количество звонков"; 
 }
 <link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 <div class="card-box">
     <div id="result">
         <div id="chart" style="height: 400px;"></div>
@@ -20,7 +19,7 @@
             type: 'POST',
             success: function (data) {
                 var jsonn = JSON.parse(data);
-                GenerateChart('#chart', jsonn, 'bar', { "out_count_call_incoming": "Входящие", "out_count_call_outgoing": "Исходящие", "out_count_call_missed": "Пропущенные" }, ['out_count_call_incoming', 'out_count_call_outgoing', 'out_count_call_missed' ], "Месяцы", "", false);
+                GenerateChart('#chart', jsonn, 'bar', { "OutCountCallIncoming": "Входящие", "OutCountCallOutgoing": "Исходящие", "OutCountCallMissed": "Пропущенные" }, ['OutCountCallIncoming', 'OutCountCallOutgoing', 'OutCountCallMissed' ], "Месяцы", "", false);
             }
         });
     });
@@ -58,7 +57,7 @@
             importCSS: false,
             importStyle: false,
             printContainer: true,
-            loadCSS: "Content/new_design/css/new_print.css",
+            loadCSS: "~/new_design/css/new_print.css",
             pageTitle: "",
             removeInline: false,
             printDelay: 333,

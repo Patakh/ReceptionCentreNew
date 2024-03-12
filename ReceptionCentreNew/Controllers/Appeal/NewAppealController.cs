@@ -3,23 +3,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ReceptionCentreNew.Data.Context.App;
 using Microsoft.AspNetCore.Identity;
-using ReceptionCentreNew.Data.Context.App.Abstract;
+using ReceptionCentreNew.Data.Context.App.Abstract; 
+using Microsoft.AspNetCore.SignalR;
+using ReceptionCentreNew.Hubs; 
+using Microsoft.AspNetCore.Authorization;
 
 namespace ReceptionCentreNew.Controllers.Appeal;
 public partial class AppealController : Controller
 {
     public int PageSize = 7;
 
-    #region Инициализация Repository
     private IRepository _repository;
-    private string? UserName;
-    public AppealController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
+    public IHubContext<NotificationHub> HubContext;
+    public string? UserName;
+    public SignInManager<ApplicationUser> SignInManager;
+    public AppealController(IRepository repo, SignInManager<ApplicationUser> signInManager, IHubContext<NotificationHub> hubContext)
     {
+        HubContext = hubContext;
+        SignInManager = signInManager;
         _repository = repo;
-        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
+        UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == SignInManager.Context.User.Identity.Name).EmployeesName;
     }
-    #endregion
-    // GET: NewApeeal
+
+    [AllowAnonymous]
+    public async Task SignalRAlerts(Guid id, string message)
+    {
+        var login = _repository.SprEmployees.First(q => q.Id == id).EmployeesLogin;
+        await HubContext.Clients.User(login).SendAsync("SendComment", message);
+    }
+
     public IActionResult NewAppeal(Guid? emailId, Guid? callId, string ApplicantName)
     {
         ViewBag.SprCategory = new SelectList(_repository.SprCategory, "Id", "CategoryName");
@@ -27,12 +39,12 @@ public partial class AppealController : Controller
         ViewBag.SprTypeDifficulty = new SelectList(_repository.SprTypeDifficulty.OrderBy(o => o.CountDay), "Id", "TypeName");
         ViewBag.SprSubjectTreatment = new SelectList(_repository.SprSubjectTreatment, "Id", "SubjectName");
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.OrderBy(o => o.MfcName), "Id", "MfcName");
-        ViewBag.SprTransferEmployees = new SelectList(_repository.SprEmployees.Where(w => w.IsRemove != true && w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id.ToString());
-        ViewBag.RouteStages = new SelectList(_repository.SprRoutesStage.Where(w => w.Id != 1).OrderBy(o => o.Id), "Id", "stage_name");
+        ViewBag.SprTransferEmployees = new SelectList(_repository.SprEmployees.Where(w => w.IsRemove != true && w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName");
+        ViewBag.RouteStages = new SelectList(_repository.SprRoutesStage.Where(w => w.Id != 1).OrderBy(o => o.Id), "Id", "StageName");
 
         ViewBag.EmailId = emailId;
         ViewBag.CallId = callId;
-        DataAppeal model = new DataAppeal()
+        DataAppeal model = new()
         {
             PhoneNumber = callId != null ? _repository.DataAppealCall.Where(w => w.Id == callId).SingleOrDefault()?.PhoneNumber : "",
             ApplicantName = ApplicantName,
@@ -72,16 +84,16 @@ public partial class AppealController : Controller
     /// <param name="DataAppeal">объект</param>
     /// <returns>перенаправляет на страницу обращений</returns>
     [HttpPost]
-    public IActionResult SubmitNewAppealSave(DataAppeal dataAppeal, Guid? emailId, Guid? smsId, Guid? callId, IFormFile uploadFile, Guid? transferEmployeeId, int? routeStageId, bool modal = false)
+    public async Task<IActionResult> SubmitNewAppealSave(DataAppeal dataAppeal, Guid? emailId, Guid? smsId, Guid? callId, IFormFile uploadFile, Guid? transferEmployeeId, int? routeStageId, bool modal = false)
     {
-        if (ModelState.IsValid)
+        try
         {
             if (dataAppeal.Id == Guid.Empty)
             {
                 string ShortName = _repository.SprCategory.Where(w => w.Id == dataAppeal.SprCategoryId).FirstOrDefault().ShortName;
                 Random rand = new();
-                var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
-                dataAppeal.NumberAppeal = String.Format("{0}{3}{1}{2}", ShortName, DateTime.Now.ToString("ddMMyyHHmmssffff"), rand.Next(1, 5), rand.Next(0, 9));
+                var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+                dataAppeal.NumberAppeal = string.Format("{0}{3}{1}{2}", ShortName, DateTime.Now.ToString("ddMMyyHHmmssffff"), rand.Next(1, 5), rand.Next(0, 9));
                 dataAppeal.DateAdd = DateTime.Now;
                 dataAppeal.SprEmployeesId = employee?.Id ?? Guid.Empty;
                 dataAppeal.EmployeesNameAdd = employee.EmployeesName;
@@ -160,7 +172,7 @@ public partial class AppealController : Controller
                     //===уведомление о передаче дела
                     if (route_stage.SprRoutesStageId != 1 && employee.Id != route_stage.SprEmployeesId)
                     {
-                        SignalRAlerts(employee.Id, "Вам передано обращение #" + dataAppeal.NumberAppeal);
+                        await SignalRAlerts(employee.Id, "Вам передано обращение #" + dataAppeal.NumberAppeal.ToString());
                     }
                 }
                 /*return RedirectToAction("AppealInfo", "Appeal", new { number = dataAppeal.NumberAppeal, modal = true });*//* Json(dataAppeal.NumberAppeal);*/
@@ -185,18 +197,21 @@ public partial class AppealController : Controller
                 _repository.Update(model);
 
                 if (modal)
-                { return RedirectToAction("AppealInfo", new { number = model.NumberAppeal, modal = true }); }
+                {
+                    return RedirectToAction("AppealInfo", new { number = model.NumberAppeal, modal = true });
+                }
                 else
                 {
                     return RedirectToAction("AppealInfo", new { number = model.NumberAppeal });
                 }
             }
             return RedirectToAction("AppealInfo", new { number = dataAppeal.NumberAppeal, modal = true });
-            //return Json(dataAppeal.NumberAppeal);
         }
-        throw new Exception("Ошибка валидации!");
+        catch (Exception ex)
+        {
+            throw;
+        }
     }
-
 
     #region |-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-[  Email  ]-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|
 
@@ -274,24 +289,21 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult SubmitNewModalTextAppealTemplateSave(SprEmployeesTextAppealTemplate t)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         t.SprEmployeesId = employee?.Id ?? Guid.Empty;
-        if (ModelState.IsValid)
+
+        if (t.Id == Guid.Empty)
         {
-            if (t.Id == Guid.Empty)
-            {
-                t.DateAdd = DateTime.Now;
-                _repository.Insert(t);
-            }
-            else
-            {
-                t.EmployeesNameModify = UserName;
-                t.DateModify = DateTime.Now;
-                _repository.Update(t);
-            }
-            return null;
+            t.DateAdd = DateTime.Now;
+            _repository.Insert(t);
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            t.EmployeesNameModify = UserName;
+            t.DateModify = DateTime.Now;
+            _repository.Update(t);
+        }
+        return null;
     }
 
     [HttpPost]

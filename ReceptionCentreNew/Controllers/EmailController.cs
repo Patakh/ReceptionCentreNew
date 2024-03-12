@@ -15,21 +15,21 @@ namespace ReceptionCentreNew.Controllers
     public class EmailController : Controller
     {
         public int PageSize = 10;
-
-        #region Инициализация Repository
+         
         private IRepository _repository;
-        public EmailController(IRepository repo)
+        public SignInManager<ApplicationUser> SignInManager;
+        public EmailController(IRepository repo, SignInManager<ApplicationUser> signInManager)
         {
+            SignInManager=signInManager;
             _repository = repo;
-        }
-        #endregion
+        } 
         // GET: Email
         public IActionResult Emails()
         {
             var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
             if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
             {
-                employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name);
+                employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name);
             }
             ViewBag.SprEmployees = new SelectList(employees, "id", "EmployeesName");            
             return View();

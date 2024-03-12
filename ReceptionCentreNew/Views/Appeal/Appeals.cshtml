@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppeal>
+﻿@model IEnumerable<DataAppeal>
 @{
     ViewBag.Title = "Все обращения";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -8,6 +8,7 @@
     .appeal_active {
         background-color: #f2f2f2;
     }
+
     .alert-no-record {
         position: relative;
         padding: .75rem 1.25rem;
@@ -15,13 +16,11 @@
         border-radius: .25rem;
     }
 </style>
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 
 <div class="card-box p-3 m-b-0">
-    @using (Ajax.BeginForm("PartialTableAppeals", "Appeal", null, new AjaxOptions { UpdateTargetId = "appealsTableContainer", HttpMethod = "POST", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
-    {
+    <form class="form-horizontal" id="appealsForm">
         <div class="collapse show" id="casesFilter" style="">
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group form-group-sm form-actions m-b-0">
@@ -40,11 +39,11 @@
                             <div class="col-md-3 m-b-10">
                                 <label>Период</label>
                                 @Html.DropDownList("period", new SelectList(new List<SelectListItem>
-                           { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                                                                                               new SelectListItem {Text = "Неделя", Value = "2"},
-                                                                                                               new SelectListItem {Text = "Месяц", Value = "3"},
-                                                                                                               new SelectListItem {Text = "Год", Value = "4"},
-                                                                                                           }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                { new SelectListItem {Text = "Сегодня", Value = "1"},
+                                new SelectListItem {Text = "Неделя", Value = "2"},
+                                new SelectListItem {Text = "Месяц", Value = "3"},
+                                new SelectListItem {Text = "Год", Value = "4"},
+                                }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                             <div class="col-md-3 m-b-10">
                                 <label>Статус</label>
@@ -92,49 +91,59 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_appeals" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_appeals" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
-    }
+    </form>
 </div>
 <div id="appealsTableContainer">
-    @*@Html.Action("PartialTableAppeals", "Appeal", new { sprEmployeeId = @ViewBag.SprEmployeesId, sprStatusId = 0 })*@
 </div>
 
 @section scripts {
-<script>
+    <script>
+        function Search() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableAppeals", "Appeal")',
+                data: $("#CallForm").serialize(),
+                success: function (data) {
+                    $('#appealsTableContainer').html(data);
+                }
+            });
+        }
+
         $(document).ready(function () {
             $(".select2").select2();
             $('#button_find_appeals').click();
-            $(document).on('click','#appealsTable tbody tr',function () {
+            $(document).on('click', '#appealsTable tbody tr', function () {
                 $('#appealsTable tbody tr').each(function (item) {
                     $(this).removeClass("appeal_active");
                 });
                 $(this).addClass("appeal_active");
-            });             
-    });
-    $(document).on('change', '#searchTextAppeals', function () {
-        var sprEmployeeId = $('#sprEmployeeId').val();
-        var period = $('#period').val();
-        var sprTypeId = $('#sprTypeID').val();
-        var sprTypeDifficultyId = $('#sprTypeDifficultyId').val();
-        var sprSubjectId = $('#sprSubjectId').val();
-        var sprStatusId = $('#sprStatusId').val();
-        var sprCategoryId = $('#sprCategoryId').val();
-        
-             $.ajax({
-                 url: '@Url.Action("PartialTableAppeals", "Appeal")',
-                 type: 'Post',
-                 data: { search: $(this).val(), period: period, sprEmployeeId: sprEmployeeId, sprTypeId: sprTypeId, sprTypeDifficultyId: sprTypeDifficultyId, sprSubjectId: sprSubjectId, sprStatusId:sprStatusId, sprCategoryId:sprCategoryId },
-                 success: function (data) {
-                     $('#appealsTableContainer').html(data);
-                     $('#searchTextAppeals').focus();
-                     var tmpStr = $('#searchTextAppeals').val();
-                     $('#searchTextAppeals').val('');
-                     $('#searchTextAppeals').val(tmpStr);
-                 }
-             });
             });
+        });
+        $(document).on('change', '#searchTextAppeals', function () {
+            var sprEmployeeId = $('#sprEmployeeId').val();
+            var period = $('#period').val();
+            var sprTypeId = $('#sprTypeID').val();
+            var sprTypeDifficultyId = $('#sprTypeDifficultyId').val();
+            var sprSubjectId = $('#sprSubjectId').val();
+            var sprStatusId = $('#sprStatusId').val();
+            var sprCategoryId = $('#sprCategoryId').val();
+
+            $.ajax({
+                url: '@Url.Action("PartialTableAppeals", "Appeal")',
+                type: 'Post',
+                data: { search: $(this).val(), period: period, sprEmployeeId: sprEmployeeId, sprTypeId: sprTypeId, sprTypeDifficultyId: sprTypeDifficultyId, sprSubjectId: sprSubjectId, sprStatusId: sprStatusId, sprCategoryId: sprCategoryId },
+                success: function (data) {
+                    $('#appealsTableContainer').html(data);
+                    $('#searchTextAppeals').focus();
+                    var tmpStr = $('#searchTextAppeals').val();
+                    $('#searchTextAppeals').val('');
+                    $('#searchTextAppeals').val(tmpStr);
+                }
+            });
+        });
     </script>
 
 }

@@ -5,10 +5,7 @@ public class ReportTreatment
 {
     [Column("out_mfc_name")]
     public string? OutMfcName { get; set; }
-
-    [Column("out_count_question")]
-    public int OutCountQuestion { get; set; }
-
+      
     [Column("out_count_earth")]
     public int OutCountEarth { get; set; }
 
