@@ -10,7 +10,7 @@ public partial class DataAppealRouteStageSelect
 
     [Display(Name = "Этап")]
     [Column("out_stage_name")]
-    public string OutStageName { get; set; }
+    public string? OutStageName { get; set; }
 
     [Display(Name = "Дата")]
     [DisplayFormat(DataFormatString = "{0:dd'.'MM'.'yyyy}", ApplyFormatInEditMode = true)]
@@ -34,15 +34,15 @@ public partial class DataAppealRouteStageSelect
 
     [Display(Name = "Сотрудник")]
     [Column("out_employees_name")]
-    public string OutEmployeesName { get; set; }
+    public string? OutEmployeesName { get; set; }
 
     [Display(Name = "Кто добавил запись")]
     [Column("out_employees_name_add")]
-    public string OutEmployeesNameAdd { get; set; }
+    public string? OutEmployeesNameAdd { get; set; }
 
     [Display(Name = "Комментарии")]
     [Column("out_commentt")]
-    public string OutCommentt { get; set; }
+    public string? OutCommentt { get; set; }
 
     [Display(Name = "Дата регламентная")]
     [DisplayFormat(DataFormatString = "{0:dd'.'MM'.'yyyy}", ApplyFormatInEditMode = true)]
@@ -55,5 +55,5 @@ public partial class DataAppealRouteStageSelect
 
     [Display(Name = "Дни (факт.)")]
     [Column("out_count_day_fact")]
-    public string OutCountDayFact { get; set; }
+    public string? OutCountDayFact { get; set; }
 }

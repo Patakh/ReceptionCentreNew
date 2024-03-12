@@ -127,19 +127,15 @@ public partial class ReferenceController
     /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitEmployeeRoleSave(SprEmployeesRoleJoin employeeRole)
     {
-        if (ModelState.IsValid)
+        if (employeeRole.Id == Guid.Empty)
         {
-            if (employeeRole.Id == Guid.Empty)
-            {
-                _repository.Insert(employeeRole);
-            }
-            else
-            {
-                _repository.Update(employeeRole);
-            }
-            return RedirectToAction("PartialTableEmployeeRoles", new { employeeId = employeeRole.SprEmployeesId });
+            _repository.Insert(employeeRole);
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            _repository.Update(employeeRole);
+        }
+        return RedirectToAction("PartialTableEmployeeRoles", new { employeeId = employeeRole.SprEmployeesId });
     }
 
     /// <summary>
@@ -195,23 +191,19 @@ public partial class ReferenceController
     /// <returns>частичное представление таблицы</returns> 
     public IActionResult SubmitDepartmentSave(SprEmployeesDepartment department)
     {
-        if (ModelState.IsValid)
+        if (department.Id == Guid.Empty)
         {
-            if (department.Id == Guid.Empty)
-            {
-                department.EmployeesNameAdd = UserName;
-                department.DateAdd = DateTime.Now;
-                _repository.Insert(department);
-            }
-            else
-            {
-                department.EmployeesNameModify = UserName;
-                department.DateModify = DateTime.Now;
-                _repository.Update(department);
-            }
-            return RedirectToAction("PartialTableDepartments");
+            department.EmployeesNameAdd = UserName;
+            department.DateAdd = DateTime.Now;
+            _repository.Insert(department);
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            department.EmployeesNameModify = UserName;
+            department.DateModify = DateTime.Now;
+            _repository.Update(department);
+        }
+        return RedirectToAction("PartialTableDepartments");
     }
 
     /// <summary>

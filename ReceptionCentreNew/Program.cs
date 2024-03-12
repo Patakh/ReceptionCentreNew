@@ -2,7 +2,7 @@ using AisReception.Data.Context.App;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Data.Context.App.Abstract; 
+using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Hubs;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Models;
@@ -15,7 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<ReceptionCentreContext>(options =>
-options.UseNpgsql(connectionString)); 
+options.UseNpgsql(connectionString));
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
 {
@@ -43,16 +43,14 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
     .AddSignInManager<ApplicationSignInManager>()
     .AddUserManager<ApplicationUserManager>()
     .AddDefaultTokenProviders();
- 
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IRepository, EFRepository>();
-builder.Services.AddScoped<IHubContext, NotificationHub>();
-  
-builder.Services.AddScoped<IUserPasswordStore<ApplicationUser>, CustomMembershipProvider>(); 
+
+builder.Services.AddScoped<IUserPasswordStore<ApplicationUser>, CustomMembershipProvider>();
 builder.Services.AddScoped<IUserRoleStore<ApplicationUser>, CustomRoleProvider>();
- 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
@@ -62,9 +60,10 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 builder.Services.AddSignalR();
 
-builder.Services.AddRazorPages();
- 
+builder.Services.AddScoped<Hub, NotificationHub>();
 
+builder.Services.AddRazorPages();
+  
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -88,12 +87,12 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
- 
+
 app.MapHub<NotificationHub>("/NotificationHub");
- 
+
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); 
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
 

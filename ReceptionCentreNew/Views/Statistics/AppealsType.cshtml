@@ -1,6 +1,5 @@
 ﻿@{
     ViewBag.Title = "Вид обращения";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 <style>
@@ -9,51 +8,49 @@
         font-family: "Roboto", sans-serif;
     }
 </style>
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 
-    <div class="card-box m-t-10 p-t-10 p-b-10">
-        <form id="form">            
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group form-group-sm form-actions m-b-0">
-                            <div class="row p-l-r-10">
-                                <div class="col-md-3 m-b-10">
-                                    <label class="font-12 text-muted p-t-0 m-b-0">МФЦ</label>
-                                    @Html.DropDownList("SprMfcId", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+<div class="card-box m-t-10 p-t-10 p-b-10">
+    <form id="form">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group form-group-sm form-actions m-b-0">
+                    <div class="row p-l-r-10">
+                        <div class="col-md-3 m-b-10">
+                            <label class="font-12 text-muted p-t-0 m-b-0">МФЦ</label>
+                            @Html.DropDownList("SprMfcId", ViewBag.SprMfc as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                        </div>
+                        <div class="col-md-3 m-b-10">
+                            <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
+                            <div class="input-group">
+                                <input type="text" id="dateStart" name="dateStart" class="form-control required" value="@DateTime.Now.ToShortDateString()" placeholder="__.__.____" data-mask="99.99.9999">
+                                <div class="input-group-append">
+                                    <span class="input-group-text b-0"><i class="fa fa-calendar"></i></span>
                                 </div>
-                                <div class="col-md-3 m-b-10">
-                                    <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
-                                    <div class="input-group">
-                                        <input type="text" id="dateStart" name="dateStart" class="form-control required" value="@DateTime.Now.ToShortDateString()" placeholder="__.__.____" data-mask="99.99.9999">
-                                        <div class="input-group-append">
-                                            <span class="input-group-text b-0"><i class="fa fa-calendar"></i></span>
-                                        </div>
-                                        <input type="text" id="dateStop" name="dateStop" class="form-control required" value="@DateTime.Now.ToShortDateString()" placeholder="__.__.____" data-mask="99.99.9999">
-                                    </div>
-                                </div>
-                                <div class="col-md-6 m-b-10 text-right">
-                                    <br />
-                                    <button type="button" id="btnShowChart" class="btn btn-default waves-effect waves-light">
-                                        <i class="ion-ios7-search m-r-5"></i>
-                                        Показать
-                                    </button>
-                                    @*<button type="button" class="btn btn-default waves-effect waves-light" onclick="printTable()">
-                                        <i class="fa fa-print m-r-5"></i>Печать</button>*@
-                                </div>
+                                <input type="text" id="dateStop" name="dateStop" class="form-control required" value="@DateTime.Now.ToShortDateString()" placeholder="__.__.____" data-mask="99.99.9999">
                             </div>
+                        </div>
+                        <div class="col-md-6 m-b-10 text-right">
+                            <br />
+                            <button type="button" id="btnShowChart" class="btn btn-default waves-effect waves-light">
+                                <i class="ion-ios7-search m-r-5"></i>
+                                Показать
+                            </button>
                         </div>
                     </div>
                 </div>
-        </form>
-    </div>
-    <div id="result" class="card-box">
-        <div id="chart" style="max-height: 400px;">
-            <div id="search_alert">
-                <i class="md md-info-outline mr-1 vertical-middle font-18"></i> <span class="vertical-middle">Воспользуйтесь фильтром.</span>
             </div>
         </div>
+    </form>
+</div>
+<div id="result" class="card-box">
+    <div id="chart" style="max-height: 400px;">
+        <div id="search_alert">
+            <i class="md md-info-outline mr-1 vertical-middle font-18"></i> <span class="vertical-middle">Воспользуйтесь фильтром.</span>
+        </div>
     </div>
-@section scripts{
+</div>
+@section scripts {
     <script src="~/plugins/print/printThis.js"></script>
     <script src="~/new_design/plugins/Charts/js/c3.js"></script>
     <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
@@ -75,62 +72,61 @@
         $('#btnShowChart').click(function () {
             if ($('form#form').valid())
             {
-                $form = $('form#form').serializeArray();
-                $.ajax({
-                    url: '@Url.Action("AppealsTypeResult", "Statistics")',
-                    type: 'POST',
-                    data: $form,
-                    success: function (data) {
-                        var jsonn = JSON.parse(data);
-                        GenerateChart('#chart', jsonn, 'pie', { "out_count": "Количество" }, ['out_count'], "Месяцы", "", false);
-                    }
+            }
+            $form = $('form#form').serializeArray();
+            $.ajax({
+                url: '@Url.Action("AppealsTypeResult", "Statistics")',
+                type: 'POST',
+                data: $form,
+                success: function (data) {
+                    var jsonn = JSON.parse(data);
+                    GenerateChart('#chart', jsonn, 'pie', { "OutCount": "Количество" }, ['OutCount'], "Месяцы", "", false);
+                }
+            });
+        });
+
+        var chart;
+        function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
+            if (transform != true) {
+                chart = c3.generate({
+                    bindto: element,
+                    //size: { height: 300 },
+                    zoom: { enabled: false },
+                    data: {
+                        columns: data,
+                        type: 'pie',
+                    },
+                    tooltip: {
+                        format: {
+                            value: function (value, ratio, id, index) {
+                                return value + " (" + Math.round(ratio * 100) + "%)";
+                            }
+                        }
+                    },
+                    legend: {
+                        position: 'right'
+                    },
+                    grid: { x: { show: false }, y: { show: true } },
                 });
             }
-        });
+            else {
+                chart.transform(type_chart);
+            }
+        }
 
-    var chart;
-    function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
-        if (transform != true) {
-            chart = c3.generate({
-                bindto: element,
-                //size: { height: 300 },
-                zoom: { enabled: false },
-                data: {
-                    columns: data,
-                    type: 'pie',
-                },               
-                tooltip: {
-                    format: {
-                        value: function (value, ratio, id, index)
-                        {
-                            return value+ " (" + Math.round(ratio * 100) + "%)";
-                        }
-                    }
-                },
-                legend: {
-                    position: 'right'
-                },
-                grid: { x: { show: false }, y: { show: true } }, 
+        function printTable() {
+            $('#result').printThis({
+                debug: false,
+                importCSS: false,
+                importStyle: false,
+                printContainer: true,
+                loadCSS: "~/new_design/css/new_print.css",
+                pageTitle: "",
+                removeInline: false,
+                printDelay: 333,
+                header: null,
+                formValues: true
             });
         }
-        else {
-            chart.transform(type_chart);
-        }
-    }
-
-    function printTable() {
-        $('#result').printThis({
-            debug: false,
-            importCSS: false,
-            importStyle: false,
-            printContainer: true,
-            loadCSS: "Content/new_design/css/new_print.css",
-            pageTitle: "",
-            removeInline: false,
-            printDelay: 333,
-            header: null,
-            formValues: true
-        });
-    }
     </script>
 }

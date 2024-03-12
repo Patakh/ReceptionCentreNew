@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using ReceptionCentreNew.Areas.Identity.User;
+using Microsoft.AspNetCore.Mvc.RazorPages; 
+using ReceptionCentreNew.Models;
 
 namespace ReceptionCentreNew.Areas.Identity.Pages.Account;
 [AllowAnonymous]

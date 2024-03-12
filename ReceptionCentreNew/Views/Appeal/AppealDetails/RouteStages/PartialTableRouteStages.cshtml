@@ -1,7 +1,7 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 
-@using (Ajax.BeginForm("SubmitNextRouteStageSave", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "stages", OnBegin="console.log('+этап')" }, new { @id = "AddRouteStageForm", @class = "form-submit" }))
-{
+
+<form id="AddRouteStageForm" class="form-submit">
     <div class="case-next-stage form-row p-b-10">
         <div class="col-md-6 col-lg-6">
             @Html.DropDownList("employeeId", ViewBag.Employees as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
@@ -10,10 +10,10 @@
             @Html.DropDownList("routeStageId", ViewBag.RouteStages as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary waves-effect waves-light">Добавить этап</button>
+            <button type="button" onclick="Add()" class="btn btn-primary waves-effect waves-light">Добавить этап</button>
         </div>
     </div>
-}
+</form>
 
 @if (Model.DataAppealRoutesStageList.Any())
 {
@@ -22,7 +22,7 @@
             <table class="table table-vertical-middle">
                 <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutStageName) @Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutDateStart) </th>                        
+                        <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutStageName) @Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutDateStart) </th>
                         <th>@Html.DisplayNameFor(model => model.DataAppealRoutesStageList.First().OutEmployeesName)</th>
                         <th>Дни</th>
                         <th>Дополнительно</th>
@@ -34,10 +34,10 @@
                         <tr class="text-nowrap">
                             <td class="vertical-middle">
                                 @Html.DisplayFor(i => item.OutStageName)<br />
-                                <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.OutDateStart) 
+                                <i class="fa fa-calendar text-muted"></i> @Html.DisplayFor(i => item.OutDateStart)
                                 <i class="fa fa-clock-o text-muted"></i> <span class="text-muted">@Html.DisplayFor(i => item.OutTimeStart)</span>
                             </td>
-                           
+
                             <td class="font-13 vertical-middle">
                                 <div title="@item.OutEmployeesName" class="clip" style="max-width:210px">@item.OutEmployeesName</div>
                             </td>
@@ -63,8 +63,18 @@ else
     </div>
 }
 
-    <script>
+<script>
+    function Add() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitNextRouteStageSave", "Appeal")',
+            data: $("#EditAppealForm").serialize(),
+            success: function (data) {
+                $('#stages').html(data);
+            }
+        });
+    }
     $(document).ready(function () {
         $('select.select2').select2();
     });
-        </script>
+</script>

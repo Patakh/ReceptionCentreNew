@@ -9,15 +9,15 @@ namespace ReceptionCentreNew.Controllers;
 [Authorize]
 public class SMSController : Controller
 {
-    #region Инициализация Repository
     private IRepository _repository;
     private string? UserName;
+    public SignInManager<ApplicationUser> SignInManager;
     public SMSController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
+        SignInManager = signInManager;
         _repository = repo;
         UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
     }
-    #endregion
 
     // GET: SMS
     public IActionResult Sms()
@@ -25,7 +25,7 @@ public class SMSController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
 
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
 
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName");
         return View();

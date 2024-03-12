@@ -1,15 +1,14 @@
-﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealEmail>
+﻿@model IEnumerable<DataAppealEmail>
 @{
     ViewBag.Title = "Электронная почта";
 }
 <!-- Все письма -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 
-<div class="card-box p-3">
-    @using (Ajax.BeginForm("PartialTableEmails", "Email", null, new AjaxOptions { UpdateTargetId = "emailsTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
-    {
+<div class="card-box p-3"> 
+    <form class="form-horizontal" id="EmailsForm">
         <div class="collapse show" id="collapseExample" style="">
             <div class="row p-l-r-10">
                 <div class="form-group col-sm-3">
@@ -19,25 +18,25 @@
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
                     @Html.DropDownList("period", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                                   new SelectListItem {Text = "Неделя", Value = "2"},
-                                                   new SelectListItem {Text = "Месяц", Value = "3"},
-                                                   new SelectListItem {Text = "Год", Value = "4"},
-                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Сегодня", Value = "1"},
+                    new SelectListItem {Text = "Неделя", Value = "2"},
+                    new SelectListItem {Text = "Месяц", Value = "3"},
+                    new SelectListItem {Text = "Год", Value = "4"},
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Тип</label>
                     @Html.DropDownList("type", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Входящие", Value = "2"},
-                                                   new SelectListItem {Text = "Исходящие", Value = "1"}
-                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Входящие", Value = "2"},
+                    new SelectListItem {Text = "Исходящие", Value = "1"}
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
                     @Html.DropDownList("is_connected", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Да", Value = "1"},
-                                                   new SelectListItem {Text = "Нет", Value = "2" }
-                                               }, "Value", "Text", 2), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Да", Value = "1"},
+                    new SelectListItem {Text = "Нет", Value = "2" }
+                    }, "Value", "Text", 2), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
             </div>
         </div>
@@ -51,33 +50,30 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_emails" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_emails" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
-    }
+    </form>
 </div>
 <div id="emailsTableContainer">
-    @*@Html.Action("PartialTableEmails", "Email", new { is_connected = 2 })*@
 </div>
 
-@section scripts{
+@section scripts {
     <script>
-    @*$(function () {
-        $.ajax({
-            async: true,
-            url: '@Url.Action("ListenerAsync", "Common")',
-            type: 'GET',
-            success: function (data) {
-                if (data.new_email != '0') {
-                    $.Notification.notify('success', 'right top', 'Email!', 'Поступило новое сообщение на почтовый адрес');
+        function Search() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableEmails", "Email")',
+                data: $("#NotificationForm").serialize(),
+                success: function (data) {
+                    $('#emailsTableContainer').html(data);
                 }
-            }
+            });
+        }
+        $(document).ready(function () {
+            $(".select2").select2();
+            Search();
         });
-    });*@
-    $(document).ready(function () {
-        $(".select2").select2();
-        $('#button_find_emails').click();
-    });
     </script>
     <!-- Все письма -->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>

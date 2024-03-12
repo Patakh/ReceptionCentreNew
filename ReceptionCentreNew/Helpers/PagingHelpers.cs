@@ -1,83 +1,98 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering; 
+﻿
+using Microsoft.AspNetCore.Html; 
 using ReceptionCentreNew.Models; 
 using System.Text;
-
+using System.Web.Mvc;
 namespace ReceptionCentreNew;
 public static class PagingHelpers
 {
-    public static TagBuilder PageLinks(this IHtmlHelper html,
-        PageInfo pageInfo, Func<PageInfo, string> pageUrl)
+    public static HtmlString PageLinks(this Microsoft.AspNetCore.Mvc.Rendering.IHtmlHelper html, PageInfo pageInfo, Func<PageInfo, HtmlString> pageUrl)
     {
-        pageInfo.FirstPage = (int)(pageInfo.CurrentPage - (int)(pageInfo.MaxPageList / 2));
+        pageInfo.FirstPage = pageInfo.CurrentPage - pageInfo.MaxPageList / 2;
         if (pageInfo.FirstPage <= 1)
         {
             pageInfo.FirstPage = 1;
         }
-        else
+        else if (pageInfo.TotalPages - pageInfo.FirstPage < pageInfo.MaxPageList)
         {
-            if (pageInfo.TotalPages - pageInfo.FirstPage < pageInfo.MaxPageList)
+            pageInfo.FirstPage = pageInfo.TotalPages - pageInfo.MaxPageList + 1;
+            if (pageInfo.FirstPage <= 1)
             {
-                pageInfo.FirstPage = pageInfo.TotalPages - pageInfo.MaxPageList + 1;
-                if (pageInfo.FirstPage <= 1)
-                {
-                    pageInfo.FirstPage = 1;
-                }
+                pageInfo.FirstPage = 1;
             }
         }
+
         pageInfo.LastPage = pageInfo.FirstPage + pageInfo.MaxPageList - 1;
         if (pageInfo.LastPage > pageInfo.TotalPages)
         {
             pageInfo.LastPage = pageInfo.TotalPages;
         }
-        StringBuilder result = new ();
-        TagBuilder tagUl = new ("ul");
-        tagUl.AddCssClass("pagination m-b-0");
 
-        //---B-M---переход на первую страницу
+        StringBuilder stringBuilder = new StringBuilder();
+        TagBuilder tagBuilder = new TagBuilder("ul");
+        tagBuilder.AddCssClass("pagination m-b-0");
         if (pageInfo.CurrentPage > 3)
         {
-            TagBuilder tagLiFirst = new ("li");
-            tagLiFirst.InnerHtml.AppendHtml(pageUrl(new PageInfo() { CurrentPage = 1, NameLink = "«" }));
-            result.Append(tagLiFirst);
+            TagBuilder tagBuilder2 = new TagBuilder("li");
+            tagBuilder2.InnerHtml = pageUrl(new PageInfo
+            {
+                CurrentPage = 1,
+                NameLink = "«"
+            }).ToString();
+            stringBuilder.Append(tagBuilder2.ToString());
         }
 
         if (1 != pageInfo.CurrentPage)
         {
-            TagBuilder tagLiPrev = new ("li");
-            tagLiPrev.InnerHtml.AppendHtml(pageUrl(new PageInfo() { CurrentPage = pageInfo.CurrentPage - 1, NameLink = "‹" }));
-            result.Append(tagLiPrev);
+            TagBuilder tagBuilder3 = new TagBuilder("li");
+            tagBuilder3.InnerHtml = pageUrl(new PageInfo
+            {
+                CurrentPage = pageInfo.CurrentPage - 1,
+                NameLink = "‹"
+            }).ToString();
+            stringBuilder.Append(tagBuilder3.ToString());
         }
 
         for (int i = pageInfo.FirstPage; i <= pageInfo.LastPage; i++)
         {
-            TagBuilder tagLiNum = new("li");
-            // если текущая страница, то выделяем ее,
-            // например, добавляя класс
+            TagBuilder tagBuilder4 = new TagBuilder("li");
             if (i == pageInfo.CurrentPage)
             {
-                tagLiNum.AddCssClass("active");
+                tagBuilder4.AddCssClass("active");
             }
-            tagLiNum.InnerHtml.AppendHtml(pageUrl(new PageInfo() { CurrentPage = i, NameLink = i.ToString() }));
-            result.Append(tagLiNum);
+
+            tagBuilder4.InnerHtml = pageUrl(new PageInfo
+            {
+                CurrentPage = i,
+                NameLink = i.ToString()
+            }).ToString();
+            stringBuilder.Append(tagBuilder4.ToString());
         }
 
         if (pageInfo.TotalPages > pageInfo.CurrentPage)
         {
-            TagBuilder tagLiLast = new ("li");
-            tagLiLast.InnerHtml.AppendHtml(pageUrl(new PageInfo() { CurrentPage = pageInfo.CurrentPage + 1, NameLink = "›" }));
-            result.Append(tagLiLast);
+            TagBuilder tagBuilder5 = new TagBuilder("li");
+            tagBuilder5.InnerHtml = pageUrl(new PageInfo
+            {
+                CurrentPage = pageInfo.CurrentPage + 1,
+                NameLink = "›"
+            }).ToString();
+            stringBuilder.Append(tagBuilder5.ToString());
         }
 
-        //---B-M---переход на последнюю страницу
         if (pageInfo.CurrentPage < pageInfo.TotalPages - 2)
         {
-            TagBuilder tagLiLast = new("li");
-            tagLiLast.InnerHtml.AppendHtml(pageUrl(new PageInfo() { CurrentPage = pageInfo.TotalPages, NameLink = "»" }));
-            result.Append(tagLiLast);
+            TagBuilder tagBuilder6 = new TagBuilder("li");
+            tagBuilder6.InnerHtml = pageUrl(new PageInfo
+            {
+                CurrentPage = pageInfo.TotalPages,
+                NameLink = "»"
+            }).ToString();
+            stringBuilder.Append(tagBuilder6.ToString());
         }
 
-        tagUl.InnerHtml.AppendHtml(result.ToString());
+        tagBuilder.InnerHtml = stringBuilder.ToString();
 
-        return tagUl;
+        return new HtmlString(tagBuilder.ToString());
     }
 }

@@ -72,20 +72,47 @@ public class ConnectionMapping<T>
         }
     }
 }
-public class NotificationHub : Hub, IHubContext
+public class NotificationHub : Hub
 {
-    // Подключение нового пользователя
-    public void Connect(string userName)
+    private readonly static ConnectionMapping<string> _connections  = new();
+
+    public override async Task OnConnectedAsync()
     {
+        string name = Context.User.Identity.Name;
+
+        _connections.Add(name, Context.ConnectionId);
+
+          await base.OnConnectedAsync();
     }
 
-    private readonly static ConnectionMapping<string> _connections = new();
+    public override async Task OnDisconnectedAsync(Exception exception)
+    
+    
+    {
+        string name = Context.User.Identity.Name;
 
-    public IHubClients Clients => throw new NotImplementedException();
+        _connections.Remove(name, Context.ConnectionId);
 
-    public IGroupManager Groups => throw new NotImplementedException();
-     
-    public Dictionary<string, HashSet<string>> get_online_users()
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    public async Task SendNotification(string message)
+    {
+        string name = Context.User.Identity.Name;
+
+        await Clients.All.SendAsync("ReceiveNotification", name, message);
+    }
+    public async Task SendComment(string message)
+    {
+        await Clients.All.SendAsync("IncomingCall", message);
+    }
+    public async Task IncomingCall(string message)
+    {
+        string name = Context.User.Identity.Name;
+
+        await Clients.User(name).SendAsync("incomingCall", message);
+    }
+    public Dictionary<string, HashSet<string>> GetOnlineUsers()
     {
         return _connections.GetAllConnections();
     }

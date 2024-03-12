@@ -1,7 +1,7 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
 <link href="~/plugins/dropzone/dist/dropzone.css" rel="stylesheet" />
 <script>
-    $(document).ready(function () {        
+    $(document).ready(function () {
         $('#searchTextAttachCalls').change(function () {
             $.ajax({
                 url: '@Url.Action("PartialModalAddFile", "Appeal")',
@@ -34,33 +34,41 @@
             </div>
         </div>
         <div class="modal-footer">
-            @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = ViewBag.AppealNumber, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('a[href=\"#files\"]').click()" }, new { @id = "backToAppealInfo", @class = "" }))
-            {
-                <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
-            }
+            <button type="button" onclick="Back('@ViewBag.AppealNumber', '@true" )" class="btn btn-secondary waves-effect waves-light">Назад</button>
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 <script src="~/plugins/dropzone/dist/dropzone.js"></script>
 <script>
-        //-------скрипты загрузки файла------------------
-        var folder_id;
-        Dropzone.autoDiscover = false;
-        $("#newModal").find(".dropzone").dropzone({
+    function Back(number, modal) {
+        $.ajax({
             type: 'POST',
-            maxFilesize: 15,
-            dictDefaultMessage: "Перетащите сюда файл для загрузки. Файл будет загружен автоматически",
-            success: function (data, response) {
-                $(data.previewTemplate).addClass('dz-success');
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("PartialTableFiles", "Appeal")',
-                    data: { appealId: '@ViewBag.AppealId'},
-                    success: function (data) {
-                        $('#filePillContainer').html(data);
-                    }
-                });
+            url: '@Url.Action("AppealInfo", "Appeal")',
+            data: { number: number, modal: modal },
+            success: function (data) {
+                $('a[href=\"#files\"]').click()
             }
         });
-      
+    }
+
+    //-------скрипты загрузки файла------------------
+    var folder_id;
+    Dropzone.autoDiscover = false;
+    $("#newModal").find(".dropzone").dropzone({
+        type: 'POST',
+        maxFilesize: 15,
+        dictDefaultMessage: "Перетащите сюда файл для загрузки. Файл будет загружен автоматически",
+        success: function (data, response) {
+            $(data.previewTemplate).addClass('dz-success');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableFiles", "Appeal")',
+                data: { appealId: '@ViewBag.AppealId' },
+                success: function (data) {
+                    $('#filePillContainer').html(data);
+                }
+            });
+        }
+    });
+
 </script>

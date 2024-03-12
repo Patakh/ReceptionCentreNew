@@ -1,5 +1,4 @@
-﻿using ReceptionCentreNew.Models;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 using ConfigurationManager = System.Configuration.ConfigurationManager;
@@ -50,24 +49,24 @@ namespace ReceptionCentreNew
 
         private static byte[] Encrypt(byte[] key, string value)
         {
-            SymmetricAlgorithm sa = Rijndael.Create(); 
-            PasswordDeriveBytes  passwordDeriveBytes = new(value, key); 
-            ICryptoTransform ct = sa.CreateEncryptor(key, passwordDeriveBytes.GetBytes(16)); 
-            MemoryStream ms = new();
-            CryptoStream cs = new(ms, ct, CryptoStreamMode.Write);
+            SymmetricAlgorithm Sa = Rijndael.Create();
+            ICryptoTransform Ct = Sa.CreateEncryptor(new PasswordDeriveBytes(value, null).GetBytes(16), new byte[16]);
 
-            cs.Write(key, 0, key.Length);
-            cs.FlushFinalBlock();
+            MemoryStream Ms = new MemoryStream();
+            CryptoStream Cs = new CryptoStream(Ms, Ct, CryptoStreamMode.Write);
 
-            byte[] Result = ms.ToArray();
+            Cs.Write(key, 0, key.Length);
+            Cs.FlushFinalBlock();
 
-            ms.Close();
-            ms.Dispose();
+            byte[] Result = Ms.ToArray();
 
-            cs.Close();
-            cs.Dispose();
+            Ms.Close();
+            Ms.Dispose();
 
-            ct.Dispose();
+            Cs.Close();
+            Cs.Dispose();
+
+            Ct.Dispose();
 
             return Result;
         }

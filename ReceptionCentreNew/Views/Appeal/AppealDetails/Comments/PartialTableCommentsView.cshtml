@@ -1,6 +1,8 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
+
 <link href="~/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
 <script src="~/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
+ 
 <style>
     .conversation-list .ctext-wrap i {
         display: initial !important;
@@ -9,9 +11,11 @@
         font-weight: bold;
         position: relative;
     }
+
     .conversation-list li {
         margin-bottom: 10px;
     }
+
     .conversation-list .odd .ctext-wrap {
         background: #f4f8fb;
         border-radius: 3px;
@@ -21,6 +25,7 @@
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         color: #212529;
     }
+
         .conversation-list .odd .ctext-wrap:after {
             border-color: rgba(238, 238, 242, 0) !important;
             border-left-color: #f4f8fb !important;
@@ -28,11 +33,12 @@
             left: 100% !important;
             margin-right: -1px;
         }
+
         .conversation-list .odd .ctext-wrap time {
             color: rgba(0,0,0,.6) !important;
         }
 
-        #notes ul li.edit {
+    #notes ul li.edit {
         border: 1px dashed green;
     }
 
@@ -55,18 +61,23 @@
         border: none !important;
         color: #62a3ff !important;
     }
-    .multiselect-container.dropdown-menu.show{
-        width:350px;
+
+    .multiselect-container.dropdown-menu.show {
+        width: 350px;
     }
+
     .multiselect-container > li > a > label > input[type=checkbox] {
-         margin-bottom: -1px; 
+        margin-bottom: -1px;
     }
+
     .multiselect-container > li.multiselect-group label {
         color: rgba(0,0,0,.6) !important;
     }
+
     .multiselect-container > li > a {
-        color: #212529!important;
+        color: #212529 !important;
     }
+
     #person-selected-count.badge {
         position: relative;
         top: 5px;
@@ -177,8 +188,8 @@
             <span><i class="icon-info"></i> Нет примечаний</span>
         </div>
     }
-    @using (Ajax.BeginForm("SubmitCommentSave", "Appeal", null, new AjaxOptions { UpdateTargetId = "notes" }, new { @id = "addCommentsForm", @class = "" }))
-    {
+
+    <form id="addCommentsForm">
         @Html.Hidden("id", Guid.Empty)
         @Html.Hidden("SprEmployeesId", Model.EmployeeId)
         @Html.Hidden("DataAppealId", Model.DataAppealId)
@@ -205,27 +216,37 @@
                         </div>
 
                         <textarea class="form-control p-r-30" id="Commentt" name="Commentt" placeholder="Сообщение..."></textarea>
-                        
+
                         <div class="btn-group dropup textarea-icon noclose" style="position: absolute; right: 35px; width:20px; bottom: -4px;">
-                            @Html.DropDownList("recipients", ViewBag.SprEmployees as SelectList, new Dictionary<string, object> { { "class", "btn btn-link text-custom waves-effect waves-light font-18 noclose" }, { "multiple", "multiple" } })                            
+                            @Html.DropDownList("recipients", ViewBag.SprEmployees as SelectList, new Dictionary<string, object> { { "class", "btn btn-link text-custom waves-effect waves-light font-18 noclose" }, { "multiple", "multiple" } })
                         </div>
 
-                        <button type="submit" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
+                        <button type="button" onclick="Add()" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
                             <i class="fa fa-send"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
-    }
+    </form>
 </div>
 <!-- Initialize the plugin: -->
 <script type="text/javascript">
+    function Add() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitCommentSave", "Appeal")',
+            data: $("#addCommentsForm").serialize(),
+            success: function (data) {   
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('#recipients').multiselect({
             maxHeight: 300,
             templates: {
-                button: '<button type="button" class="multiselect btn btn-link waves-effect waves-light font-18" data-toggle="dropdown"><i class="md md-person text-secondary"></i><span class="badge" id="person-selected-count"></span></button>',                
+                button: '<button type="button" class="multiselect btn btn-link waves-effect waves-light font-18" data-toggle="dropdown"><i class="md md-person text-secondary"></i><span class="badge" id="person-selected-count"></span></button>',
             },
             buttonTitle: function (options, select) {
                 $('#person-selected-count').text(options.length);
@@ -251,11 +272,11 @@
             this.style.height = this.scrollHeight + "px";
         }
         else {
-            this.style.height = this.scrollHeight-10 + "px";
+            this.style.height = this.scrollHeight - 10 + "px";
         }
     });
 
-    
+
     $(function () {
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -267,7 +288,7 @@
             },
             html: true,
             placement: "left"
-        });        
+        });
     });
 
     $('#addCommentsForm').find('[name="Commentt"]').keyup(function () {
@@ -292,7 +313,7 @@
     $('#btnAddEmployeeMessageTemplateForm').click(function () {
         $.ajax({
             url: 'PartialTableEmployeesMessageTemplate',
-            data: { number:'@ViewBag.AppealNumber'},
+            data: { number: '@ViewBag.AppealNumber' },
             success: function (data) {
                 $('#newModal').modal('show').html(data);
             }

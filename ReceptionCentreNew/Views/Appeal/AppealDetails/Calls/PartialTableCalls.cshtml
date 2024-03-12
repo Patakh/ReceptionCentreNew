@@ -1,141 +1,162 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 <style>
     .footable > thead > tr > th > span.footable-sort-indicator {
         position: absolute;
     }
 </style>
 
-    @if (Model.DataAppealCallList.Any())
-    {
-        <div class="input-group">
-            <div class="input-group-prepend align-items-center">
-                <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-            </div>
-            <input type="text" id="searchTextCalls" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-            <div class="input-group-append align-items-right">
-                @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
-                {
-                    using (Ajax.BeginForm("PartialModalAttachCall", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                    {
-                        <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i></button>
-                    }
-                }
-            </div>
+@if (Model.DataAppealCallList.Any())
+{
+    <div class="input-group">
+        <div class="input-group-prepend align-items-center">
+            <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
         </div>
+        <input type="text" id="searchTextCalls" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+        <div class="input-group-append align-items-right">
+            @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
+            {
+                <button type="button" onclick="Add('@Model.DataAppealId')" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i></button>
+            }
+        </div>
+    </div>
 
-        <table id="callsTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-            <thead>
-                <tr>
-                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                    <th>Тип</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().DateCall)</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().PhoneNumber)</th>
-                    <th>Прод-ть</th>
-                    <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().EmployeesNameAdd)</th>
-                    <th class="text-right p-r-20-important" data-sort-ignore="true"></th>
-                </tr>
-            </thead>
-            <tbody>
+    <table id="callsTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+        <thead>
+            <tr>
+                <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                <th>Тип</th>
+                <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().DateCall)</th>
+                <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().PhoneNumber)</th>
+                <th>Прод-ть</th>
+                <th>@Html.DisplayNameFor(model => model.DataAppealCallList.First().EmployeesNameAdd)</th>
+                <th class="text-right p-r-20-important" data-sort-ignore="true"></th>
+            </tr>
+        </thead>
+        <tbody>
 
-                @foreach (var item in Model.DataAppealCallList)
-                {
-                    <tr data-call-id="@item.Id">
-                        <td class="number-row p-l-20-important">
-                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
-                        </td>
-                        <td>
-                            @if (item.CallType == 2)
-                            {
-                                <i class="md md-call-received"></i>
-                            }
-                            else
-                            {<i class="md md md-call-made"></i>}
-                        </td>
-                        <td>
-                            @item.DateCall.Value.ToShortDateString()
-                            <small class="d-block text-muted">@item.DateCall.Value.ToShortTimeString()</small>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(i => item.PhoneNumber)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(i => item.TimeTalk)
-                        </td>
-                        <td>
-                            <div class="clip" style="max-width: 135px;">@Html.DisplayFor(i => item.EmployeesNameAdd)</div>
-                        </td>
-                        <td class="actions text-right">
-                            @if (item.SaveFtp)
-                            {
+            @foreach (var item in Model.DataAppealCallList)
+            {
+                <tr data-call-id="@item.Id">
+                    <td class="number-row p-l-20-important">
+                        @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                    </td>
+                    <td>
+                        @if (item.CallType == 2)
+                        {
+                            <i class="md md-call-received"></i>
+                        }
+                        else
+                        {
+                            <i class="md md md-call-made"></i>
+                        }
+                    </td>
+                    <td>
+                        @item.DateCall.Value.ToShortDateString()
+                        <small class="d-block text-muted">@item.DateCall.Value.ToShortTimeString()</small>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(i => item.TimeTalk)
+                    </td>
+                    <td>
+                        <div class="clip" style="max-width: 135px;">@Html.DisplayFor(i => item.EmployeesNameAdd)</div>
+                    </td>
+                    <td class="actions text-right">
+                        @if (item.SaveFtp)
+                        {
                             <button type="button" class="btn btn-link btn-audio btn_play" data-id="@item.Id" @*data-toggle="modal" data-target="#audio_modal"*@>
                                 <i class="md md-play-circle-outline"></i>
                             </button>
-                            }
-                            @if (User.IsInRole("superadmin") || User.IsInRole("admin") || (Model.EmployeeId == Model.CurrentEmployeeId))
-                            {
-                                <button class="btn btn-link on-default remove-row"><i class="md md-delete"></i></button>
-                            }
-                            <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "EmployeesFio": "@item.EmployeesNameAdd", "DateAdd": "@item.DateCall"}'>
-                                <i class="ion-ios7-information-outline"></i>
-                            </button>
-                        </td>
-                    </tr>
-                }
-
-            <tfoot>
-                <tr class="foot-row">
-                    <td colspan="3" class="text-left">
-                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                    </td>
-                    <td colspan="4">
-                        @if (Model.DataAppealCallList.Count() > 7)
-                        {<div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
                         }
+                        @if (User.IsInRole("superadmin") || User.IsInRole("admin") || (Model.EmployeeId == Model.CurrentEmployeeId))
+                        {
+                            <button class="btn btn-link on-default remove-row"><i class="md md-delete"></i></button>
+                        }
+                        <button type="button" class="btn btn-link on-default" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{ "EmployeesFio": "@item.EmployeesNameAdd", "DateAdd": "@item.DateCall"}'>
+                            <i class="ion-ios7-information-outline"></i>
+                        </button>
                     </td>
                 </tr>
-            </tfoot>
-        </table>
-    }
-    else
-    {
-        <div class="row">
-            <div class="col-md-6"></div>
-            <div class="col-md-6 text-right">
-                @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
-                {
-                    using (Ajax.BeginForm("PartialModalAttachCall", "Appeal", new { appealId = Model.DataAppealId }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show');" }, new { @class = "form-submit" }))
-                    {
-                        <button type="submit" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i> Прикрепить звонок</button>
-                    }
-                }
-            </div>
-        </div>        
+            }
 
-        <div class="alert-no-record">
-            <span><i class="icon-info"></i> Нет данных.</span>
+        <tfoot>
+            <tr class="foot-row">
+                <td colspan="3" class="text-left">
+                    <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                </td>
+                <td colspan="4">
+                        @if (Model.DataAppealCallList.Count() > 7)
+                        {
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                        }
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-right">
+            @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
+            {
+                <button type="button" onclick="Add('@Model.DataAppealId')" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i> Прикрепить звонок</button>
+            }
         </div>
-    }
+    </div>
+
+    <div class="alert-no-record">
+        <span><i class="icon-info"></i> Нет данных.</span>
+    </div>
+}
 
 <div id="appeal_play_content">
-
 </div>
 
 
 <script>
-        $(function () {
-            $('a[href="#notification-calls"]').find('.badge').text(@Model.DataAppealCallListCount);
-            $('button[data-tooltip-info]').tooltip({
-                title: function () {
-                    var tooltipInfo = $(this).data('tooltipInfo');
-                    return "<div class='text-left'>" +
-                        "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
-                        "</div>";
-                },
-                html: true,
-                placement: "left"
-            });
+    function AttachCall(appealId) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialModalAttachCall", "Appeal")',
+            data: { appealId: appealId }
+            ,
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+    function Add(appealId) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialModalAttachCall", "Appeal")',
+            data: { appealId: appealId }
+            ,
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+
+    $(function () {
+        $('a[href="#notification-calls"]').find('.badge').text(@Model.DataAppealCallListCount);
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "</div>";
+            },
+            html: true,
+            placement: "left"
+        });
     });
 
     $(document).ready(function () {
@@ -153,11 +174,11 @@
     });
 
     $('#notification-calls table td button.remove-row').click(function () {
-                var callId = $(this).closest('tr').data('callId');
-                var param = { callId: callId, appealId: '@Model.DataAppealId', attach: false };
-                var action = '@Url.Action("SubmitAttachCall", "Appeal")';
-                var _div = 'notification-calls';
-                reAttachData(action, param, _div);
+        var callId = $(this).closest('tr').data('callId');
+        var param = { callId: callId, appealId: '@Model.DataAppealId', attach: false };
+        var action = '@Url.Action("SubmitAttachCall", "Appeal")';
+        var _div = 'notification-calls';
+        reAttachData(action, param, _div);
     });
 
     $('.btn_play').click(function () {
@@ -171,5 +192,5 @@
                 $('#appeal_play_content audio').trigger("play");
             }
         });
-        });
+    });
 </script>

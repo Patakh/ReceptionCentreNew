@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using Microsoft.AspNetCore.Identity;
+using ReceptionCentreNew.Models;
 
 namespace ReceptionCentreNew.Controllers;
 [ClientErrorHandler]
@@ -11,8 +13,10 @@ namespace ReceptionCentreNew.Controllers;
 public class CallBackController : Controller
 {
     private IRepository _repository;
-    public CallBackController(IRepository repo)
+    SignInManager<ApplicationUser> SignInManager;
+    public CallBackController(IRepository repo,SignInManager<ApplicationUser> signInManager)
     {
+        SignInManager = signInManager;
         _repository = repo;
     }
     // GET: CallBack
@@ -53,7 +57,7 @@ public class CallBackController : Controller
         try
         {
             model.DateClose = new DateOnly(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-            model.SprEmployeesIdClose = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id;
+            model.SprEmployeesIdClose = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id;
             model.Status = 4;
             model.IsHand = true;
             _repository.Update(model);

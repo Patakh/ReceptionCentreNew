@@ -39,7 +39,7 @@
                     </td>
                     <td colspan="2">
                         <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                            @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableErrors", "System", new { page = x.CurrentPage, search = ViewBag.Serach}, new AjaxOptions { UpdateTargetId = "partialTableErrorsContainer" }))
+                            @* @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableErrors", "System", new { page = x.CurrentPage, search = ViewBag.Serach}, new AjaxOptions { UpdateTargetId = "partialTableErrorsContainer" })) *@
                         </div>
                     </td>
                 </tr>                

@@ -1,10 +1,10 @@
-﻿@model ReceptionCentreNew.Data.Context.App.DataAppeal
-    <script>
-        $(document).ready(function () {
-            $('#EditAppealForm').validate();
-            $(".select2").select2();
-        });
-    </script>
+﻿@model DataAppeal
+<script>
+    $(document).ready(function () {
+        $('#EditAppealForm').validate();
+        $(".select2").select2();
+    });
+</script>
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -14,90 +14,109 @@
             </button>
         </div>
         <div class="modal-body">
-            @using (Ajax.BeginForm("SubmitNewAppealSave", "Appeal", Model, new AjaxOptions {HttpMethod="POST", UpdateTargetId = "newModal", OnSuccess = "$('#newModal').modal('show'); successEdit();" }, new { @id = "EditAppealForm", @class = "form-horizontal" }))
-            {
-                    <input type="hidden" name="id" value="@Model.Id" />
-                    <input type="hidden" name="modal" value="True" />
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card-box m-b-0">
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.ApplicantName, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.TextBoxFor(model => model.ApplicantName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ApplicantName) } })
-                                    </div>
-                                </div>
+            <form class="form-horizontal" id="EditAppealForm">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <input type="hidden" name="modal" value="True" />
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-box m-b-0">
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.ApplicantName, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.TextBoxFor(model => model.ApplicantName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ApplicantName) } })
+                            </div>
+                        </div>
 
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.PhoneNumber, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.TextBoxFor(model => model.PhoneNumber, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.PhoneNumber, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.TextBoxFor(model => model.PhoneNumber, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер телефона" } })
+                            </div>
+                        </div>
 
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.Email, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.TextBoxFor(model => model.Email, new Dictionary<string, object> { { "class", "form-control email" } })
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.Email, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.TextBoxFor(model => model.Email, new Dictionary<string, object> { { "class", "form-control email" } })
+                            </div>
+                        </div>
 
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.TextAreaFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "form-control no-resize required" }, { "rows", "5" }, { "placeholder", Html.DisplayNameFor(model => model.TextAppeal) } })
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.SprMfcId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.DropDownListFor(model => model.SprMfcId, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.CaseNumber, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.TextBoxFor(model => model.CaseNumber, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер обращения в МФЦ" } })
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.SprCategoryId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.DropDownListFor(model => model.SprCategoryId, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.SprSubjectTreatmentId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.DropDownListFor(model => model.SprSubjectTreatmentId, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.TextAreaFor(model => model.TextAppeal, new Dictionary<string, object> { { "class", "form-control no-resize required" }, { "rows", "5" }, { "placeholder", Html.DisplayNameFor(model => model.TextAppeal) } })
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.SprMfcId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.DropDownListFor(model => model.SprMfcId, ViewBag.SprMfc as SelectList, "Не выбрано", new Dictionary<string, object> { { "class", "form-control select2" } })
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.CaseNumber, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.TextBoxFor(model => model.CaseNumber, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", "номер обращения в МФЦ" } })
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.SprCategoryId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.DropDownListFor(model => model.SprCategoryId, ViewBag.SprCategory as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.SprSubjectTreatmentId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.DropDownListFor(model => model.SprSubjectTreatmentId, ViewBag.SprSubjectTreatment as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                        </div>
 
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.SprTypeId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.DropDownListFor(model => model.SprTypeId, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.SprTypeId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.DropDownListFor(model => model.SprTypeId, ViewBag.SprType as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                            </div>
+                        </div>
 
-                                <div class="form-group row">
-                                    @Html.LabelFor(model => model.SprTypeDifficultyId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
-                                    <div class="col-md-6 col-xl-6">
-                                        @Html.DropDownListFor(model => model.SprTypeDifficultyId, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
-                                    </div>
-                                </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.SprTypeDifficultyId, new Dictionary<string, object> { { "class", "col-md-4 col-xl-4 col-form-label" } })
+                            <div class="col-md-6 col-xl-6">
+                                @Html.DropDownListFor(model => model.SprTypeDifficultyId, ViewBag.SprTypeDifficulty as SelectList, new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                             </div>
                         </div>
                     </div>
-                }
-
+                </div>
             </div>
+            </form>
+        </div>
         <div class="modal-footer">
-            @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = Model.NumberAppeal, modal = true }, new AjaxOptions { UpdateTargetId = "newModal"}, new { @id = "backToAppealInfo", @class = "" }))
-            {
-                <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
-            }
-            <button type="submit" id="btn_submit_edit_appeal" form="EditAppealForm" class="btn btn-primary waves-effect waves-light">Сохранить <i class="fa fa-check m-l-5"></i></button>
-        </div>        
+            <button type="button" onclick="AppealInfo('@Model.NumberAppeal', '@true')" class="btn btn-secondary waves-effect waves-light">Назад</button>
+            <button type="button" id="btn_submit_edit_appeal" onclick="SubmitNewAppealSave()" class="btn btn-primary waves-effect waves-light">Сохранить <i class="fa fa-check m-l-5"></i></button>
+        </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+<script>
+    function SubmitNewAppealSave() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitNewAppealSave", "Appeal")',
+            data: $("#EditAppealForm").serialize(),
+            success: function (data) {
+                $('#newModal').modal('hide');
+                successEdit()
+            }
+        });
+    }
+
+    function AppealInfo(number, modal) {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("AppealInfo", "Appeal")',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show'); successEdit();
+            }
+        });
+    }
+</script>

@@ -1,6 +1,5 @@
 ﻿@{
     ViewBag.Title = "Предмет обращения";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 <style>
@@ -9,7 +8,7 @@
         font-family: "Roboto", sans-serif;
     }
 </style>
-@Html.MvcSiteMap().SiteMapPath()
+@* @Html.MvcSiteMap().SiteMapPath() *@
 
 <div class="card-box m-t-10 p-t-10 p-b-10">
     <form id="form">
@@ -37,8 +36,6 @@
                                 <i class="ion-ios7-search m-r-5"></i>
                                 Показать
                             </button>
-                            @*<button type="button" class="btn btn-default waves-effect waves-light" onclick="printTable()">
-                                <i class="fa fa-print m-r-5"></i>Печать</button>*@
                         </div>
                     </div>
                 </div>
@@ -54,7 +51,7 @@
         </div>
     </div>
 </div>
-@section scripts{
+@section scripts {
     <script src="~/plugins/print/printThis.js"></script>
     <script src="~/new_design/plugins/Charts/js/c3.js"></script>
     <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
@@ -83,55 +80,54 @@
                     data: $form,
                     success: function (data) {
                         var jsonn = JSON.parse(data);
-                        GenerateChart('#chart', jsonn, 'pie', { "out_count": "Количество" }, ['out_count'], "Месяцы", "", false);
+                        GenerateChart('#chart', jsonn, 'pie', { "OutCount": "Количество" }, ['OutCount'], "Месяцы", "", false);
                     }
                 });
             }
         });
 
-    var chart;
-    function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
-        if (transform != true) {
-            chart = c3.generate({
-                bindto: element,
-                //size: { height: 300 },
-                zoom: { enabled: false },
-                data: {
-                    columns: data,
-                    type: 'pie',
-                },
-                tooltip: {
-                    format: {
-                        value: function (value, ratio, id, index)
-                        {
-                            return value+ " (" + Math.round(ratio * 100) + "%)";
+        var chart;
+        function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
+            if (transform != true) {
+                chart = c3.generate({
+                    bindto: element,
+                    //size: { height: 300 },
+                    zoom: { enabled: false },
+                    data: {
+                        columns: data,
+                        type: 'pie',
+                    },
+                    tooltip: {
+                        format: {
+                            value: function (value, ratio, id, index) {
+                                return value + " (" + Math.round(ratio * 100) + "%)";
+                            }
                         }
-                    }
-                },
-                legend: {
-                    position: 'right'
-                },
-                grid: { x: { show: false }, y: { show: true } }, 
+                    },
+                    legend: {
+                        position: 'right'
+                    },
+                    grid: { x: { show: false }, y: { show: true } },
+                });
+            }
+            else {
+                chart.transform(type_chart);
+            }
+        }
+
+        function printTable() {
+            $('#result').printThis({
+                debug: false,
+                importCSS: false,
+                importStyle: false,
+                printContainer: true,
+                loadCSS: "~/new_design/css/new_print.css",
+                pageTitle: "",
+                removeInline: false,
+                printDelay: 333,
+                header: null,
+                formValues: true
             });
         }
-        else {
-            chart.transform(type_chart);
-        }
-    }
-
-    function printTable() {
-        $('#result').printThis({
-            debug: false,
-            importCSS: false,
-            importStyle: false,
-            printContainer: true,
-            loadCSS: "Content/new_design/css/new_print.css",
-            pageTitle: "",
-            removeInline: false,
-            printDelay: 333,
-            header: null,
-            formValues: true
-        });
-    }
     </script>
 }

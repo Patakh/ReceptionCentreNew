@@ -1,5 +1,5 @@
 ﻿
-@model  IEnumerable<ReceptionCentreNew.Data.Context.App.SprEmployeesTextAppealTemplate>
+@model  IEnumerable<SprEmployeesTextAppealTemplate>
 
 <script>
     $(document).ready(function () {
@@ -55,11 +55,8 @@
                                         <td class="check text-right" style="width:50px;">
                                             <i class="ion-checkmark-circled"></i>
                                         </td>
-                                        <td class="text-right" style="width:50px;">
-                                            @using (Ajax.BeginForm("SubmitNewTextAppealTemplateDelete", "Appeal", new { FormMethod = "POST", templateId = item.Id }, new AjaxOptions { UpdateTargetId = "myModalOver", OnSuccess = "successDelete();" }, new { @class = "form-submit" }))
-                                            {
-                                                <button class="on-default remove-row btn btn-link"><i class="ion-trash-b"></i></button>
-                                            }
+                                        <td class="text-right" style="width:50px;"> 
+                                            <button onclick="Delete('@item.Id')" class="on-default remove-row btn btn-link"><i class="ion-trash-b"></i></button>
                                         </td>
                                     </tr>
                                 }
@@ -80,3 +77,16 @@
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
+    <script>
+    function Delete(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableCalls", "Call")',
+            data: $("#CallForm").serialize(),
+            data: { templateId :id},
+            success: function (data) {
+                successDelete();
+            }
+        });
+    }
+    </script>

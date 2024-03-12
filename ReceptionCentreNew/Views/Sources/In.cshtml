@@ -1,12 +1,10 @@
-﻿@using ReceptionCentreNew.Controllers
-
-@{
+﻿@{
     ViewBag.Title = "Входящие";
 }
 
-<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet"> 
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 <div class="card-box p-3">
-    <form method="post" asp-action="@nameof(SourcesController.PartialTableSources)" asp-controller="@nameof(SourcesController).Replace("Controller", "")" class="form-horizontal">
+    <form id="InForm" class="form-horizontal" >
         <input type="hidden" name="action_" id="action_" value="2" />
         <div id="collapseExample" class="collapse show">
             <div class="row p-l-r-10">
@@ -47,7 +45,7 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_sources" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_sources" onclick="Seach()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
     </form>
@@ -57,9 +55,20 @@
 </div>
 @section scripts {
     <script>
+        function Seach() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableSources", "Sources")',
+                data: $("#InForm").serialize(),
+                success: function (data) {
+                    $('#sourcesTableContainer').html(data);
+                }
+            });
+        }
+
         $(document).ready(function () {
             $(".select2").select2();
-           // $('#button_find_sources').click();
+            Seach()
         });
         $(document).on('change', '#searchTextSources', function () {
             var action = $('#action_').val();
@@ -67,27 +76,25 @@
             var sprEmployeeId = $('#sprEmployeeId').val();
             var period = $('#period').val();
             var isConnected = $('#isConnected').val();
-            $.ajax({ 
-                url: '@Url.Action(nameof(SourcesController.PartialTableSources), nameof(SourcesController).Replace("Controller", ""))',
+            $.ajax({
+                url: '@Url.Action("PartialTableSources", "Sources")',
                 type: 'POST',
                 data: { search: $(this).val(), action_: action, sources: sources, period: period, sprEmployeeId: sprEmployeeId, isConnected: isConnected },
-                success: function (data) {
-                    console.lof(data)
+                success: function (data) { 
                     $('#sourcesTableContainer').html(data);
                     $('#searchTextSources').focus();
                     var tmpStr = $('#searchTextSources').val();
                     $('#searchTextSources').val('');
                     $('#searchTextSources').val(tmpStr);
                 },
-                error: function(data) {
-                    console.lof(data)
+                error: function (data) { 
                 }
             });
         });
-        $(document).on('click', '#sourcesTable .btn-audio', function () {
-            var id = $(this).data('id');
+
+        function AudioPlay(id) {
             $.ajax({
-                url: '@Url.Action(nameof(CallController.Play_Audio), nameof(CallController).Replace("Controller", ""))',
+                url: '@Url.Action("Play_Audio", "Call")',
                 type: 'GET',
                 data: { id: id },
                 success: function (data) {
@@ -95,7 +102,8 @@
                     $('#sources_play_content audio').trigger("play");
                 }
             });
-        })
+        }
+         
     </script>
     <!-- Все звонки -->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>

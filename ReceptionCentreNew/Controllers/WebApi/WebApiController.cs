@@ -125,7 +125,7 @@ public class WebApiController : ApiController
             if (ModelState.IsValid)
                 return Json(new { ResponseCode = 0, ResponseMessage = "Ok", Id = ApiJitsiSaveCallId(modal) });
             else
-                return Json(new { ResponseCode = 1, ResponseMessage = String.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(s => s.ErrorMessage)) });
+                return Json(new { ResponseCode = 1, ResponseMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(s => s.ErrorMessage)) });
         }
         catch (Exception e)
         {
@@ -145,7 +145,7 @@ public class WebApiController : ApiController
             if (ModelState.IsValid)
                 return Json(new { ResponseCode = 0, ResponseMessage = "Ok", Flag = api_jitsi_upload_call(file) });
             else
-                return Json(new { ResponseCode = 1, ResponseMessage = String.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(s => s.ErrorMessage)) });
+                return Json(new { ResponseCode = 1, ResponseMessage = string.Join(",", ModelState.Values.SelectMany(v => v.Errors).Select(s => s.ErrorMessage)) });
         }
         catch (Exception e)
         {

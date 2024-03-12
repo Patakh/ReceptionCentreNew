@@ -10,8 +10,10 @@ public class SourcesController : Controller
     public int PageSize = 10;
     private IRepository _repository;
     private SprEmployees _employee;
+    public SignInManager<ApplicationUser> SignInManager;
     public SourcesController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
     {
+        SignInManager = signInManager;
         _repository = repo;
         _employee = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name);
     }
@@ -19,7 +21,7 @@ public class SourcesController : Controller
     {
         return View();
     }
-    public ActionResult PartialTableSources(short? action_, Guid? sprEmployeeId, short? period, short? isConnected, short? sources, string search, int page = 1)
+    public IActionResult PartialTableSources(short? action_, Guid? sprEmployeeId, short? period, short? isConnected, short? sources, string search, int page = 1)
     {
         DateTime dateStart;
         switch (period)
@@ -91,13 +93,13 @@ public class SourcesController : Controller
         ViewBag.Period = period;
         ViewBag.isConnected = isConnected;
 
-        return PartialView(model);
+        return PartialView("PartialTableSources", model);
     }
     public IActionResult Out()
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name);
+            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name);
 
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName");
         return View();

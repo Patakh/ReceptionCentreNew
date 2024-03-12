@@ -1,4 +1,4 @@
-﻿@model  IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
+﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
 <script>
     $(document).ready(function () {
         $('.slimscroll-route').slimScroll({
@@ -8,14 +8,14 @@
             color: '#6c757d',
             wheelStep: 20
         });
-        
+
         $('button#callAttach').click(function () {
             var callId = $('#callTable tr.active').data('callId');
             $.ajax({
                 type: 'POST',
                 async: false,
                 url: '@Url.Action("SubmitAttachCall", "Appeal")',
-                data: { callId: callId, appealId: '@ViewBag.AppealId', attach: true, modal:true },
+                data: { callId: callId, appealId: '@ViewBag.AppealId', attach: true, modal: true },
                 success: function (data) {
                     $('#newModal').modal('show').html(data);
                     $('a[href="#notification"]').click()
@@ -24,35 +24,35 @@
                     });
                 },
                 error: function (errorData) {
-                    @if (User.IsInRole("superadmin"))
-                    {
-                        @:console.log(errorData.responseText);
-                    }
-                    $.Notification.notify('error', 'right top', 'Ошибка!', 'Произошла ошибка при прикреплении звонка.');
+    @if (User.IsInRole("superadmin"))
+    {
+        @:console.log(errorData.responseText);
+    }
+                        $.Notification.notify('error', 'right top', 'Ошибка!', 'Произошла ошибка при прикреплении звонка.');
                 }
             });
         });
 
-        @*$('#searchTextAttachCalls').change(function () {
+    @*$('#searchTextAttachCalls').change(function () {
             $.ajax({
-                url: '@Url.Action("PartialModalAttachCall", "Appeal")',
-                type: 'Post',
-                data: { search: $(this).val(), appealId: '@ViewBag.AppealId' },
-                success: function (data) {
-                    $('#newModal').html(data);
-                }
-            });
-        });*@
-        $('#AppealSearchCall').click(function () {
-        $.ajax({
             url: '@Url.Action("PartialModalAttachCall", "Appeal")',
             type: 'Post',
-            data: { search: $('#searchTextAttachCalls').val(), appealId: '@ViewBag.AppealId' },
+            data: { search: $(this).val(), appealId: '@ViewBag.AppealId' },
             success: function (data) {
-                $('#newModal').html(data);
+            $('#newModal').html(data);
             }
-        });
-        });
+            });
+            });*@
+            $('#AppealSearchCall').click(function () {
+                $.ajax({
+                    url: '@Url.Action("PartialModalAttachCall", "Appeal")',
+                    type: 'Post',
+                    data: { search: $('#searchTextAttachCalls').val(), appealId: '@ViewBag.AppealId' },
+                    success: function (data) {
+                        $('#newModal').html(data);
+                    }
+                });
+            });
 
         $('.attach_call_btn_play').click(function () {
             var id = $(this).data('id');
@@ -130,13 +130,9 @@
                 }
             </div>
             <div id="play_content">
-
             </div>
             <div class="modal-footer">
-                @using (Ajax.BeginForm("AppealInfo", "Appeal", new { number = ViewBag.AppealNumber, modal = true }, new AjaxOptions { UpdateTargetId = "newModal", OnSuccess = "$('a[href=\"#notification\"]').click()" }, new { @id = "backToAppealInfo", @class = "" }))
-                {
-                    <button type="submit" class="btn btn-secondary waves-effect waves-light">Назад</button>
-                }
+                <button type="button" onclick="Back('@ViewBag.AppealNumber','@true')" class="btn btn-secondary waves-effect waves-light">Назад</button>
                 <button type="button" id="callAttach" class="btn btn-primary waves-effect waves-light">Добавить</button>
             </div>
         </div>
@@ -144,6 +140,17 @@
 </div>
 
 <script>
+    function Back(number, modal) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("AppealInfo", "Appeal")',
+            data: { number: number, modal: modal }
+            ,
+            success: function (data) {
+                $('a[href=\"#notification\"]').click()
+            }
+        });
+    }
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row)').click(function () {
         if ($(this).is('.active')) {

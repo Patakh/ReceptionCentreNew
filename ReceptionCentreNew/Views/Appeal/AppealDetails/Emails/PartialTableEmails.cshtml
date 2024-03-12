@@ -1,4 +1,4 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 <link href="~/new_design/plugins/multiselect/css/bootstrap-multiselect.css" rel="stylesheet" />
 <script src="~/new_design/plugins/multiselect/js/bootstrap-multiselect.js"></script>
 <style>
@@ -46,8 +46,7 @@
         }
     </ul>
     <div class="chat-bottom">
-        @using (Ajax.BeginForm("SubmitEmailSave", "Appeal", null, new AjaxOptions { UpdateTargetId = "notification-email" }, new { @id = "addEmailForm", @class = "" }))
-        {
+        <form id="addEmailForm" class="">
             <div class="row">
                 <div class="col-md-6">
                     <div class="input-group">
@@ -66,15 +65,25 @@
                 <input type="hidden" name="DataAppealId" value="@Model.DataAppealId" />
                 <input type="hidden" name="EmployeesNameAdd" value="@Model.EmployeeId" />
                 <textarea class="form-control p-r-30" id="TextEmail" name="TextEmail" placeholder="Сообщение..."></textarea>
-                <button type="submit" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
+                <button type="button" onclick="Add()" class="btn btn-link text-custom waves-effect waves-light textarea-icon" disabled style="top:0px; font-size:16px">
                     <i class="fa fa-send"></i>
                 </button>
             </div>
-
-        }
+        </form>
     </div>
 </div>
 <script>
+    function Add() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitEmailSave", "Appeal")',
+            data: $("#addEmailForm").serialize(),
+            success: function (data) {
+                successAdd();
+            }
+        });
+    }
+
     $(document).ready(function () {
         $('#addEmailForm').validate();
     });

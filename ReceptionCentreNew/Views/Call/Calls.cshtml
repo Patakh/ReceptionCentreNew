@@ -1,13 +1,13 @@
-﻿@model IEnumerable<ReceptionCentreNew.Data.Context.App.DataAppealCall>
+﻿@model IEnumerable<DataAppealCall>
 @{
     ViewBag.Title = "Звонки";
 }
 <!-- Все звонки -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
- 
-<div class="card-box p-3"> 
-    @using (Ajax.BeginForm("PartialTableCalls", "Call", null, new AjaxOptions { UpdateTargetId = "callsTableContainer", LoadingElementId = "loadingAjax" }, new { @class = "form-horizontal" }))
-    {
+
+<div class="card-box p-3">
+
+    <form class="form-horizontal" id="CallForm">
         <div id="collapseExample" class="collapse show">
             <div class="row p-l-r-10">
                 <div class="form-group col-sm-3">
@@ -17,25 +17,25 @@
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
                     @Html.DropDownList("Period", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                                   new SelectListItem {Text = "Неделя", Value = "2"},
-                                                   new SelectListItem {Text = "Месяц", Value = "3"},
-                                                   new SelectListItem {Text = "Год", Value = "4"},
-                                               }, "Value", "Text", 1), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Сегодня", Value = "1"},
+                    new SelectListItem {Text = "Неделя", Value = "2"},
+                    new SelectListItem {Text = "Месяц", Value = "3"},
+                    new SelectListItem {Text = "Год", Value = "4"},
+                    }, "Value", "Text", 1), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Тип</label>
                     @Html.DropDownList("Type", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Входящие", Value = "2"},
-                                                   new SelectListItem {Text = "Исходящие", Value = "1"}
-                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Входящие", Value = "2"},
+                    new SelectListItem {Text = "Исходящие", Value = "1"}
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
                     @Html.DropDownList("IsConnected", new SelectList(new List<SelectListItem>
-                                       { new SelectListItem {Text = "Да", Value = "1"},
-                                           new SelectListItem {Text = "Нет", Value = "2" }
-                                       }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Да", Value = "1"},
+                    new SelectListItem {Text = "Нет", Value = "2" }
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
             </div>
         </div>
@@ -44,43 +44,55 @@
             <div class="col">
                 <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="true" aria-controls="collapseExample">
                     <i class="ti-arrow-circle-up font-18 vertical-middle mr-1 collapse-state-active"></i>
-                    <span class="hide-phone vertical-middle collapse-state-active">Свернуть поиск</span>                    
+                    <span class="hide-phone vertical-middle collapse-state-active">Свернуть поиск</span>
                     <i class="ti-arrow-circle-down font-18 vertical-middle mr-1 collapse-state-collapsed"></i>
                     <span class="hide-phone vertical-middle collapse-state-collapsed">Развернуть поиск</span>
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_calls" class="btn btn-primary waves-effect waves-light" type="submit"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_calls" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
-    }
-
+    </form>
 </div>
 <div id="callsTableContainer">
     @*@Html.Action("PartialTableCalls", "Call", new { period = 1 })*@
 </div>
 @section scripts {
-<script>
-    $(document).ready(function () {
-        $(".select2").select2();
-        $('#button_find_calls').click();
+    <script>
 
-        $(document).on('click', '#callsTable .btn-audio',function () {
-            var id = $(this).data('id');
+        function Search() {
             $.ajax({
-                url: '@Url.Action("Play_Audio", "Call")',
-                type: 'GET',
-                data: { id: id },
+                type: 'POST',
+                url: '@Url.Action("PartialTableCalls", "Call")',
+                data: $("#CallForm").serialize(),
                 success: function (data) {
-                    $('#calls_play_content').html(data);
-                    $('#calls_play_content audio').trigger("play");
+                    $('#callsTableContainer').html(data);
                 }
             });
-        })
-    });
+        }
 
-</script>
-<!-- Все звонки -->
-<script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+        $(document).ready(function () {
+            $(".select2").select2();
+            Search();
+
+
+            $(document).on('click', '#callsTable .btn-audio', function () {
+                var id = $(this).data('id');
+                $.ajax({
+                    url: '@Url.Action("Play_Audio", "Call")',
+                    type: 'GET',
+                    data: { id: id },
+                    success: function (data) {
+                        $('#calls_play_content').html(data);
+                        $('#calls_play_content audio').trigger("play");
+                    }
+                });
+            })
+        });
+
+    </script>
+    <!-- Все звонки -->
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }
 

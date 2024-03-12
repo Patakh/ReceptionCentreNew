@@ -1,28 +1,28 @@
 ﻿using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Filters;
-using ReceptionCentreNew.Hubs;
 using ReceptionCentreNew.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ReceptionCentreNew.Data.Context.App;
 using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
+using ReceptionCentreNew.Hubs;
 
 namespace ReceptionCentreNew.Controllers.Appeal;
 [ClientErrorHandler]
 [Authorize(Roles = "superadmin, admin, operator, expert")]
 public partial class AppealController : Controller
 {
+
     // GET: Appeal
     public IActionResult Appeals()
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin == User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
 
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
@@ -57,7 +57,7 @@ public partial class AppealController : Controller
             ViewBag.ChangeLogCount = _repository.DataChangeLog.Where(w => w.RowId == dataAppeal.OutDataAppealId).Count();
 
             var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
-            ViewBag.SprEmployeesId = employees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault().Id;
+            ViewBag.SprEmployeesId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
 
             if (modal)
             {
@@ -128,8 +128,8 @@ public partial class AppealController : Controller
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.OrderBy(o => o.MfcName), "Id", "MfcName", model.SprMfcId);
 
         if (modal)
-            return PartialView("EditAppealModal", model); 
-        else 
+            return PartialView("EditAppealModal", model);
+        else
             return PartialView("EditAppeal", model);
     }
 
@@ -144,7 +144,7 @@ public partial class AppealController : Controller
     {
         var routeStages = _repository.FuncDataAppealRouteStageNext(appealId);
         ViewBag.AppealId = appealId;
-        ViewBag.Employees = new SelectList(_repository.SprEmployees.Where(w => w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault()?.Id.ToString());
+        ViewBag.Employees = new SelectList(_repository.SprEmployees.Where(w => w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault()?.Id.ToString());
         return PartialView("AppealDetails/RouteStages/PartialModalNextRouteStage", routeStages);
     }
 
@@ -155,7 +155,7 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult SubmitNextRouteStageSave(Guid? employeeId, int routeStageId, Guid appealId, string modal_routes_stage_commentt)
     {
-        var employee = employeeId != null ? _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId) : _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = employeeId != null ? _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId) : _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         var infoId = _repository.DataAppeal.SingleOrDefault(ds => ds.Id == appealId).NumberAppeal;
         DataAppealRoutesStage route_stages_last = _repository.DataAppealRoutesStage.Where(w => w.DataAppealId == appealId).OrderByDescending(o => o.DateStart).ThenByDescending(o => o.TimeStart).FirstOrDefault();
 
@@ -172,10 +172,10 @@ public partial class AppealController : Controller
 
         if (route_stages_last.SprRoutesStageId != 1 && employee.Id != route_stages_last.SprEmployeesId)
             SignalRAlerts(employee.Id, "Вам передано обращение #" + _repository.DataAppeal.Where(w => w.Id == appealId).FirstOrDefault().NumberAppeal);
-         
+
         if (modal_routes_stage_commentt != "" && modal_routes_stage_commentt != null)
         {
-            var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).SingleOrDefault();
+            var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).SingleOrDefault();
             DataAppealCommentt route_stage = new()
             {
                 Commentt = modal_routes_stage_commentt,
@@ -191,7 +191,7 @@ public partial class AppealController : Controller
 
     public IActionResult PartialTableRouteStages(Guid appealId)
     {
-        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id ?? Guid.Empty;
+        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id ?? Guid.Empty;
         AppealViewModel model = new()
         {
             DataAppealId = appealId,
@@ -201,8 +201,8 @@ public partial class AppealController : Controller
         };
 
         var routeStages = _repository.FuncDataAppealRouteStageNext(appealId);
-        ViewBag.Employees = new SelectList(_repository.SprEmployees.Where(w => w.IsRemove != true && w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault()?.Id.ToString());
-        ViewBag.RouteStages = new SelectList(routeStages, "out_spr_routes_stage_id", "OutStageName");
+        ViewBag.Employees = new SelectList(_repository.SprEmployees.Where(w => w.IsRemove != true && w.CanTakeAppeal == true).Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault()?.Id.ToString());
+        ViewBag.RouteStages = new SelectList(routeStages, "OutSprRoutesStageId", "OutStageName");
         return PartialView("AppealDetails/RouteStages/PartialTableRouteStages", model);
     }
 
@@ -211,7 +211,7 @@ public partial class AppealController : Controller
     #region |-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-[  Примечания  ]-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|-=|=-|
     public IActionResult PartialTableCommentts(Guid appealId)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         AppealViewModel model = new()
         {
             DataAppealCommenttList = _repository.DataAppealCommentt.Include(i => i.DataAppealCommenttRecipients).Where(dsc => dsc.DataAppealId == appealId).OrderBy(o => o.DateAdd).ToList(),
@@ -223,71 +223,59 @@ public partial class AppealController : Controller
         ViewBag.AppealNumber = _repository.DataAppeal.SingleOrDefault(ds => ds.Id == appealId)?.NumberAppeal;
         // если не текущий заявитель, не админ и суперадмин и есть роль
         ViewBag.SprEmployees = new SelectList(_repository.SprEmployees
-            .Where(w => w.IsRemove != true && w.Id != employee.Id && w.SprEmployeesRoleJoin.FirstOrDefault().SprEmployeesRoleId != 1 && w.SprEmployeesRoleJoin.FirstOrDefault() != null)
-            .OrderBy(o => o.SprEmployeesJobPos.JobPosName)
-            .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).FirstOrDefault()?.Id.ToString());
+                     .Where(w => w.IsRemove != true && w.Id != employee.Id && w.SprEmployeesRoleJoin.FirstOrDefault().SprEmployeesRoleId != 1 && w.SprEmployeesRoleJoin.FirstOrDefault() != null)
+                     .OrderBy(o => o.SprEmployeesJobPos.JobPosName)
+                     .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id.ToString());
         ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employee.Id).OrderByDescending(o => o.Sort), "Id", "MessageText");
-        return PartialView("AppealDetails/Comments/PartialTableComments", model);
+        return PartialView("AppealDetails/Comments/PartialTableCommentsView", model);
     }
 
     public IActionResult SubmitCommentSave(DataAppealCommentt dataAppealCommentt, Guid[] recipients)
     {
-        if (ModelState.IsValid)
+        var employee = _repository.SprEmployees.Include(i => i.SprEmployeesJobPos).Include(ii => ii.SprEmployeesDepartment).SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+
+        if (dataAppealCommentt.Id == Guid.Empty)
         {
-            var employee = _repository.SprEmployees.Include(i => i.SprEmployeesJobPos).Include(ii => ii.SprEmployeesDepartment).SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
-
-            if (dataAppealCommentt.Id == Guid.Empty)
+            dataAppealCommentt.EmployeesNameAdd = employee?.EmployeesName ?? "";
+            dataAppealCommentt.SprEmployeesId = employee?.Id ?? Guid.Empty;
+            dataAppealCommentt.DateAdd = DateTime.Now;
+            _repository.Insert(dataAppealCommentt);
+            if (recipients != null)
             {
-                dataAppealCommentt.EmployeesNameAdd = employee?.EmployeesName ?? "";
-                dataAppealCommentt.SprEmployeesId = employee?.Id ?? Guid.Empty;
-                dataAppealCommentt.DateAdd = DateTime.Now;
-                _repository.Insert(dataAppealCommentt);
-                if (recipients != null)
+                foreach (var item in recipients)
                 {
-                    foreach (var item in recipients)
+                    DataAppealCommenttRecipients model = new()
                     {
-                        DataAppealCommenttRecipients model = new()
-                        {
-                            DataAppealCommenttId = dataAppealCommentt.Id,
-                            SprEmployeesId = item,
-                        };
-                        _repository.Insert(model);
+                        DataAppealCommenttId = dataAppealCommentt.Id,
+                        SprEmployeesId = item,
+                    };
+                    _repository.Insert(model);
 
-                        DataEmployeesNotification notif = new()
-                        {
-                            DataAppealId = dataAppealCommentt.DataAppealId,
-                            SprNotificationId = 2,
-                            SprEmployeesId = item,
-                            DateReceipt = DateTime.Now,
-                            IsActive = true
-                        };
-                        _repository.Insert(notif);
-                        SignalRAlerts(item, "Добавлено новое примечание " + "в деле #" + _repository.DataAppeal.Where(w => w.Id == dataAppealCommentt.DataAppealId).FirstOrDefault().NumberAppeal);
-                    }
+                    DataEmployeesNotification notif = new()
+                    {
+                        DataAppealId = dataAppealCommentt.DataAppealId,
+                        SprNotificationId = 2,
+                        SprEmployeesId = item,
+                        DateReceipt = DateTime.Now,
+                        IsActive = true
+                    };
+                    _repository.Insert(notif);
+                    SignalRAlerts(item, "Добавлено новое примечание " + "в деле #" + _repository.DataAppeal.Where(w => w.Id == dataAppealCommentt.DataAppealId).FirstOrDefault().NumberAppeal);
                 }
             }
-            else
-            {
-                var editComment = _repository.DataAppealCommentt.Where(w => w.Id == dataAppealCommentt.Id).SingleOrDefault();
-                editComment.EmployeesNameModify = UserName;
-                editComment.DateModify = DateTime.Now;
-                editComment.Commentt = dataAppealCommentt.Commentt;
-                _repository.Update(editComment);
-            }
-            return RedirectToAction("PartialTableCommentts", new { appealId = dataAppealCommentt.DataAppealId });
         }
-        throw new Exception("Ошибка валидации!");
-    }
+        else
+        {
+            var editComment = _repository.DataAppealCommentt.Where(w => w.Id == dataAppealCommentt.Id).SingleOrDefault();
+            editComment.EmployeesNameModify = UserName;
+            editComment.DateModify = DateTime.Now;
+            editComment.Commentt = dataAppealCommentt.Commentt;
+            _repository.Update(editComment);
+        }
+        return RedirectToAction("PartialTableCommentts", new { appealId = dataAppealCommentt.DataAppealId });
 
-    [AllowAnonymous]
-    public void SignalRAlerts(Guid Id, string message)
-    {
-#warning Исправить
-        var login = _repository.SprEmployees.First(q => q.Id == Id).EmployeesLogin;
-        //   var context = Microsoft.AspNet.SignalR.GlobalHost.ConnectionManager.GetHubContext<NotificationHub>();
-        // context.Clients.User(login).sendCommentt(message);
     }
-
+      
     /// <summary>
     /// Удаляет запись по указанному Id
     /// </summary>
@@ -349,26 +337,22 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult SubmitEmployeesMessageTemplateSave(SprEmployeesMessageTemplate template, string number)
     {
-        if (ModelState.IsValid)
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+        if (template.Id == Guid.Empty)
         {
-            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
-            if (template.Id == Guid.Empty)
-            {
-                template.SprEmployeesId = employee.Id;
-                template.EmployeesNameAdd = UserName;
-                template.DateAdd = DateTime.Now;
-                _repository.Insert(template);
-            }
-            else
-            {
-                template.SprEmployeesId = employee.Id;
-                template.EmployeesNameModify = UserName;
-                template.DateModify = DateTime.Now;
-                _repository.Update(template);
-            }
-            return RedirectToAction("PartialTableEmployeesMessageTemplate", new { number = number });
+            template.SprEmployeesId = employee.Id;
+            template.EmployeesNameAdd = UserName;
+            template.DateAdd = DateTime.Now;
+            _repository.Insert(template);
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            template.SprEmployeesId = employee.Id;
+            template.EmployeesNameModify = UserName;
+            template.DateModify = DateTime.Now;
+            _repository.Update(template);
+        }
+        return RedirectToAction("PartialTableEmployeesMessageTemplate", new { number = number });
     }
 
     /// <summary>
@@ -406,7 +390,7 @@ public partial class AppealController : Controller
     {
         ViewBag.IsRemove = isRemove;
         ViewBag.AppealNumber = number;
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         var templates = _repository.SprEmployeesMessageTemplate.Where(w => w.SprEmployeesId == employee.Id);
         templates = !isRemove ? templates.Where(o => o.IsRemove != true) : templates;
 
@@ -458,7 +442,7 @@ public partial class AppealController : Controller
     {
         ViewBag.Search = search;
         ViewBag.Email_ = _repository.DataAppeal.Where(w => w.Id == appealId).FirstOrDefault()?.Email;
-        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id ?? Guid.Empty;
+        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id ?? Guid.Empty;
         var dataEmails = _repository.DataAppealEmail.Where(w => w.DataAppealId == appealId);
         dataEmails = string.IsNullOrEmpty(search) ? dataEmails :
             search.ToLower().Split().Aggregate(dataEmails, (current, item) => current.Where(h => h.Email.ToLower().Contains(item) || h.TextEmail.ToLower().Contains(item) || h.Caption.ToLower().Contains(item))).OrderByDescending(o => o.DateEmail);
@@ -515,7 +499,7 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult PartialModalSendEmail(Guid appealId)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         DataAppealEmail model = new()
         {
             DataAppealId = appealId,
@@ -528,26 +512,21 @@ public partial class AppealController : Controller
 
     public IActionResult SubmitEmailSave(DataAppealEmail dataAppealEmail)
     {
-        if (ModelState.IsValid)
+        string result = SendEmail(dataAppealEmail);
+        if (result == "OK")
         {
-            string result = SendEmail(dataAppealEmail);
-            if (result == "OK")
-            {
-                var employee = _repository.SprEmployees.Include(i => i.SprEmployeesJobPos).Include(ii => ii.SprEmployeesDepartment).SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
-                dataAppealEmail.EmployeesNameAdd = employee?.EmployeesName ?? "";
-                dataAppealEmail.SprEmployeesId = employee?.Id ?? Guid.Empty;
-                dataAppealEmail.DateEmail = DateTime.Now;
-                dataAppealEmail.EmailType = 1;
-                _repository.Insert(dataAppealEmail);
-                return RedirectToAction("PartialTableEmails", new { appealId = dataAppealEmail.DataAppealId });
-            }
-            else
-            {
-                throw new Exception("Ошибка ошибка отправки письма!");
-            }
-
+            var employee = _repository.SprEmployees.Include(i => i.SprEmployeesJobPos).Include(ii => ii.SprEmployeesDepartment).SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+            dataAppealEmail.EmployeesNameAdd = employee?.EmployeesName ?? "";
+            dataAppealEmail.SprEmployeesId = employee?.Id ?? Guid.Empty;
+            dataAppealEmail.DateEmail = DateTime.Now;
+            dataAppealEmail.EmailType = 1;
+            _repository.Insert(dataAppealEmail);
+            return RedirectToAction("PartialTableEmails", new { appealId = dataAppealEmail.DataAppealId });
         }
-        throw new Exception("Ошибка валидации!");
+        else
+        {
+            throw new Exception("Ошибка ошибка отправки письма!");
+        }
     }
     public string SendEmail(DataAppealEmail dataAppealEmail)
     {
@@ -583,7 +562,7 @@ public partial class AppealController : Controller
     public IActionResult PartialTableCalls(Guid appealId, string search, int page = 1)
     {
         ViewBag.Search = search;
-        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id ?? Guid.Empty;
+        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id ?? Guid.Empty;
         var dataCalls = _repository.DataAppealCall.Where(w => w.DataAppealId == appealId);
         AppealViewModel model = new()
         {
@@ -667,7 +646,7 @@ public partial class AppealController : Controller
     public string _CallPhone(Guid? appealId, string PhoneNumber, string NumberAppeal)
     {
         var DataAppeal = _repository.DataAppeal.Where(w => w.NumberAppeal == NumberAppeal).SingleOrDefault();
-        var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).SingleOrDefault();
+        var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).SingleOrDefault();
         string new_phone = PhoneNumber;
         if (PhoneNumber != null && PhoneNumber.Length >= 5)
         {
@@ -688,12 +667,12 @@ public partial class AppealController : Controller
             $",\"IdMfc\":\"{emp.SprEmployeesDepartmentId}\"" +
             $",\"CallType\":\"{1}\"" +
             ",\"command\":\"" + 1 + "\"}";
-        return _testCALL; 
+        return _testCALL;
     }
     [HttpPost]
     public string _CallBackPhone(Guid CallbackId, string CustomerFio, string tel)
     {
-        var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == User.Identity.Name).SingleOrDefault();
+        var emp = _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).SingleOrDefault();
         string _testCALL = $"{{\"CaseNumber\":\"{null}\"" +
             $",\"IdEmployee\":\"{emp.Id}\"" +
             $",\"EmployeeFio\":\"{emp.EmployeesName}\"" +
@@ -718,7 +697,7 @@ public partial class AppealController : Controller
     {
 
         ViewBag.Search = search;
-        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id ?? Guid.Empty;
+        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id ?? Guid.Empty;
         var dataSms = _repository.DataAppealMessage.Where(w => w.DataAppealId == appealId);
         dataSms = string.IsNullOrEmpty(search) ? dataSms :
             search.ToLower().Split().Aggregate(dataSms, (current, item) => current.Where(h => h.EmployeesNameAdd.ToLower().Contains(item) || h.PhoneNumber.ToLower().Contains(item))).OrderByDescending(o => o.DateMessage);
@@ -772,7 +751,7 @@ public partial class AppealController : Controller
     {
         ViewBag.Search = search;
         ViewBag.IsRemove = isRemove;
-        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name)?.Id ?? Guid.Empty;
+        var employeeId = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name)?.Id ?? Guid.Empty;
         var dataFiles = _repository.DataAppealFile.Where(w => w.DataAppealId == appealId);
         dataFiles = String.IsNullOrEmpty(search) ? dataFiles :
             search.ToLower().Split().Aggregate(dataFiles, (current, item) => current.Where(h => h.EmployeesNameAdd.ToLower().Contains(item) || h.FileName.ToLower().Contains(item))).OrderByDescending(o => o.DateAdd);
@@ -821,7 +800,7 @@ public partial class AppealController : Controller
                 thePictureAsbytes = memoryStream.ToArray();
             }
 
-            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+            var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
             var employeeId = employee?.Id ?? Guid.Empty;
             DataAppealFile saveModel = new() // Модель для сохранения в таблицу 
             {
@@ -854,7 +833,7 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult SubmitFileRecovery(Guid fileId)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         DataAppealFile recoveryFile = _repository.DataAppealFile.SingleOrDefault(so => so.Id == fileId);
         recoveryFile.IsRemove = false;
         recoveryFile.EmployeesNameModify = employee.EmployeesName;
@@ -864,7 +843,7 @@ public partial class AppealController : Controller
     [HttpPost]
     public IActionResult SubmitFileDelete(Guid fileId)
     {
-        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == User.Identity.Name);
+        var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
         DataAppealFile deleteFile = _repository.DataAppealFile.SingleOrDefault(so => so.Id == fileId);
         deleteFile.IsRemove = true;
         deleteFile.EmployeesNameModify = employee.EmployeesName;

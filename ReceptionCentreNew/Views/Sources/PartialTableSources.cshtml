@@ -34,12 +34,12 @@
                                 <small class="d-block text-muted">@item.DateAdd.Value.ToString("HH:mm:ss")</small>
                             </td>
                             <td class="vertical-middle">
-                                @item.Option)
+                                @item.Option
                             </td>
                             <td class="vertical-middle p-r-20-important text-right" style="font-size: 22px;line-height: 22px;">
                                 @if (item.SaveFtp)
                                 {
-                                    <button type="button" class="btn btn-link btn-audio" data-id="@item.Id"><i class="md md-play-circle-outline"></i></button>
+                                    <button type="button" class="btn btn-link btn-audio" onclick="AudioPlay('@item.Id')"><i class="md md-play-circle-outline"></i></button>
                                 }
                                 @if (item.NumberAppeal == null)
                                 {
@@ -90,9 +90,7 @@
                     </td>
                     <td colspan="4">
                         <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                            <a asp-controller="Sources" asp-action="PartialTableSources" asp-route-page="@Model.PageInfo.CurrentPage" asp-route-search="@ViewBag.Search" asp-route-action_="@ViewBag.Action" asp-route-sources="@ViewBag.Sources" asp-route-sprEmployeeId="@ViewBag.SprEmployeesId" asp-route-period="@ViewBag.Period" asp-route-is_conOption="@ViewBag.IsConnected" class="ajax-link">
-                                @Model.PageInfo.NameLink
-                            </a>
+                           @*  @Html.PageLinks(Model.PageInfo, x =>  ) *@
                         </div>
                     </td>
                 </tr>
@@ -105,9 +103,31 @@
 </div>
 <script>
     $(document).ready(function () {
+        $('#loadPageLink').on('click', function (e) {
+            e.preventDefault(); // Prevent default link behavior
+            var url = '@Url.Action("PartialTableSources", "Sources")'; // Define your action URL
 
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: {
+                    page: @Model.PageInfo.CurrentPage,
+                    search: '@ViewBag.Search',
+                    action_: '@ViewBag.Action',
+                    sources: '@ViewBag.Sources',
+                    sprEmployeeId: '@ViewBag.SprEmployeesId',
+                    period: '@ViewBag.Period',
+                    is_connected: '@ViewBag.IsConnected'
+                },
+                success: function (result) {
+                    $('#sourcesTableContainer').html(result); // Update table content
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error);
+                }
+            });
+        });
     });
-
     $(function () {
         $('button[data-tooltip-info]')
         $('button[data-tooltip-info]').tooltip({
