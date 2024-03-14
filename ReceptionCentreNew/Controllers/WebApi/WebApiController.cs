@@ -153,7 +153,7 @@ public class WebApiController : ApiController
         }
     }
 
-    public Guid? ApiJitsiSaveCallId(ApiJitsiCall model)
+    public async Task<Guid?> ApiJitsiSaveCallId(ApiJitsiCall model)
     {
         string path = @"C:\inetpub\wwwroot\ais_reception_jitsi\Content\log\log-savecall.txt";
         try
@@ -203,7 +203,7 @@ public class WebApiController : ApiController
             {
                 case JitsiCallType.outgoing: // исходящий
                     _repository.Insert(saveCallModel);
-                    SignalRReturnCallId(saveCallModel.Id, model.UserName);
+                    await SignalRReturnCallId(saveCallModel.Id, model.UserName);
                     return saveCallModel.Id;
                 case JitsiCallType.incoming: // входящий
                     _repository.Insert(saveCallModel);
@@ -289,7 +289,7 @@ public class WebApiController : ApiController
 
     public async Task SignalRReturnCallId(Guid Id, string UserName)
     {
-        await _hubContext.Clients.User(Id.ToString()).SendAsync("ReturnCallId", Id);
+        await _hubContext.Clients.User(UserName).SendAsync("ReturnCallId", Id);
     }
     #endregion
 
@@ -371,7 +371,7 @@ public class WebApiController : ApiController
     /// <param name="modal"></param>
     /// <returns></returns>
     [HttpPost]
-    public IActionResult SaveCallV3()
+    public async Task<IActionResult> SaveCallV3()
     {
         var modal = GetModelFromJsonRequest<JitsiCallsUnionRequest>(HttpContext.Request);
         string path = @"C:\inetpub\wwwroot\ais_reception_jitsi\Content\log\log-savecall.txt";
@@ -409,7 +409,7 @@ public class WebApiController : ApiController
             if (TryValidateModel(callModel))
             {
                 Logger.Log(path, $"Начало записи звонка:");
-                Id = ApiJitsiSaveCallId(callModel);
+                Id = await ApiJitsiSaveCallId(callModel);
                 Logger.Log(path, $"Сохранение записи звонка: с Id - {Id}");
                 fileModel.Name = Id.ToString();
                 Logger.Log(path, $"Начало загрузки звонка на ФТП:");

@@ -4,16 +4,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Ajax.Utilities;
+using System.Security.Claims;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc.Routing;
+using NuGet.Protocol.Core.Types;
 
 namespace ReceptionCentreNew.Controllers;
 public class ReportController : Controller
 {
     private IRepository _repository;
     public SignInManager<ApplicationUser> SignInManager;
+    public string EmploeeFio;
     public ReportController(IRepository repo, SignInManager<ApplicationUser> signInManager)
     {
         SignInManager = signInManager;
+        EmploeeFio = SignInManager.Context.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserData)?.Value;
         _repository = repo;
+
         ExcelPackage.LicenseContext = LicenseContext.Commercial;
     }
     public IActionResult Index()
@@ -23,13 +32,14 @@ public class ReportController : Controller
 
     #region ReportAppeals
     public IActionResult ReportAppeals(ReportParameters parameters)
-    {
+    { 
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
+
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         ViewBag.SprCategory = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), "Id", "CategoryName");
@@ -37,66 +47,55 @@ public class ReportController : Controller
         ViewBag.SprTypeDifficulty = new SelectList(_repository.SprTypeDifficulty.Where(e => e.IsRemove != true), "Id", "TypeName");
         ViewBag.SprSubject = new SelectList(_repository.SprSubjectTreatment.Where(e => e.IsRemove != true), "Id", "SubjectName");
         ViewBag.SprStatus = new SelectList(_repository.SprStatus, "Id", "StatusName", 0);
-        return View("ReportAppeals/_Page");
+
+        return View("ReportAppeals/_Page", parameters);
     }
 
     public IActionResult ReportAppealsTable(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
+    { 
+        var appeals = 
+            _repository.FuncDataAppealSelect(
+           spr_employee_id:             parameters.SprEmployeeId,
+           in_date_start:               parameters.DateStart,
+           in_date_stop:                parameters.DateStop,
+           in_spr_type_id:              parameters.SprTypeId,
+           in_SprTypeDifficulty_id:     parameters.SprTypeDifficultyId,
+           in_spr_category_id:          parameters.SprCategoryId,
+           in_spr_subject_treatment_id: parameters.SprSubjectId,
+           in_spr_status_id:            parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
 
-        var appeals = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
         AppealViewModel model = new()
         {
             DataAppealSelectList = appeals.OrderByDescending(o => o.OutDateAdd)
-        };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+        }; 
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         ViewBag.Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         ViewBag.TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         ViewBag.Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         ViewBag.Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        ViewBag.Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
 
         return PartialView("ReportAppeals/_Table", model);
     }
 
 
     public IActionResult DownloadExcelReportAppeals(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+    { 
+        var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
+        
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         var TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/reestr_appeals.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
-        ws.Cells["K4"].Value = PrintEmployee;
+        ws.Cells["K4"].Value = EmploeeFio;
         ws.Cells["K5"].Value = DateTime.Now.ToString("G"); ;
-        ws.Cells["C4"].Value = $"{Period}";
+        ws.Cells["C4"].Value = $"{parameters.Period}";
         ws.Cells["C5"].Value = $"{Employee}";
         ws.Cells["C6"].Value = $"{Type}";
         ws.Cells["C7"].Value = $"{TypeDifficulty}";
@@ -135,62 +134,41 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         return View("StatisticsAppeals/_Page");
     }
 
     public IActionResult StatisticsAppealsTable(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var appeals = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
+    { 
+        var appeals = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
         AppealViewModel model = new()
         {
             DataAppealSelectList = appeals.OrderByDescending(o => o.OutDateAdd)
-        };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        }; 
+        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все"; 
         return PartialView("StatisticsAppeals/_Table", model);
     }
     public IActionResult DownloadExcelStatisticAppeals(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+    { 
+        var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
+     
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         var TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/statistic_appeals.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
-        ws.Cells["F4"].Value = PrintEmployee;
+        ws.Cells["F4"].Value = EmploeeFio;
         ws.Cells["F5"].Value = DateTime.Now.ToString("G");
-        ws.Cells["B4"].Value = $"{Period}";
+        ws.Cells["B4"].Value = $"{parameters.Period}";
         ws.Cells["B5"].Value = $"{Employee}";
         ws.Cells["B6"].Value = $"{Type}";
         ws.Cells["B7"].Value = $"{TypeDifficulty}";
@@ -277,62 +255,42 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         return View("ReportCalls/_Page");
     }
 
     public IActionResult ReportCallsTable(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.Type, parameters.IsConnected).ToArray();
+    { 
+        var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         CallsViewModel model = new CallsViewModel
         {
             CallList = calls.OrderByDescending(o => o.OutDateCall),
         };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+        ViewBag.Period = $"{parameters.DateStart} - {parameters.DateStop}";
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         ViewBag.Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
-        ViewBag.IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все"; 
         return PartialView("ReportCalls/_Table", model);
     }
 
 
     public IActionResult DownloadExcelReportCalls(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.Type, parameters.IsConnected).ToArray();
+    { 
+        var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
 
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+        var Period = $"{parameters.DateStart} - {parameters.DateStop}";
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
-        var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все"; 
 
-        ExcelPackage pck = new ExcelPackage(new FileInfo("wwwroot/excel/report/reestr_calls.xlsx"));
+        ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/reestr_calls.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
-        ws.Cells["E4"].Value = PrintEmployee;
+        ws.Cells["E4"].Value = EmploeeFio;
         ws.Cells["E5"].Value = DateTime.Now.ToString("G");
         ws.Cells["C4"].Value = $"{Period}";
         ws.Cells["C5"].Value = $"{Employee}";
@@ -365,63 +323,43 @@ public class ReportController : Controller
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
         {
-            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
-        Guid empId = employees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+
+        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
-        return View("StatisticsCalls/_Page");
+         
+        return View("StatisticsCalls/_Page", parameters);
     }
 
-    public IActionResult Statistics_CallsTable(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.Type, parameters.IsConnected).ToArray();
+    public IActionResult StatisticsCallsTable(ReportParameters parameters)
+    { 
+        var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         CallsViewModel model = new()
         {
             CallList = calls.OrderByDescending(o => o.OutDateCall),
         };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все"; 
         return PartialView("StatisticsCalls/_Table", model);
     }
-    public IActionResult DownloadExcelStatisticCalls(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, dateStart, DateTime.Now.AddDays(1), parameters.Type, parameters.IsConnected).ToArray();
 
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
+    public IActionResult DownloadExcelStatisticCalls(ReportParameters parameters)
+    { 
+        var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
         var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/statistic_calls.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
-        ws.Cells["F4"].Value = PrintEmployee;
+        ws.Cells["F4"].Value = EmploeeFio;
         ws.Cells["F5"].Value = DateTime.Now.ToString("G");
-        ws.Cells["B4"].Value = $"{Period}";
-        ws.Cells["B5"].Value = $"{Employee}";
-        ws.Cells["B6"].Value = $"{Type}";
-        ws.Cells["B7"].Value = $"{IsConnected}";
+        ws.Cells["B4"].Value = parameters.Period;
+        ws.Cells["B5"].Value = Employee;
+        ws.Cells["B6"].Value = Type;
+        ws.Cells["B7"].Value = IsConnected;
 
 
         int index = 10;
@@ -430,12 +368,14 @@ public class ReportController : Controller
         ws.Cells["A" + index].Value = "Типы";
         ws.Cells["C" + index].Value = "";
         ++index;
+
         foreach (var item in model.GroupBy(g => g.OutCallType))
         {
             ws.Cells["A" + index].Value = item.Key == 2 ? "Входящие" : "Исходящие"; ;
             ws.Cells["C" + index].Value = item.Count();
             ws.InsertRow(++index, 1, index - 1);
         }
+
         //--------------------------------------
         ws.InsertRow(index, 1, 9);
         ws.Cells["A" + index].Value = "Прикрепленные";
@@ -459,7 +399,7 @@ public class ReportController : Controller
         var memoryStream = new MemoryStream();
         pck.SaveAs(memoryStream);
         memoryStream.Position = 0;
-        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_категориям.xlsx");
+        return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_звонков.xlsx");
 
     }
     #endregion
@@ -470,47 +410,24 @@ public class ReportController : Controller
         return View("ReportCategory/_Filter");
     }
     public IActionResult ReportCategoryTable(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-
+    { 
         ReportViewModel model = new()
         {
-            ReportCategoryList = _repository.FuncReportCategory(dateStart, DateTime.Now.AddDays(1))
-        };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+            ReportCategoryList = _repository.FuncReportCategory(parameters.DateStart, parameters.DateStop)
+        }; 
         return PartialView("ReportCategory/_Table", model);
     }
 
     public IActionResult DownloadExcelReportCategory(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
+    { 
+        var model = _repository.FuncReportCategory(parameters.DateStart, parameters.DateStop).ToArray();
 
-        var model = _repository.FuncReportCategory(dateStart, DateTime.Now.AddDays(1)).ToArray();
-
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        var PrintEmployee = _repository.SprEmployees.FirstOrDefault(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name)?.EmployeesName;
+        var Period = $"{parameters.DateStart} - {parameters.DateStop}"; 
 
         var package = new ExcelPackage(new FileInfo("wwwroot/excel/report/report_category.xlsx"));
 
         var ws = package.Workbook.Worksheets["Реестр"];
-        ws.Cells["F4"].Value = PrintEmployee;
+        ws.Cells["F4"].Value = EmploeeFio;
         ws.Cells["F5"].Value = DateTime.Now.ToString("G");
         ws.Cells["C4"].Value = $"{Period}";
 
@@ -567,45 +484,23 @@ public class ReportController : Controller
     }
     public IActionResult ReportTreatmentTable(ReportParameters parameters)
     {
-        DateTime dateStart;
-        switch (parameters.Period)
+        ReportViewModel model = new()
         {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-
-        ReportViewModel model = new ReportViewModel()
-        {
-            ReportTreatmentList = _repository.FuncReportTreatment(dateStart, DateTime.Now.AddDays(1))
-        };
-        ViewBag.Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        ViewBag.PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+            ReportTreatmentList = _repository.FuncReportTreatment(parameters.DateStart, parameters.DateStop)
+        }; 
         return PartialView("ReportTreatment/_Table", model);
     }
 
     public IActionResult DownloadExcelReportTreatment(ReportParameters parameters)
-    {
-        DateTime dateStart;
-        switch (parameters.Period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-        var model = _repository.FuncReportTreatment(dateStart, DateTime.Now.AddDays(1)).ToArray();
+    {  
+        var model = _repository.FuncReportTreatment(parameters.DateStart, parameters.DateStop).ToArray();
 
-        var Period = $"{dateStart.ToShortDateString()} - {DateTime.Now.ToShortDateString()}";
-        var PrintEmployee = _repository.SprEmployees.Where(w => w.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault().EmployeesName;
+        var Period = $"{parameters.DateStart} - {parameters.DateStop}"; 
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/report_treatment.xlsx"));
 
         var ws = pck.Workbook.Worksheets["Реестр"];
-        ws.Cells["E4"].Value = PrintEmployee;
+        ws.Cells["E4"].Value = EmploeeFio;
         ws.Cells["E5"].Value = DateTime.Now.ToString("G");
         ws.Cells["C4"].Value = $"{Period}";
 

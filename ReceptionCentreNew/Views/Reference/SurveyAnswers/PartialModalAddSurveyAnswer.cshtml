@@ -27,20 +27,19 @@
         </div>
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
-<script> 
+<script>
     $("#saveButton").click(function () {
         $.ajax({
             type: "POST",
             url: "/Reference/SubmitSurveyAnswerSave",
             data: $("#AddSurveyAnswerForm").serialize(),
             success: function (response) {
-                // Handle success response
                 $('#newModal').modal('hide');
                 successAdd();
+                ShowSurveyAnswers('@ViewBag.SurveyQuestionId');
             },
             error: function () {
-                // Handle error
             }
         });
     });
-</script> 
+</script>

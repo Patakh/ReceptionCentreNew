@@ -45,7 +45,7 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_sources" onclick="Seach()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_sources" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
         </div>
     </form>
@@ -55,7 +55,7 @@
 </div>
 @section scripts {
     <script>
-        function Seach() {
+        function Search() {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableSources", "Sources")',
@@ -68,7 +68,7 @@
 
         $(document).ready(function () {
             $(".select2").select2();
-            Seach()
+            Search()
         });
         $(document).on('change', '#searchTextSources', function () {
             var action = $('#action_').val();

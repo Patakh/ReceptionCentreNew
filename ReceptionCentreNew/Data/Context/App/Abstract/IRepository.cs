@@ -42,7 +42,7 @@ public interface IRepository
     IQueryable<DataCallback> DataCallback { get; }
     IQueryable<DataCallbackCalls> DataCallbackCalls { get; }
 
-    IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime? in_date_start, DateTime? in_date_stop, Guid? in_spr_type_id, Guid? in_SprTypeDifficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id);
+    IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime in_date_start, DateTime in_date_stop, Guid? in_spr_type_id, Guid? in_SprTypeDifficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id);
     DataAppealSelect FuncDataAppealInfo(string number);
     IEnumerable<DataAppealRouteStageNext> FuncDataAppealRouteStageNext(Guid DataAppealId);
     IEnumerable<DataAppealRouteStageSelect> FuncDataAppealRouteStageSelect(Guid DataAppealId);

@@ -179,11 +179,11 @@
                             $('#newModal').modal('show').html(data);
                         });
 
-                        $.get('Appeal/NewAppealCall/@ViewBag.CallId', function (data) {
+                        $.get('Appeal/NewAppealCall?callId=@ViewBag.CallId', function (data) {
                             $('#new_appeal_call').html(data);
                         });
 
-                        $.get('Appeal/NewAppealEmail/@ViewBag.EmailId', function (data) {
+                        $.get('Appeal/NewAppealEmail?emailId=@ViewBag.EmailId', function (data) {
                             $('#new_appeal_email').html(data);
                         });
 

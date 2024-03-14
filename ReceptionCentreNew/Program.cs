@@ -38,6 +38,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
     options.Tokens.EmailConfirmationTokenProvider = "Email";
     options.Tokens.ChangeEmailTokenProvider = "Email";
+
 })
     .AddEntityFrameworkStores<ReceptionCentreContext>()
     .AddSignInManager<ApplicationSignInManager>()
@@ -62,8 +63,10 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<Hub, NotificationHub>();
 
-builder.Services.AddRazorPages();
-  
+//builder.Services.AddScoped<SmartBreadcrumbs.BreadcrumbManager>();
+
+builder.Services.AddRazorPages(); 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -44,11 +44,12 @@
             success: function (response) {
                 // Handle success response
                 $('#newModal').modal('hide');
-                successEdit()
+                successEdit() 
             },
             error: function () {
                 // Handle error
             }
         });
+        LoadTable();
     });
 </script>

@@ -1,13 +1,13 @@
-﻿@model  AppealViewModel
+﻿@model AppealViewModel
 <link href="~/new_design/plugins/datatables/datatable.custom.css" rel="stylesheet" />
 
-<div id="printable">
+<div id="printable" class="d-none">
     <div class="report_head" style="display:none;">
         <table width="100%">
             <tr valing="top"><td colspan="3"><div class="report_name">Реестр обращений</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/img/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -29,41 +29,43 @@
                 <td>Категория: <b>@ViewBag.Category</b></td>
             </tr>
         </table>
-        <!-- page 1 start-->
-        <div class="page">
-            @if (Model.DataAppealSelectList.Any())
-            {
-                <table class="table text-center">
-                    <thead>
-                        <tr>
-                            <th class="text-center"><b>№</b></th>
-                            <th class="text-center"><b>Заявитель</b></th>
-                            <th class="text-center"><b>Статус</b></th>
-                            <th class="text-center"><b>Дата</b></th>
-                        </tr>
+    </div>
+    <!-- page 1 start-->
+    <div class="page">
+        @if (Model.DataAppealSelectList.Any())
+        {
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th class="text-center"><b>№</b></th>
+                        <th class="text-center"><b>Заявитель</b></th>
+                        <th class="text-center"><b>Статус</b></th>
+                        <th class="text-center"><b>Дата</b></th>
+                    </tr>
 
-                    </thead>
-                    <tbody>
-                        @{ int i = 1;}
-                        @foreach (var item in Model.DataAppealSelectList)
-                        {
-                            <tr>
-                                <td>@(i++)</td>
-                                <td class="text-left">@item.OutApplicantName</td>
-                                <td>@item.OutStatusName</td>
-                                <td>@item.OutDateAdd</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="alert-no-record">
-                    <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
-                </div>
-            }
-        </div>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in Model.DataAppealSelectList)
+                    {
+                        <tr>
+                            <td>@(i++)</td>
+                            <td class="text-left">@item.OutApplicantName</td>
+                            <td>@item.OutStatusName</td>
+                            <td>@item.OutDateAdd</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert-no-record">
+                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+            </div>
+        }
     </div>
 </div>
 <!-- table show-->
@@ -79,14 +81,16 @@
         <table id="datatable" class="table table-striped" style="margin-top: 0 !important">
             <thead>
                 <tr>
-                    <th class="text-center"><b>№</b></th>
-                    <th class="text-center"><b>Заявитель</b></th>
-                    <th class="text-center"><b>Статус</b></th>
-                    <th class="text-center"><b>Дата</b></th>
+                    <th class="text-left p-2"><b>№</b></th>
+                    <th class="text-left p-2"><b>Заявитель</b></th>
+                    <th class="text-left p-2"><b>Статус</b></th>
+                    <th class="text-left p-2"><b>Дата</b></th>
                 </tr>
             </thead>
             <tbody>
-                @{ int i = 1;}
+                @{
+                    int i = 1;
+                }
                 @foreach (var item in Model.DataAppealSelectList)
                 {
                     <tr>

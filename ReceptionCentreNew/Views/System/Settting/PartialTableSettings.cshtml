@@ -45,7 +45,9 @@
                             <td class="actions text-right">
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
-                                    <button class="on-default edit-row btn btn-link" onclick="Edit('@item.Id')"><i class="ion-edit"></i></button>
+                                    <button class="on-default edit-row btn btn-link" type="button" onclick="Edit('@item.Id')">
+                                        <i class="ion-edit"></i>
+                                    </button>
                                 }
                             </td>
                         </tr>
@@ -85,8 +87,9 @@
             });
         });
         function Edit(settingId) {
+            console.log("kdkdvdnvkdnk")
             $.ajax({
-                type: 'POST',
+                type: 'GET',
                 url: '@Url.Action("EditSetting", "System")',
                 data: { settingId: settingId },
                 success: function (data) {
@@ -95,5 +98,6 @@
                 }
             });
         }
-        <script src="~/new_design/plugins/footable/js/footable.all.min.js" ></script>
+    </script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

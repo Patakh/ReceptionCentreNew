@@ -317,13 +317,16 @@ namespace ReceptionCentreNew.Controllers
         /// <returns>частичное представление таблицы</returns>
         public IActionResult SubmitQuestionDelete(Guid id)
         {
-            SprQuestion deleteQuestion = _repository.SprQuestion.SingleOrDefault(so => so.Id == id);
-
-            deleteQuestion.IsRemove = true;
-            deleteQuestion.DateModify = DateTime.Now;
-            deleteQuestion.EmployeesNameModify = UserName;
-            _repository.Delete(deleteQuestion);
-            return RedirectToAction("PartialTableQuestions");
+            SprSurveyQuestion deleteQuestion = _repository.SprSurveyQuestion.FirstOrDefault(so => so.Id == id);
+            if (deleteQuestion != null)
+            {
+                deleteQuestion.IsRemove = true;
+                deleteQuestion.DateModify = DateTime.Now;
+                deleteQuestion.EmployeesNameModify = UserName;
+                _repository.Update(deleteQuestion);
+                return RedirectToAction("PartialTableQuestions");
+            }
+            return null;
         }
 
         #endregion
@@ -338,9 +341,8 @@ namespace ReceptionCentreNew.Controllers
         public IActionResult PartialTableSurveyQuestions(bool isRemove = false, int page = 1)
         {
             ViewBag.IsRemove = isRemove;
-            var SurveyQuestion = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(o => o.IsRemove != true);
-
-            ReferenceViewModel model = new ReferenceViewModel
+            var SurveyQuestion = _repository.SprSurveyQuestion.Include(i => i.SprSurveyAnswer).Where(o => o.IsRemove == isRemove);
+            ReferenceViewModel model = new()
             {
                 SprSurveyQuestionList = SurveyQuestion.OrderBy(a => a.Question),
                 PageInfo = new PageInfo
@@ -419,7 +421,7 @@ namespace ReceptionCentreNew.Controllers
             SprSurveyQuestion deleteSurveyQuestion = _repository.SprSurveyQuestion.SingleOrDefault(so => so.Id == id);
 
             deleteSurveyQuestion.IsRemove = true;
-            _repository.Delete(deleteSurveyQuestion);
+            _repository.Update(deleteSurveyQuestion);
             return RedirectToAction("PartialTableSurveyQuestions");
         }
         #endregion
@@ -430,10 +432,9 @@ namespace ReceptionCentreNew.Controllers
         public IActionResult PartialTableSurveyAnswers(Guid id, bool isRemove = false, int page = 1)
         {
             ViewBag.IsRemove = isRemove;
-            var SurveyAnswer = _repository.SprSurveyAnswer.Where(w => w.SprSurveyQuestionId == id);
-            SurveyAnswer = !isRemove ? SurveyAnswer.Where(o => o.IsRemove != true) : SurveyAnswer;
+            var SurveyAnswer = _repository.SprSurveyAnswer.Where(w => w.SprSurveyQuestionId == id && w.IsRemove == isRemove);
             ViewBag.SurveyQuestionId = id;
-            ReferenceViewModel model = new ReferenceViewModel
+            ReferenceViewModel model = new ()
             {
                 SprSurveyAnswerList = SurveyAnswer.OrderBy(a => a.Answer),
                 PageInfo = new PageInfo
@@ -507,9 +508,9 @@ namespace ReceptionCentreNew.Controllers
         /// <returns>частичное представление таблицы</returns>
         public IActionResult SubmitSurveyAnswerDelete(Guid id)
         {
-            SprSurveyAnswer deleteSurveyAnswer = _repository.SprSurveyAnswer.SingleOrDefault(so => so.Id == id);
+            SprSurveyAnswer deleteSurveyAnswer = _repository.SprSurveyAnswer.FirstOrDefault(so => so.Id == id);
             deleteSurveyAnswer.IsRemove = true;
-            _repository.Delete(deleteSurveyAnswer);
+            _repository.Update(deleteSurveyAnswer);
             return RedirectToAction("PartialTableSurveyAnswers", new { surveyQuestionId = deleteSurveyAnswer.SprSurveyQuestionId });
         }
         #endregion

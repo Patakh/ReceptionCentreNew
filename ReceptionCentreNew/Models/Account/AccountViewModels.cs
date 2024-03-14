@@ -2,16 +2,16 @@
 
 namespace ReceptionCentreNew.Models;
 public class LogOnModel
-{
-    [Required]
+{ 
     [DataType(DataType.Password)]
-    [Display(Name = "Пароль")]
+    [Display(Name = "Пароль")] 
+    [Required(ErrorMessage = "Требуется поле Пароль.")]
     public string Password { get; set; }
 
     [Display(Name = "Запомнить меня")]
     public bool RememberMe { get; set; }
-    [Required]
-    [Display(Name = "Логин")]
+    [Required(ErrorMessage = "Требуется поле Логин.")]
+    [Display(Name = "Логин")] 
     public string Name { get; set; }
 }
 

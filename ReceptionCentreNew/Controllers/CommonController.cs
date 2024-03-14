@@ -13,6 +13,7 @@ using ReceptionCentreNew.Data.Context.App.Abstract;
 using System.Data;
 using ReceptionCentreNew.Models;
 using FluentFTP.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -25,6 +26,7 @@ namespace ReceptionCentreNew.Controllers
         public SignInManager<ApplicationUser> SignInManager;
         public CommonController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
+            SignInManager = signInManager;
             _repository = repo; 
             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
         } 
@@ -133,36 +135,45 @@ namespace ReceptionCentreNew.Controllers
             return Json(rez);
         }
 
-        public JsonResult GetNotifications()
+        public async Task<IActionResult> GetNotifications()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
-            return Json(_repository.DataEmployeesNotification.Where(w => w.SprEmployeesId == employees.Id && w.IsActive == true).Count());
+            SprEmployees employees = await _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefaultAsync();
+            var appeal = _repository.DataEmployeesNotification.Where(w => w.SprEmployeesId == employees.Id && w.IsActive == true);
+            if (await appeal.AnyAsync())
+                return Json(appeal.CountAsync());
+            return Json(0);
         }
 
-        public JsonResult GetEmails()
+        public async Task<IActionResult> GetEmails()
         {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
-            return Json(_repository.DataAppealEmail.Where(w => w.DataAppealId == null).Count());
+            SprEmployees employees = await _repository.SprEmployees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefaultAsync();
+
+            var appeal = _repository.DataAppealEmail.Where(w => w.DataAppealId == null);
+            if (await appeal.AnyAsync()) 
+               return Json(appeal.CountAsync());
+            return Json(0);
         }
-        public JsonResult GetCalls()
-        {
-            SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name).FirstOrDefault();
-            return Json(_repository.DataAppealCall.Where(w => w.DataAppealId == null).Count());
+        public async Task<IActionResult> GetCalls()
+        { 
+            var appeal = _repository.DataAppealCall.Where(w => w.DataAppealId == null);
+            if (await appeal.AnyAsync())
+                return Json(appeal.CountAsync());
+            return Json(0);
         }
-        public JsonResult GetCallsParameters()
+        public async Task<IActionResult> GetCallsParameters()
         {
             DateTime datDay = DateTime.Parse(DateTime.Now.ToShortDateString());
             DateTime datWeek = DateTime.Now.AddDays(-7);
             DateTime datMonth = DateTime.Now.AddMonths(-1);
-            IEnumerable<string> b = _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk != null).Select(s => s.PhoneNumber);
-            IEnumerable<string> c = _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk == null).Select(s => s.PhoneNumber);
+            List<string> b =await _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk != null).Select(s => s.PhoneNumber).ToListAsync();
+            List<string> c =await _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk == null).Select(s => s.PhoneNumber).ToListAsync();
             IEnumerable<string> missed_list = c.Except(b);
             CountResult model = new()
             {
-                CallsInDay = _repository.DataAppealCall.Where(w => w.DateCall > datDay).Count(),
-                CallsInWeek = _repository.DataAppealCall.Where(w => w.DateCall > datWeek).Count(),
-                CallsInMonth = _repository.DataAppealCall.Where(w => w.DateCall > datMonth).Count(),
-                CallsInDayAnswer = _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk != null).Select(s => s.PhoneNumber).Count(),
+                CallsInDay = await _repository.DataAppealCall.Where(w => w.DateCall > datDay).CountAsync(),
+                CallsInWeek = await _repository.DataAppealCall.Where(w => w.DateCall > datWeek).CountAsync(),
+                CallsInMonth = await _repository.DataAppealCall.Where(w => w.DateCall > datMonth).CountAsync(),
+                CallsInDayAnswer = await _repository.DataAppealCall.Where(w => w.DateCall > datDay && w.TimeTalk != null).Select(s => s.PhoneNumber).CountAsync(),
                 CallsInDayMissed = missed_list.Count(),
                 CallsInDayMissedList = missed_list
             };

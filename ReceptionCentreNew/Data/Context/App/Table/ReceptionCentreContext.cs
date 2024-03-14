@@ -12,7 +12,7 @@ public partial class ReceptionCentreContext : DbContext
     public ReceptionCentreContext()
     {
     }
-      
+
     public virtual DbSet<DataAppeal> DataAppeal { get; set; }
 
     public virtual DbSet<DataAppealCall> DataAppealCall { get; set; }
@@ -86,7 +86,7 @@ public partial class ReceptionCentreContext : DbContext
     public virtual DbSet<SprTypeDifficulty> SprTypeDifficulty { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseNpgsql("Server=194.87.144.157;User Id=postgres;Password=!ShamiL19;Port=5432;Database=Reception_centre;CommandTimeout=1000;");
+        => optionsBuilder.UseNpgsql("Server=192.168.34.5;User Id=postgres;Password=!ShamiL7;Port=5432;Database=reception_centre;CommandTimeout=1000;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -13,15 +13,18 @@
     <link href="~/new_design/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/plugins/custombox4/css/custombox.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
+
+    @RenderSection("css", false)
     <link href="~/new_design/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/plugins/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+      
     <link href="~/new_design/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/assets/css/icons.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/assets/css/style.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/css/main.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" type="text/css" asp-append-version="true" /> 
     <link href="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-
     <link href="~/themes/base/jquery.ui.core.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/themes/base/jquery.ui.resizable.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/themes/base/jquery.ui.selectable.css" rel="stylesheet" type="text/css" asp-append-version="true" />
@@ -30,20 +33,19 @@
     <link href="~/themes/base/jquery.ui.button.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/themes/base/jquery.ui.dialog.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/themes/base/jquery.ui.slider.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.tabs.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.datepicker.css" rel="stylesheet" type="text/css" asp-append-version="true" />
+    <link href="~/themes/base/jquery.ui.tabs.css" rel="stylesheet" type="text/css" asp-append-version="true" /> 
     <link href="~/themes/base/jquery.ui.progressbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/themes/base/jquery.ui.theme.css" rel="stylesheet" type="text/css" asp-append-version="true" />
      
     <script src="~/new_design/assets/js/modernizr.min.js"></script>
 </head>
 <body class="fixed-left">
-    <div Id="wrapper">
+    <div id="wrapper">
         <partial name="LayoutPartial/_MainMenuPartial"/>
         <partial name="LayoutPartial/_MenuLeft" />
 
         <div class="content-page">
-            <div class="content">
+            <div class="content"> 
                 <div class="container-fluid">
                     @RenderBody()
                 </div>
@@ -70,9 +72,9 @@
     <script src="~/new_design/assets/js/wow.min.js"></script>
     <script src="~/new_design/assets/js/jquery.nicescroll.js"></script>
     <script src="~/new_design/assets/js/jquery.scrollTo.min.js"></script>
-
-    @* <script src="~/bundles/jqueryval"></script> *@
-
+@* 
+    @Scripts.Render("~/bundles/jqueryval")
+ *@
     <script src="~/plugins/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
 
     <script src="~/new_design/plugins/select2/js/select2.min.js"></script>
@@ -82,12 +84,16 @@
     <script src="~/new_design/assets/js/moment.js"></script>
 
     <script src="~/new_design/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <script src="~/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+
     <script src="~/new_design/plugins/bootstrap-datepicker/locate/bootstrap-datepicker.ru.js"></script>
 
     <script src="~/new_design/plugins/trumbowyg/trumbowyg.min.js"></script>
     <script src="~/new_design/plugins/trumbowyg/langs/ru.min.js"></script>
 
-    @RenderSection("scripts", false)
+    <script src="~/new_design/assets/js/jquery.core.js"></script>
+    <script src="~/new_design/assets/js/jquery.app.js"></script>
+    <script src="~/js/jQuery/jquery.core.js"></script>
 
     <script src="~/js/moment/moment-with-locales.min.js"></script>
     <script src="~/plugins/custombox/dist/js/legacy.min.js"></script>
@@ -98,41 +104,20 @@
 
     <script src="~/plugins/notifyjs/dist/notify.min.js"></script>
     <script src="~/plugins/notifications/notify-metro.js"></script>
-
-    <script src="~/new_design/assets/js/jquery.core.js"></script>
-    <script src="~/new_design/assets/js/jquery.app.js"></script>
-
-    <script src="~/js/jQuery/jquery.core.js"></script>
-
+     
     <script src="~/js/admin/admin-layout.js"></script>
     <script src="~/plugins/list/list.min.js"></script>
     <script src="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.js"></script>
     <script src="~/plugins/lobibox/js/lobibox.js"></script>
     <script src="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.js"></script>
-    <script src="~/js/jquery.signalR-6.0.1/signalr.min.js"></script> 
+    <script src="~/js/jquery.signalR-6.0.1/signalr.min.js"></script>
 
-    <script type="text/javascript" charset="UTF-8">
+    @RenderSection("scripts", false)
+    <script>
         var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
-
-        function connect() {
-            var ws = new WebSocket("ws://192.168.34.9:8889");
-            ws.onopen = function () {
-                //alert("About to send data");
-                ws.send("89884241922"); // I WANT TO SEND THIS MESSAGE TO THE SERVER!!!!!!!!
-                //alert("Message sent!");
-            };
-
-            ws.onmessage = function (evt) {
-                //alert("About to receive data");
-                var received_msg = evt.data;
-                console.log("Message received = " + received_msg);
-            };
-            ws.onclose = function () {
-                // websocket is closed.
-                console.log("Connection is closed...");
-            };
-        };
     </script>
-     <script src="~/new_design/js/script.js"></script> 
+
+    <script src="~/new_design/js/script.js"></script>
+
 </body>
 </html>

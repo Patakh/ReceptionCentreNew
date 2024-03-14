@@ -1,12 +1,12 @@
-﻿@model  CallsViewModel
+﻿@model CallsViewModel
 <link href="~/new_design/plugins/datatables/datatable.custom.css" rel="stylesheet" />
-<div id="printable">
+<div id="printable" class="d-none">
     <div class="report_head" style="display:none;">
         <table width="100%">
             <tr valing="top"><td colspan="3"><div class="report_name">Реестр звонков</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/img/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -23,42 +23,44 @@
                 <td> </td>
             </tr>
         </table>
-        <!-- page 1 start-->
-        <div class="page">
-            @if (Model.CallList.Any())
-            {
-                <table class="table text-center">
-                    <thead>
+    </div>
+    <!-- page 1 start-->
+    <div class="page">
+        @if (Model.CallList.Any())
+        {
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th class="text-center"><b>№</b></th>
+                        <th class="text-center"><b>Телефон</b></th>
+                        <th class="text-center"><b>Тип</b></th>
+                        <th class="text-center"><b>Номер обращения</b></th>
+                        <th class="text-center"><b>Дата</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int i = 1;
+                    }
+                    @foreach (var item in Model.CallList)
+                    {
                         <tr>
-                            <th class="text-center"><b>№</b></th>
-                            <th class="text-center"><b>Телефон</b></th>
-                            <th class="text-center"><b>Тип</b></th>
-                            <th class="text-center"><b>Номер обращения</b></th>
-                            <th class="text-center"><b>Дата</b></th>
+                            <td>@(i++)</td>
+                            <td>@item.OutPhoneNumber</td>
+                            <td>@(item.OutCallType == 2 ? "Входящие" : "Исходящие") </td>
+                            <td class="text-left">@item.OutNumberAppeal</td>
+                            <td>@item.OutDateCall</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @{ int i = 1;}
-                        @foreach (var item in Model.CallList)
-                        {
-                            <tr>
-                                <td>@(i++)</td>
-                                <td>@item.OutPhoneNumber</td>
-                                <td>@(item.OutCallType == 2 ? "Входящие" : "Исходящие") </td>
-                                <td class="text-left">@item.OutNumberAppeal</td>
-                                <td>@item.OutDateCall</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="alert-no-record">
-                    <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
-                </div>
-            }
-        </div>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert-no-record">
+                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+            </div>
+        }
     </div>
 </div>
 <!-- table show-->
@@ -74,24 +76,26 @@
         <table id="datatable" class="table table-striped" style="margin-top: 0 !important">
             <thead>
                 <tr>
-                    <th class="text-center"><b>№</b></th>
-                    <th class="text-center"><b>Телефон</b></th>
-                    <th class="text-center"><b>Тип</b></th>
-                    <th class="text-center"><b>Номер обращения</b></th>
-                    <th class="text-center"><b>Дата</b></th>
+                    <th class="text-left p-2"><b>№</b></th>
+                    <th class="text-left p-2"><b>Телефон</b></th>
+                    <th class="text-left p-2"><b>Тип</b></th>
+                    <th class="text-left p-2"><b>Номер обращения</b></th>
+                    <th class="text-left p-2"><b>Дата</b></th>
                 </tr>
             </thead>
             <tbody>
-                @{ int i = 1;}
+                @{
+                    int i = 1;
+                }
                 @foreach (var item in Model.CallList)
                 {
-                <tr>
-                    <td data-type="numeric" class="text-right">@(i++)</td>
-                    <td>@item.OutPhoneNumber</td>
-                    <td>@(item.OutCallType == 2 ? "Входящие" : "Исходящие") </td>
-                    <td class="text-left">@item.OutNumberAppeal</td>
-                    <td>@item.OutDateCall.ToString("yyyy.MM.dd HH:mm")</td>
-                </tr>
+                    <tr>
+                        <td data-type="numeric" class="text-left p-2">@(i++)</td>
+                        <td class="text-left p-2">@item.OutPhoneNumber</td>
+                        <td class="text-left p-2">@(item.OutCallType == 2 ? "Входящие" : "Исходящие") </td>
+                        <td class="text-left p-2">@item.OutNumberAppeal</td>
+                        <td class="text-left p-2">@item.OutDateCall.ToString("yyyy.MM.dd HH:mm")</td>
+                    </tr>
                 }
             </tbody>
         </table>
@@ -103,11 +107,14 @@
         </div>
     }
 </div>
-<script>
-    $(document).ready(function () {
-        var oTable = $('#datatable').DataTable({ dom: 't<"row m-t-10 p-l-20-important p-b-10 m-r-15"<"col-sm-4"i><"col-sm-8"p>>' });
-        $('#searchTextReports').keyup(function () {
-            oTable.search($(this).val()).draw();
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var oTable = $('#datatable').DataTable({ dom: 't<"row m-t-10 p-l-20-important p-b-10 m-r-15"<"col-sm-4"i><"col-sm-8"p>>' });
+            $('#searchTextReports').keyup(function () {
+                oTable.search($(this).val()).draw();
+            });
         });
-    });
-</script>
+    </script>
+}
