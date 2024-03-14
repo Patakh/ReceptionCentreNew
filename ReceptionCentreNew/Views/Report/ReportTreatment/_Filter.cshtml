@@ -14,15 +14,17 @@
                     <div class="col-md-12">
                         <div class="form-group form-group-sm form-actions m-b-0">
                             <div class="row p-l-r-10">
-                                <div class="col-md-3 m-b-10">
+                                <div class="col-md-auto m-b-10">
                                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
-                                    @Html.DropDownList(nameof(Model.Period), new SelectList(new List<SelectListItem>
-                                    { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                    new SelectListItem {Text = "Неделя", Value = "2"},
-                                    new SelectListItem {Text = "Месяц", Value = "3"},
-                                    new SelectListItem {Text = "Год", Value = "4"},
-                                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    <div class="input-group">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text b-0"><i class="fa fa-calendar"></i></span>
+                                        </div>
+                                        <input class="form-control required" asp-for="Period" />
+                                    </div>
                                 </div>
+                                <input type="hidden" asp-for="DateStart" formenctype="text/plain" />
+                                <input type="hidden" asp-for="DateStop" formenctype="text/plain" />
                             </div>
                         </div>
                     </div>
@@ -47,8 +49,8 @@
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle waves-effect waves-light" data-toggle="dropdown" aria-expanded="false"> Действия <span class="caret"></span></button>
                         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                            <li class="dropdown-item"><a onclick="printTable()"><i class="fa fa-print m-r-5"></i> Печать</a></li>
-                            <li class="dropdown-item"><a onclick="downloadTableExcel()"><i class="fa fa-file-excel-o" aria-hidden="true"></i> Скачать в Excel</a></li>
+                            <li class="dropdown-item" onclick="printTable()"><a><i class="fa fa-print m-r-5"></i> Печать</a></li>
+                            <li class="dropdown-item" onclick="downloadTableExcel()"><a><i class="fa fa-file-excel-o" aria-hidden="true"></i> Скачать в Excel</a></li>
                         </ul>
                     </div>
                 </div>
@@ -61,38 +63,73 @@
 @section scripts {
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
     <script src="~/plugins/print/printThis.js"></script>
-}
-<script>
-    function IncomingReport() {
-        $.ajax({
-            type: "POST",
-            url: "/Report/ReportTreatmentTable",
-            data: $("#reportForm").serialize(),
-            success: function (data) {
-                $('#categoryTableContainer').html(data);
-                $('.btn-print').show();
+    <script>
+        $('form').validate();
+        $('#Period').daterangepicker({
+            startDate: '@DateTime.Now.AddMonths(-1)',
+            endDate: '@DateTime.Now',
+            maxDate: '@DateTime.Now',
+            autoApply: true,
+            opens: 'center',
+            locale: {
+                format: 'DD.MM.YYYY',
+                separator: ' - ',
+                applyLabel: 'Применить',
+                cancelLabel: 'Отмена',
+                weekLabel: 'Нед.',
+                customRangeLabel: 'Выбрать диапазон',
+                daysOfWeek: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+                monthNames: ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'],
             },
-            error: function () {
-                // Handle error
-            }
+            autoclose: true,
+            language: 'ru',
+        }).on('apply.daterangepicker', function (ev, picker) {
+            $('#DateStart').val(picker.startDate.format("YYYY.MM.DD HH:mm:ss"));
+            $('#DateStop').val(picker.endDate.format("YYYY.MM.DD HH:mm:ss"));
+            IncomingReport();
+        }).on('change', function () {
+            $('#DateStart').val($(this).val().split(' ')[0])
+            $('#DateStop').val($(this).val().split(' ')[2]);
+            IncomingReport();
         });
-    }
-    function printTable() {
-        $('#printable').printThis({
-            debug: false,
-            importCSS: false,
-            importStyle: false,
-            printContainer: true,
-            loadCSS: "~/new_design/css/new_print.css",
-            pageTitle: "",
-            removeInline: false,
-            printDelay: 333,
-            header: null,
-            formValues: true
-        });
-    }
 
-    function downloadTableExcel() {
-        location.href = '@Url.Action("DownloadExcelReportTreatment", "Report")?' + $('.form-horizontal').serialize();
-    }
-</script>
+        function IncomingReport() {
+            $.ajax({
+                type: "POST",
+                url: "/Report/ReportTreatmentTable",
+                data: $("#reportForm").serialize(),
+                success: function (data) {
+                    $('#categoryTableContainer').html(data);
+                    $('.btn-print').show();
+                },
+                error: function () {
+                    // Handle error
+                }
+            });
+        }
+        function printTable() {
+            $('#printable').printThis({
+                debug: false,
+                importCSS: false,
+                importStyle: false,
+                printContainer: true,
+                loadCSS: "~/new_design/css/new_print.css",
+                pageTitle: "",
+                removeInline: false,
+                printDelay: 8000,
+                header: null,
+                formValues: true,
+                beforePrint: function () {
+                    $('#printable').removeClass('d-none');
+                },
+                afterPrint: function () {
+                    $('#printable').addClass('d-none');
+                }
+            });
+        }
+
+        function downloadTableExcel() {
+            location.href = '@Url.Action("DownloadExcelReportTreatment", "Report")?' + $('.form-horizontal').serialize();
+        }
+    </script>
+}

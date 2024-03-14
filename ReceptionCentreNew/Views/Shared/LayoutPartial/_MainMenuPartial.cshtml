@@ -118,17 +118,17 @@
             </li>
         </ul>
     </nav>
-</div>
-<script>
-    function NewAppeal() {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("NewAppeal", "Appeal")',
-            success: function (data) {
-                $('#newModal').html(data);
-                $('#newModal').modal('show');
-            }
-        });
-    }
 
-</script>
+    <script>
+        function NewAppeal() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("NewAppeal", "Appeal")',
+                success: function (data) {
+                    $('#newModal').html(data);
+                    $('#newModal').modal('show');
+                }
+            });
+        }
+    </script>
+</div>

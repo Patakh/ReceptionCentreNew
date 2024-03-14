@@ -12,16 +12,16 @@ public partial class ReceptionCentreContext : DbContext
     /// <summary>
     /// Получение списка обращений
     /// </summary>
-    public virtual IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime? in_date_start, DateTime? in_date_stop, Guid? in_spr_type_id, Guid? in_SprTypeDifficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id)
+    public virtual IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime in_date_start, DateTime in_date_stop, Guid? in_spr_type_id, Guid? in_SprTypeDifficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id)
     {
-        NpgsqlParameter param1 = new("@in_spr_employees_id", NpgsqlDbType.Uuid) { Value = spr_employee_id ?? Guid.Empty };
+        NpgsqlParameter param1 = new("@in_spr_employees_id", NpgsqlDbType.Uuid) { Value = (object)spr_employee_id ?? DBNull.Value };
         NpgsqlParameter param2 = new("@in_date_start", NpgsqlDbType.Date) { Value = in_date_start };
         NpgsqlParameter param3 = new("@in_date_stop", NpgsqlDbType.Date) { Value = in_date_stop };
-        NpgsqlParameter param4 = new("@in_spr_type_id", NpgsqlDbType.Uuid) { Value = in_spr_type_id ?? Guid.Empty };
-        NpgsqlParameter param5 = new("@in_spr_type_difficulty_id", NpgsqlDbType.Uuid) { Value = in_SprTypeDifficulty_id ?? Guid.Empty };
-        NpgsqlParameter param6 = new("@in_spr_category_id", NpgsqlDbType.Uuid) { Value = in_spr_category_id ?? Guid.Empty };
-        NpgsqlParameter param7 = new("@in_spr_subject_treatment_id", NpgsqlDbType.Uuid) { Value = in_spr_subject_treatment_id ?? Guid.Empty };
-        NpgsqlParameter param8 = new("@in_spr_status_id", NpgsqlDbType.Integer) { Value = in_spr_status_id ?? 0};
+        NpgsqlParameter param4 = new("@in_spr_type_id", NpgsqlDbType.Uuid) { Value = (object)in_spr_type_id ?? DBNull.Value };
+        NpgsqlParameter param5 = new("@in_spr_type_difficulty_id", NpgsqlDbType.Uuid) { Value = (object)in_SprTypeDifficulty_id ?? DBNull.Value };
+        NpgsqlParameter param6 = new("@in_spr_category_id", NpgsqlDbType.Uuid) { Value = (object)in_spr_category_id ?? DBNull.Value };
+        NpgsqlParameter param7 = new("@in_spr_subject_treatment_id", NpgsqlDbType.Uuid) { Value = (object)in_spr_subject_treatment_id ?? DBNull.Value };
+        NpgsqlParameter param8 = new("@in_spr_status_id", NpgsqlDbType.Integer) { Value = (object)in_spr_status_id ?? DBNull.Value };
         return Database.SqlQueryRaw<DataAppealSelect>("SELECT * FROM data_appeal_select(@in_spr_employees_id,@in_date_start,@in_date_stop,@in_spr_type_id,@in_spr_type_difficulty_id,@in_spr_category_id,@in_spr_subject_treatment_id,@in_spr_status_id)", param1, param2, param3, param4, param5, param6, param7, param8).ToArray();
     }
     /// <summary>

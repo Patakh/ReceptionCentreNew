@@ -1,32 +1,33 @@
-﻿@model  ReportViewModel
-    @{ 
-        int e, m, c, o, q, s;
-        int sum;
-        int total_e = @Model.ReportTreatmentList.Sum(ss => ss.OutCountEarth);
-        int total_s = @Model.ReportTreatmentList.Sum(ss => ss.OutCountSocial);
-        int total_m = @Model.ReportTreatmentList.Sum(ss => ss.OutCountMigratory);
-        int total_c = @Model.ReportTreatmentList.Sum(ss => ss.OutCountCommercial);
-        int total_q = @Model.ReportTreatmentList.Sum(ss => ss.OutCountQuality);
-        int total_o = @Model.ReportTreatmentList.Sum(ss => ss.OutCountOther);
-        int totalSum = total_e + total_m + total_c + total_o + total_q + total_s;
-    }
+﻿@model ReportViewModel
+@{
+    int e, m, c, o, q, s;
+    int sum;
+    int total_e = @Model.ReportTreatmentList.Sum(ss => ss.OutCountEarth);
+    int total_s = @Model.ReportTreatmentList.Sum(ss => ss.OutCountSocial);
+    int total_m = @Model.ReportTreatmentList.Sum(ss => ss.OutCountMigratory);
+    int total_c = @Model.ReportTreatmentList.Sum(ss => ss.OutCountCommercial);
+    int total_q = @Model.ReportTreatmentList.Sum(ss => ss.OutCountQuality);
+    int total_o = @Model.ReportTreatmentList.Sum(ss => ss.OutCountOther);
+    int totalSum = total_e + total_m + total_c + total_o + total_q + total_s;
+}
 <style>
     .footable > thead > tr > th > span.footable-sort-indicator {
         display: initial;
     }
+
     .clip {
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
     }
 </style>
-<div id="printable">
+<div id="printable" class="d-none">
     <div class="report_head" style="display:none;">
         <table width="100%">
             <tr valing="top"><td colspan="3"><div class="report_name">Отчет по предмету обращения</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/img/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -39,72 +40,71 @@
                 <td>Период: <b>@ViewBag.Period</b></td>
             </tr>
         </table>
+    </div>
+    <!-- page 1 start-->
+    <div class="page">
+        @if (Model.ReportTreatmentList.Any())
+        {
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th class="text-center"><b>№</b></th>
+                        <th class="text-center"><b>Наименование МФЦ</b></th>
+                        <th class="text-center"><b>Земельные</b></th>
+                        <th class="text-center"><b>Социальные</b></th>
+                        <th class="text-center"><b>Миграционные</b></th>
+                        <th class="text-center"><b>Коммерческие</b></th>
+                        <th class="text-center"><b>Качество</b></th>
+                        <th class="text-center"><b>Другие</b></th>
+                        <th class="text-center"><b>Всего</b></th>
+                    </tr>
 
-        <!-- page 1 start-->
-        <div class="page">
-            @if (Model.ReportTreatmentList.Any())
-            {
-                <table class="table text-center">
-                    <thead>
-                        <tr>
-                            <th class="text-center"><b>№</b></th>
-                            <th class="text-center"><b>Наименование МФЦ</b></th>
-                            <th class="text-center"><b>Земельные</b></th>
-                            <th class="text-center"><b>Социальные</b></th>
-                            <th class="text-center"><b>Миграционные</b></th>
-                            <th class="text-center"><b>Коммерческие</b></th>
-                            <th class="text-center"><b>Качество</b></th>
-                            <th class="text-center"><b>Другие</b></th>
-                            <th class="text-center"><b>Всего</b></th>
-                        </tr>
-
-                    </thead>
-                    <tbody>                        
-                        @foreach (var item in Model.ReportTreatmentList)
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReportTreatmentList)
+                    {
                         {
-                            {
-                                e = item.OutCountEarth;
-                                s = item.OutCountSocial;
-                                m = item.OutCountMigratory;
-                                c = item.OutCountCommercial;
-                                q = item.OutCountQuality;
-                                o = item.OutCountOther;
-                                sum = e + m + c + o + q + s;
-                            }
-                            <tr>
-                                <td>@item.OutNum</td>
-                                <td class="text-left">@item.OutMfcName</td>
-                                <td>@item.OutCountEarth</td>
-                                <td>@item.OutCountSocial</td>
-                                <td>@item.OutCountMigratory</td>
-                                <td>@item.OutCountCommercial</td>
-                                <td>@item.OutCountQuality</td>
-                                <td>@item.OutCountOther</td>
-                                <td class="text-center"><b>@sum</b></td>
-                            </tr>
+                            e = item.OutCountEarth;
+                            s = item.OutCountSocial;
+                            m = item.OutCountMigratory;
+                            c = item.OutCountCommercial;
+                            q = item.OutCountQuality;
+                            o = item.OutCountOther;
+                            sum = e + m + c + o + q + s;
                         }
                         <tr>
-                            <td class="number-row p-l-20-important" style="min-width:50px">
-                            </td>
-                            <td>Итого</td>
-                            <td class="text-center"><b>@total_e</b></td>
-                            <td class="text-center"><b>@total_s</b></td>
-                            <td class="text-center"><b>@total_m</b></td>
-                            <td class="text-center"><b>@total_c</b></td>
-                            <td class="text-center"><b>@total_q</b></td>
-                            <td class="text-center"><b>@total_o</b></td>
-                            <td class="text-center"><b>@totalSum</b></td>
+                            <td>@item.OutNum</td>
+                            <td class="text-left">@item.OutMfcName</td>
+                            <td>@item.OutCountEarth</td>
+                            <td>@item.OutCountSocial</td>
+                            <td>@item.OutCountMigratory</td>
+                            <td>@item.OutCountCommercial</td>
+                            <td>@item.OutCountQuality</td>
+                            <td>@item.OutCountOther</td>
+                            <td class="text-center"><b>@sum</b></td>
                         </tr>
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <div class="alert-no-record">
-                    <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
-                </div>
-            }
-        </div>
+                    }
+                    <tr>
+                        <td class="number-row p-l-20-important" style="min-width:50px">
+                        </td>
+                        <td>Итого</td>
+                        <td class="text-center"><b>@total_e</b></td>
+                        <td class="text-center"><b>@total_s</b></td>
+                        <td class="text-center"><b>@total_m</b></td>
+                        <td class="text-center"><b>@total_c</b></td>
+                        <td class="text-center"><b>@total_q</b></td>
+                        <td class="text-center"><b>@total_o</b></td>
+                        <td class="text-center"><b>@totalSum</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <div class="alert-no-record">
+                <span style="color:#00545c;"><strong><i class="icon-info"></i></strong> Нет данных</span>
+            </div>
+        }
     </div>
 </div>
 
@@ -112,83 +112,83 @@
 <div>
     @if (Model.ReportTreatmentList.Any())
     {
-    <div class="table-responsive">        
-        <table id="reportTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-            <div class="input-group">
-                <div class="input-group-prepend align-items-center">
-                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+        <div class="table-responsive">
+            <table id="reportTable" class="journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                <div class="input-group">
+                    <div class="input-group-prepend align-items-center">
+                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input type="text" id="searchTextReport" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
                 </div>
-                <input type="text" id="searchTextReport" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-            </div>
-            <thead>
-                <tr>
-                    <th class="number-row p-l-20-important" style="min-width:50px">
-                        №
-                    </th>
-                    <th>МФЦ</th>
-                    <th data-type="numeric" class="text-center"><b>Земельные</b></th>
-                    <th data-type="numeric" class="text-center"><b>Социальные</b></th>
-                    <th data-type="numeric" class="text-center"><b>Миграционные</b></th>
-                    <th data-type="numeric" class="text-center"><b>Коммерческие</b></th>
-                    <th data-type="numeric" class="text-center"><b>Качество</b></th>
-                    <th data-type="numeric" class="text-center"><b>Другие</b></th>
-                    <th data-type="numeric" class="text-center">Всего</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.ReportTreatmentList)
-                {
-                    {
-                        e = item.OutCountEarth;
-                        s = item.OutCountSocial;
-                        m = item.OutCountMigratory;
-                        c = item.OutCountCommercial;
-                        q = item.OutCountQuality;
-                        o = item.OutCountOther;
-                        sum = e + m + c + o + q + s;
-                    }
+                <thead>
                     <tr>
-                        <td class="number-row p-l-20-important">
-                            @item.OutNum
-                        </td>
-                        <td><div class="clip" title="@item.OutMfcName"  style="max-width:250px;"> @item.OutMfcName </div></td>
-                        <td class="text-center">@item.OutCountEarth</td>
-                        <td class="text-center">@item.OutCountSocial</td>
-                        <td class="text-center">@item.OutCountMigratory</td>
-                        <td class="text-center">@item.OutCountCommercial</td>
-                        <td class="text-center">@item.OutCountQuality</td>
-                        <td class="text-center">@item.OutCountOther</td>
-                        <td class="text-center"><b>@sum</b></td>
+                        <th class="number-row p-l-20-important" style="min-width:50px">
+                            №
+                        </th>
+                        <th>МФЦ</th>
+                        <th data-type="numeric" class="text-center"><b>Земельные</b></th>
+                        <th data-type="numeric" class="text-center"><b>Социальные</b></th>
+                        <th data-type="numeric" class="text-center"><b>Миграционные</b></th>
+                        <th data-type="numeric" class="text-center"><b>Коммерческие</b></th>
+                        <th data-type="numeric" class="text-center"><b>Качество</b></th>
+                        <th data-type="numeric" class="text-center"><b>Другие</b></th>
+                        <th data-type="numeric" class="text-center">Всего</th>
                     </tr>
-                }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th class="number-row p-l-20-important" style="min-width:50px">
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.ReportTreatmentList)
+                    {
+                        {
+                            e = item.OutCountEarth;
+                            s = item.OutCountSocial;
+                            m = item.OutCountMigratory;
+                            c = item.OutCountCommercial;
+                            q = item.OutCountQuality;
+                            o = item.OutCountOther;
+                            sum = e + m + c + o + q + s;
+                        }
+                        <tr>
+                            <td class="number-row p-l-20-important">
+                                @item.OutNum
+                            </td>
+                            <td><div class="clip" title="@item.OutMfcName" style="max-width:250px;"> @item.OutMfcName </div></td>
+                            <td class="text-center">@item.OutCountEarth</td>
+                            <td class="text-center">@item.OutCountSocial</td>
+                            <td class="text-center">@item.OutCountMigratory</td>
+                            <td class="text-center">@item.OutCountCommercial</td>
+                            <td class="text-center">@item.OutCountQuality</td>
+                            <td class="text-center">@item.OutCountOther</td>
+                            <td class="text-center"><b>@sum</b></td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th class="number-row p-l-20-important" style="min-width:50px">
 
-                    </th>
-                    <th>Итого</th>
-                    <th data-type="numeric" class="text-center">@total_e</th>
-                    <th data-type="numeric" class="text-center">@total_s</th>
-                    <th data-type="numeric" class="text-center">@total_m</th>
-                    <th data-type="numeric" class="text-center">@total_c</th>
-                    <th data-type="numeric" class="text-center">@total_q</th>
-                    <th data-type="numeric" class="text-center">@total_o</th>
-                    <th data-type="numeric" class="text-center">@totalSum</th>
-                </tr>
-                <tr class="foot-row">
-                    <td colspan="4" class="text-left">
-                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                    </td>
-                    <td colspan="5">
-                        <div class="text-right">
-                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                        </div>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
+                        </th>
+                        <th>Итого</th>
+                        <th data-type="numeric" class="text-center">@total_e</th>
+                        <th data-type="numeric" class="text-center">@total_s</th>
+                        <th data-type="numeric" class="text-center">@total_m</th>
+                        <th data-type="numeric" class="text-center">@total_c</th>
+                        <th data-type="numeric" class="text-center">@total_q</th>
+                        <th data-type="numeric" class="text-center">@total_o</th>
+                        <th data-type="numeric" class="text-center">@totalSum</th>
+                    </tr>
+                    <tr class="foot-row">
+                        <td colspan="4" class="text-left">
+                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                        </td>
+                        <td colspan="5">
+                            <div class="text-right">
+                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     }
     else
     {
@@ -197,18 +197,21 @@
         </div>
     }
 </div>
-<script>
-    $(document).ready(function () {
-        var filtering = $('#reportTable');
-        filtering.footable();
-        $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
-        $('#tr_count').text($('.footable tbody tr').length);
 
-        // Search input
-        $('#searchTextReport').keyup(function (evt) {
-            evt.preventDefault();
-            filtering.trigger('footable_filter', { filter: $(this).val() });
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            var filtering = $('#reportTable');
+            filtering.footable();
             $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+            $('#tr_count').text($('.footable tbody tr').length);
+
+            // Search input
+            $('#searchTextReport').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
+            });
         });
-    });
     </script>
+}

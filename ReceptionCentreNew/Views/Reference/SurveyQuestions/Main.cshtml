@@ -7,7 +7,6 @@
 
 <div>
     <div id="surveyQuestionContainer">
-
     </div>
 </div>
 
@@ -15,7 +14,10 @@
     <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
 
     <script>
-         $(document).ready(function () {
+        $(document).ready(function () {
+            LoadTable();
+        });
+        function LoadTable() {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableSurveyQuestions", "Reference")',
@@ -23,7 +25,7 @@
                     $('#surveyQuestionContainer').html(data);
                 }
             })
-        });
+        }
     </script>
 
     <!--Сотрудники-->

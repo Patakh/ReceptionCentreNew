@@ -17,14 +17,14 @@
                     @{
                         int i = Model.PageInfo.CurrentPage * 10 - 9;
                     }
-                    @foreach (var item in Model.SourceModel.OrderByDescending(o => o.DateAdd) )
+                    @foreach (var item in Model.SourceModel.OrderByDescending(o => o.DateAdd))
                     {
                         <tr>
                             <td>
                                 @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
                             </td>
                             <td class="vertical-middle p-l-20-important text-nowrap">
-                                 @item.ApplicantName
+                                @item.ApplicantName
                             </td>
                             <td class="vertical-middle">
                                 @item.Contact
@@ -47,17 +47,13 @@
                                     {
                                         if (item.Type == SourcesType.call)
                                         {
-                                            <form asp-action="NewAppeal" asp-controller="Applicant" asp-route-CallId="@item.Id" asp-route-ApplicantName="@(item.ApplicantName != "Заявитель не найден!" ? item.ApplicantName : "")" asp-route-Modal="true" method="post" data-ajax="true" data-ajax-update="#newModal" data-ajax-success="$('#newModal').modal('show');" class="form-submit">
-                                                <button type="submit" title="Создать обращение на основе звонка" class="btn waves-effect waves-light btn-sm bg-custom"><i class="fa fa-plus" style="color:white;"></i></button>
-                                            </form>
+                                            <button type="button" onclick="NewAppeal('@item.Id')" title="Создать обращение на основе звонка" class="btn waves-effect waves-light btn-sm bg-custom"><i class="fa fa-plus" style="color:white;"></i></button>
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    <form asp-action="AppealInfo" asp-controller="Appeal" asp-route-number="@item.Option" asp-route-Modal="true" method="post" data-ajax="true" data-ajax-update="#newModal" data-ajax-success="$('#newModal').modal('show');" class="form-submit">
-                                        <button type="submit" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger"><i class="fa fa-chevron-right"></i></button>
-                                    </form>
+                                    <button type="button" onclick="Info('@item.NumberAppeal','@true')" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger"><i class="fa fa-chevron-right"></i></button>
                                 }
                                 @if (item.Type == SourcesType.call)
                                 {
@@ -65,9 +61,7 @@
                                 }
                                 @if (item.Type == SourcesType.email)
                                 {
-                                    <form asp-action="PartialModalReadEmail" asp-controller="EmaOptionew" asp-route-emailId="@item.Id" method="post" data-ajax="true" data-ajax-update="#newModal" data-ajax-success="$('#newModal').modal('show');" class="form-submit">
-                                        <button type="submit" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger"><i class="fa fa-chevron-right"></i></button>
-                                    </form>
+                                    <button onclick="InfoEmail('@item.Id')" type="button" title="Перейти к обращению" class="btn waves-effect waves-light btn-sm btn-danger"><i class="fa fa-chevron-right"></i></button>
                                 }
                                 <button type="button" class="on-default text-custom btn btn-link btn-tooltip-info" data-tooltip-info='{ "appeal_number": "@item.NumberAppeal", "EmployeesFio": "@item.EmployeesName"}'>
                                     <i class="ion-ios7-information-outline"></i>
@@ -90,7 +84,7 @@
                     </td>
                     <td colspan="4">
                         <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                           @*  @Html.PageLinks(Model.PageInfo, x =>  ) *@
+                            @*  @Html.PageLinks(Model.PageInfo, x =>  ) *@
                         </div>
                     </td>
                 </tr>
@@ -102,6 +96,46 @@
     </div>
 </div>
 <script>
+    function InfoEmail(emailId) {
+        $.ajax({
+            url: '@Url.Action("PartialModalReadEmail", "Appeal")',
+            type: 'POST',
+            data: {
+                emailId: emailId,
+            },
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            },
+        });
+    }
+    function Info(number, modal) {
+        $.ajax({
+            url: '@Url.Action("AppealInfo", "Appeal")',
+            type: 'POST',
+            data: {
+                number: number, modal: modal
+            },
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            },
+        });
+    }
+    function NewAppeal(id) {
+        $.ajax({
+            url: '@Url.Action("NewAppeal", "Appeal")', 
+            type: 'POST',
+            data: {
+                callId: id
+            },
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            },
+        });
+    }
+
     $(document).ready(function () {
         $('#loadPageLink').on('click', function (e) {
             e.preventDefault(); // Prevent default link behavior
@@ -146,8 +180,8 @@
 
     // Добавляем возможность выбора строки в таблице
     if ($('#sourcesTable tr:not(.thead-row, .tfoot-row)'))
-    $('#sourcesTable tr:not(.thead-row, .tfoot-row)').click(function () {
-        $(this).siblings('tr:not(.thead-row)').removeClass('active');
-        $(this).addClass('active');
-    });
+        $('#sourcesTable tr:not(.thead-row, .tfoot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
+        });
 </script>

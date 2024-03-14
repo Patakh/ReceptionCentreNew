@@ -10,7 +10,7 @@
         <div class="modal-body">
             <div class="card-box">
                 <div class="text-center">
-                    <img class="swal2-image rounded-circle" src="/Content/new_design/assets/images/users/avatar-6.jpg" width="100" height="100">
+                    <img class="swal2-image rounded-circle" src="~/new_design/assets/images/users/avatar-6.jpg" width="100" height="100">
                     <h5 class="">@Model.ApplicantName</h5>
                     <h6 class="">@Model.PhoneNumber</h6>
                 </div>
@@ -51,7 +51,7 @@
                     data: { appealId: '@Model.Id', PhoneNumber: PhoneNumber },
                     success: function (result) {
                         //var socket = new WebSocket("ws://192.168.35.190:8886");
-                        var socket = new WebSocket("ws://localhost:8886");
+                        var socket = new WebSocket("wss://localhost:8889");
                         socket.onopen = function () {
                             socket.send(result);
                         };

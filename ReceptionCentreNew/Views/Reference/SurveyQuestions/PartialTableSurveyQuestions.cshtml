@@ -8,20 +8,20 @@
                 <button type="button" onclick="Add()" class="btn btn-link" style="padding-top:5px; padding-right:10px;"><i class="fa fa-plus" style="font-size: 20px;"></i></button>
             </div>
         </div>
-    </div>
-
-    @if (Model.SprSurveyQuestionList.Any())
-    {
-        <div class="table-responsive">
-            <table id="SurveyQuestionsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextSurveyQuestions" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+    </div> 
+    <div class="table-responsive">
+        <table id="SurveyQuestionsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
-
+                <input type="text" id="searchTextSurveyQuestions" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;">
+                    <i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i>
+                </button>
+            </div>
+            @if (Model.SprSurveyQuestionList.Any())
+            {
                 <tbody>
                     @foreach (var item in Model.SprSurveyQuestionList)
                     {
@@ -39,7 +39,7 @@
 
                                 <button class="on-default btn btn-link" onclick="ShowSurveyAnswers('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Варианты ответов">
                                     <i class="md md-people-outline"></i>
-                                    <span class="badge badge-xs">@(item.SprSurveyAnswer.Any() ? (object)item.SprSurveyAnswer.Count : null)</span>
+                                    <span class="badge badge-xs">@(item.SprSurveyAnswer.Where(s => s.IsRemove == false).Any() ? (object)item.SprSurveyAnswer.Where(s => s.IsRemove == false).Count() : null)</span>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
@@ -50,37 +50,41 @@
                                     }
                                     else
                                     {
-                                        <button class="btn btn-link recovery-row" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                        <button class="btn btn-link recovery-row" onclick="Recovery('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                     }
                                 }
                             </td>
                         </tr>
                     }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="2">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+
+                </tbody> 
+            }
+            else
+            {
+                <div class="alert-no-record">
+                    <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
+                </div>
+            }
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="2">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
+    $('.btn-cancel').on('click', function () {
+        $('#newModal').modal('hide');
+    });
     function Add() {
         $.ajax({
             url: '@Url.Action("PartialModalAddSurveyQuestion", "Reference")',
@@ -101,7 +105,6 @@
                 $('#newModal').modal('show');
             },
             error: function () {
-                // Handle error
             }
         });
     }
@@ -112,9 +115,10 @@
             data: { id: id },
             success: function (data) {
                 successDelete();
-                $('#employeesPillContainer').html(data);
+                $('#surveyQuestionContainer').html(data); 
             }
         });
+        LoadTable();
     }
 
     function ShowSurveyAnswers(id) {
@@ -126,7 +130,19 @@
                 $('#newModal').html(data);
                 $('#newModal').modal('show');
             }
-        });
+        }); 
+    }
+
+    function Recovery(id) {
+        var paramObject = {
+            url: '@Url.Action("PartialTableSurveyQuestions", "Reference")',
+            params: { id: id },
+            onSuccess: function (data) {
+                $('#surveyQuestionContainer').html(data);
+            }
+        }
+        removeRecovery(paramObject);
+        LoadTable();
     }
 
     $(document).ready(function () {
@@ -171,19 +187,6 @@
             }
         });
     });
-
-    $('#surveyQuestionContainer table td button.recovery-row').click(function () {
-        var questionId = $(this).closest('tr').data('questionId');
-        var paramObject = {
-            url: '@Url.Action("SubmitSurveyQuestionRecovery", "Reference")',
-            params: { questionId: questionId },
-            onSuccess: function (data) {
-                $('#surveyQuestionContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
-
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
         $(this).siblings('tr:not(.thead-row)').removeClass('active');

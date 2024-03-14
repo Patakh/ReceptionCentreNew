@@ -131,20 +131,24 @@ namespace ReceptionCentreNew.Controllers
         }
 
         [HttpPost]
-        public IActionResult SocketJitsi()
+        public async Task<IActionResult> SocketJitsi()
         {
             if (!serverSocket.IsBound)
             {
                 serverSocket.Bind(new IPEndPoint(IPAddress.Any, 8889));
                 serverSocket.Listen(128);
                 serverSocket.BeginAccept(null, 0, OnAccept, null);
+
+                // Асинхронное ожидание завершения привязки
+                await Task.Factory.FromAsync(serverSocket.BeginAccept, serverSocket.EndAccept, null);
             }
+
             _User = SignInManager.Context.User.Identity.Name;
             return Json("server socket jitsi -" + serverSocket.IsBound);
         }
+
         public async void OnAccept(IAsyncResult result)
-        {
-            var user = User;
+        { 
             byte[] buffer = new byte[1024];
             byte[] ansver = new byte[1024]; ;
             try
@@ -211,6 +215,10 @@ namespace ReceptionCentreNew.Controllers
 
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
             finally
             {
                 if (serverSocket != null && serverSocket.IsBound)
@@ -270,9 +278,8 @@ namespace ReceptionCentreNew.Controllers
         }
 
         [AllowAnonymous]
-        public async Task signalRAlerts(string message)
-        {
-            await HubContext.Clients.User(_User).SendAsync("incomingCall", message);
-        }
+        public async Task signalRAlerts(string message) =>
+            await HubContext.Clients.User(_User).SendAsync("sendCommentt", message);
+
     }
 }

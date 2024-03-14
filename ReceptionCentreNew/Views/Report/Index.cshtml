@@ -7,54 +7,39 @@
     <div class="col-lg-9 col-md-8">
         <div class="card-box" id="report-main-content">
         </div>
-    </div> 
+    </div>
 </div>
 
-@section scripts {
-    <script src="~/plugins/print/printThis.js"></script>
-    <script>
-        $('.report-title-box').click(function () {
+<script src="~/plugins/print/printThis.js"></script> 
 
-        });
-        $(function () {
-            $('.report-title-box:first').click();
-        });
-        $(document).on('click', '.report-title-box', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            var $this = $(this);
-            var $url = $this.data('reportUrl')
-            var $loader = '<div class="form-content default"><div class="load-container load7"><div class="loader-form">Loading...</div></div></div>';
+<script>
+   
+    $('.report-title-box').click(function () {
+    });
 
-            $.ajax({
-                type: 'GET',
-                data: { IsMainRequest: true },
-                url: '/Report/' + $url,
-                beforeSend: function () {
-                    $('.report-title-box').removeClass('active');
-                    $this.addClass('active');
-                },
-                success: function (content) {
-                    $('#report-main-content').html(content);
-                }
-            });
-        });
+    $(function () {
+        $('.report-title-box:first').click();
+    });
 
-        $(document).on('click', '[data-report-print]', function (event) {
-            event.preventDefault();
-            event.stopPropagation();
-            $("#printable").printThis({
-                debug: false,
-                importCSS: true,
-                importStyle: true,
-                printContainer: true,
-                loadCSS: "Content/css/print.css",
-                pageTitle: "",
-                removeInline: false,
-                printDelay: 333,
-                header: null,
-                formValues: true
-            });
-        });
-    </script>
-}
+    $(document).on('click', '.report-title-box', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var $this = $(this);
+        var $url = $this.data('reportUrl')
+        var $loader = '<div class="form-content default"><div class="load-container load7"><div class="loader-form">Loading...</div></div></div>';
+
+        $.ajax({
+            type: 'GET',
+            data: { IsMainRequest: true },
+            url: '/Report/' + $url,
+            beforeSend: function () {
+                $('.report-title-box').removeClass('active');
+                $this.addClass('active');
+            },
+            success: function (content) {
+                $('#report-main-content').html(content); 
+            }
+        }); 
+    });
+
+</script> 

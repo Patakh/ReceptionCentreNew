@@ -1,12 +1,12 @@
 ﻿@{
-    ViewBag.Title = "Исходящие"; 
+    ViewBag.Title = "Исходящие";
 }
 
 <!-- Все звонки -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-  
+
 <div class="card-box p-3">
-    <form id="sourcesTableContainer"  class="form-horizontal">
+    <form id="FormSearch" class="form-horizontal">
         <input type="hidden" name="action_" id="action_" value="1" />
         <div id="collapseExample" class="collapse show">
             <div class="row p-l-r-10">
@@ -14,11 +14,11 @@
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Источник</label>
                     @Html.DropDownList("sources", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Звонок", Value = "1"},
-                                                   new SelectListItem {Text = "E-mail", Value = "2"},
-                                                   new SelectListItem {Text = "Смс", Value = "3"},
-                                                   new SelectListItem {Text = "Файл", Value = "4"},
-                                               }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Звонок", Value = "1"},
+                    new SelectListItem {Text = "E-mail", Value = "2"},
+                    new SelectListItem {Text = "Смс", Value = "3"},
+                    new SelectListItem {Text = "Файл", Value = "4"},
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Сотрудник</label>
@@ -27,19 +27,19 @@
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Период</label>
                     @Html.DropDownList("period", new SelectList(new List<SelectListItem>
-                                               { new SelectListItem {Text = "Сегодня", Value = "1"},
-                                                   new SelectListItem {Text = "Неделя", Value = "2"},
-                                                   new SelectListItem {Text = "Месяц", Value = "3"},
-                                                   new SelectListItem {Text = "Год", Value = "4"},
-                                               }, "Value", "Text", 1), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Сегодня", Value = "1"},
+                    new SelectListItem {Text = "Неделя", Value = "2"},
+                    new SelectListItem {Text = "Месяц", Value = "3"},
+                    new SelectListItem {Text = "Год", Value = "4"},
+                    }, "Value", "Text", 1), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
 
                 <div class="form-group col-sm-3">
                     <label class="font-12 text-muted p-t-0 m-b-0">Прикрепленные</label>
                     @Html.DropDownList("isConnected", new SelectList(new List<SelectListItem>
-                                       { new SelectListItem {Text = "Да", Value = "1"},
-                                           new SelectListItem {Text = "Нет", Value = "2" }
-                                       }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
+                    { new SelectListItem {Text = "Да", Value = "1"},
+                    new SelectListItem {Text = "Нет", Value = "2" }
+                    }, "Value", "Text"), "Все", new Dictionary<string, object> { { "class", "form-control select2-nosearch" } })
                 </div>
             </div>
         </div>
@@ -54,63 +54,62 @@
                 </button>
             </div>
             <div class="col text-right">
-                <button id="button_find_sources" onclick="Seach()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
+                <button id="button_find_sources" onclick="Search()" class="btn btn-primary waves-effect waves-light" type="button"><i class="ion-ios7-search-strong m-r-5"></i> Найти</button>
             </div>
-        </div> 
+        </div>
     </form>
 
 </div>
 <div id="sourcesTableContainer">
-
 </div>
 @section scripts {
     <script>
-        function Seach() {
+        function Search() {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableSources", "Sources")',
-                data: $("#EditAppealForm").serialize(),
+                data: $("#FormSearch").serialize(),
                 success: function (data) {
                     $('#sourcesTableContainer').html(data);
                 }
             });
         }
-    $(document).ready(function () {
-        $(".select2").select2();
-            Seach()
-    });
+        $(document).ready(function () {
+            $(".select2").select2();
+            Search()
+        });
         $(document).on('change', '#searchTextSources', function () {
-        var action = $('#action_').val();
-        var sources = $('#sources').val();
-        var sprEmployeeId = $('#sprEmployeeId').val();
-        var period = $('#period').val();
+            var action = $('#action_').val();
+            var sources = $('#sources').val();
+            var sprEmployeeId = $('#sprEmployeeId').val();
+            var period = $('#period').val();
             var is_connected = $('#isConnected').val();
-             $.ajax({
+            $.ajax({
                 url: '@Url.Action("PartialTableSources", "Sources")',
-                 type: 'POST',
-                 data: { search: $(this).val(), action_: action, sources: sources, period: period, sprEmployeeId: sprEmployeeId, is_connected: is_connected },
-                 success: function (data) {
-                     $('#sourcesTableContainer').html(data);
-                     $('#searchTextSources').focus();
-                     var tmpStr = $('#searchTextSources').val();
-                     $('#searchTextSources').val('');
-                     $('#searchTextSources').val(tmpStr);
-                 }
-             });
+                type: 'POST',
+                data: { search: $(this).val(), action_: action, sources: sources, period: period, sprEmployeeId: sprEmployeeId, is_connected: is_connected },
+                success: function (data) {
+                    $('#sourcesTableContainer').html(data);
+                    $('#searchTextSources').focus();
+                    var tmpStr = $('#searchTextSources').val();
+                    $('#searchTextSources').val('');
+                    $('#searchTextSources').val(tmpStr);
+                }
+            });
         });
 
-        // $(document).on('click', '#sourcesTable .btn-audio',function () {
-        //     var id = $(this).data('id');
-        //     $.ajax({
-        //         url: '@Url.Action("PartialTableSources", "Sources")',
-        //         type: 'GET',
-        //         data: { id: id },
-        //         success: function (data) {
-        //             $('#sources_play_content').html(data);
-        //             $('#sources_play_content audio').trigger("play");
-        //         }
-        //     });
-        // })
+        $(document).on('click', '#sourcesTable .btn-audio', function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("Play_Audio", "Call")',
+                type: 'GET',
+                data: { id: id },
+                success: function (data) {
+                    $('#sources_play_content').html(data);
+                    $('#sources_play_content audio').trigger("play");
+                }
+            });
+        })
     </script>
     <!-- Все звонки -->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>

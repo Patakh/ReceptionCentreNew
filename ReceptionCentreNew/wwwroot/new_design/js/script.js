@@ -1,7 +1,7 @@
 
 var ws = null;
 function connect() {
-    ws = new WebSocket("wss://192.168.34.9:8886");
+    ws = new WebSocket("wss://192.168.34.9:8889");
     ws.onopen = function () {
         //alert("About to send data");
         ws.send("89604195432"); // I WANT TO SEND THIS MESSAGE TO THE SERVER!!!!!!!!
@@ -120,12 +120,11 @@ $(document).ready(function () {
         });
     });
 
-    if (document.visibilityState == "visible") {
-        console.log("первый вызов _hubStart");
-        _hubStart();
-    } 
-    var notificationhub = connection.connection;
-    notificationhub.client.sendCommentt = function (message) {
+    connection.on("ReceiveNotification", function (user, message) {
+        console.log(user + " says " + message);
+    });
+
+    connection.on("sendComment", function (message) {
         Lobibox.notify('info', {
             title: 'Уведомление!',
             size: 'normal',
@@ -135,57 +134,71 @@ $(document).ready(function () {
             sound: true,
             delay: false,
         });
+
         //$.Notification.autoHideFalseNotify('custom', 'right top false', 'Новое уведомление!', message);
         console.log("Получено уведомление");
-    };
+    });
+
     // входящий звонок
-    notificationhub.client.incomingCall = function (message) {
+    connection.on("incomingCall", function (message) {
         showIncomingCallAlert(message);
         console.log("Звонок");
-    };
+    });
 
-    notificationhub.client.ReturnCallId = function (message) {
+    connection.on("ReturnCallId", function (message) {
         $('#jitsi_call_id').val(message); // Присвоение Id-звонка
         console.log(message, "ИД звонка от звонилки");
-    };
+    });
 
-    notificationhub.client.callback = function (message) {
+    connection.on("callback", function (message) {
         CallBackCountRefresh();
         CallBackRefresh();
-    };
+    });
+
+    connection.on("get_online_users", function (result) {
+        console.log(Object.keys(result));
+        var connectionId = connection.hub.Id;
+        console.log(connectionId);
+    })
+     
+    if (document.visibilityState == "visible") {
+        console.log("первый вызов _hubStart");
+        _hubStart();
+    }
+
+    function _hubStart() {
+        connection.start().then(function () {
+            connection.invoke("sendNotification", "Hello from client");
+
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+     
+    document.addEventListener('visibilitychange', handleVisibilityChange, false);
 
     function handleVisibilityChange() {
         if (document.visibilityState == "visible") {
-            _hubStart();
-            console.log('Hub connection start');
+            //connection.onreconnecting();
+            _hubStart(); 
         } else {
-            notificationhub.stop();
-            console.log('Hub connection stop');
+            if (connection.state == 'Connected') {
+                connection.stop();
+            } 
         }
     }
-    document.addEventListener('visibilitychange', handleVisibilityChange, false);
 
-    function _hubStart() {
-        notificationhub.start().done(function () {
-
-            notificationhub.get_online_users().done(function (result) {
-                console.log(Object.keys(result));
-                var connectionId = connection.hub.Id;
-                console.log(connectionId)
-            })
-        });
-    }
     $.ajax({
         async: true,
-        url: 'Socket/SocketJitsi',
+        url:'../Socket/SocketJitsi' ,
         type: 'POST',
         success: function (data) {
-            console.log(data);
+            console.log('SocketJitsi', data);
         }
     });
     $.ajax({
         async: true,
-        url: 'Common/GetEmails',
+        url: '../Common/GetEmails',
         type: 'POST',
         success: function (data) {
             $('#menu_input_email').text(data);
@@ -194,12 +207,13 @@ $(document).ready(function () {
 
     $.ajax({
         async: true,
-        url: 'Common/GetNotifications',
+        url: '../Common/GetNotifications',
         type: 'POST',
         success: function (data) {
             $('#menu_input_notification').text(data);
         }
     });
+
 });
 // Callback
 $('#callBackHeadBtn').on('click', function (e) {
@@ -211,7 +225,7 @@ function CallBackCustomer(Id, fio, tel) {
         url: "/Appeal/_CallBackPhone",
         data: { CallbackId: Id, CustomerFio: fio, tel: tel }, // обратный звонок type 2
         success: function (result) {
-            var socket = new WebSocket("wss://localhost:8886");
+            var socket = new WebSocket("wss://localhost:8889");
             socket.onopen = function () {
                 socket.send(result);
             };
@@ -541,7 +555,7 @@ var onCallModalBtnClick = function (e, d) {
                 success: function (result) {
                     //var socket = new WebSocket("ws://192.168.35.190:8886");
                     console.log('звонок' + callNumber.value);
-                    var socket = new WebSocket("ws://localhost:8886");
+                    var socket = new WebSocket("wss://localhost:8889");
                     socket.onopen = function () {
                         socket.send(result);
                     };

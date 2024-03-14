@@ -13,7 +13,6 @@ namespace ReceptionCentreNew.Controllers.Appeal;
 [Authorize(Roles = "superadmin, admin, operator, expert")]
 public partial class AppealController : Controller
 {
-
     // GET: Appeal
     public IActionResult Appeals()
     {
@@ -225,7 +224,7 @@ public partial class AppealController : Controller
         ViewBag.SprEmployees = new SelectList(_repository.SprEmployees
                      .Where(w => w.IsRemove != true && w.Id != employee.Id && w.SprEmployeesRoleJoin.FirstOrDefault().SprEmployeesRoleId != 1 && w.SprEmployeesRoleJoin.FirstOrDefault() != null)
                      .OrderBy(o => o.SprEmployeesJobPos.JobPosName)
-                     .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", "JobPosName", _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id.ToString());
+                     .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }), "Id", "EmployeesName", _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id);
         ViewBag.SprEmployeesMessageTemplates = new SelectList(_repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employee.Id).OrderByDescending(o => o.Sort), "Id", "MessageText");
         return PartialView("AppealDetails/Comments/PartialTableCommentsView", model);
     }

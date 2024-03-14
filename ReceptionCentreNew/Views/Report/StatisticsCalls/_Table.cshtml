@@ -5,7 +5,7 @@
             <tr valing="top"><td colspan="3"><div class="report_name">Количество звонков</div></td></tr>
             <tr>
                 <td>
-                    <img src="~/images/logo.png" align="top" height="80%" style="color:red" />
+                    <img src="~/img/logo.png" align="top" height="80%" style="color:red" />
                 </td>
                 <td valign="top" width="60%">
                     <span class="org_name">Многофункциональный центр Республики Дагестан. Колл-центр</span>
@@ -27,40 +27,41 @@
             <table class="table text-center">
                 <thead>
                     <tr>
-                        <th class="text-left"><b>Наименование</b></th>
-                        <th class="text-center" style="width:40mm"><b>Количество</b></th>
+                        <th class=" text-left p-2"><strong>Наименование</strong></th>
+                        <th class=" text-left p-2" style="width:40mm"><strong>Количество</strong></th>
                     </tr>
 
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="text-left"><b>Типы</b></td>
+                        <td class=" text-left p-2"><strong>Типы</strong></td>
                         <td></td>
                     </tr>
                     @foreach (var item in Model.CallList.GroupBy(g => g.OutCallType))
                     {
                         <tr>
-                            <td class="text-left">@(item.Key == 2 ? "Входящие" : "Исходящие")</td>
-                            <td>@item.Count()</td>
+                            <td class =" text-left p-2">
+                                @(item.Key == 2 ? "Входящие" : "Исходящие")</td>
+                            <td class=" text-left p-2">@item.Count()</td>
                         </tr>
                     }
                     <tr>
-                        <td class="text-left"><b>Прикрепленные</b></td>
+                        <td class=" text-left p-2"><strong>Прикрепленные</strong></td>
                         <td></td>
                     </tr>
                     <tr>
-                        <td class="text-left">Да</td>
-                        <td>@Model.CallList.Where(w => w.OutNumberAppeal != null).Count()</td>
+                        <td class ="text-left p-2">Да</td>
+                        <td class=" text-left p-2">@Model.CallList.Where(w => w.OutNumberAppeal != null).Count()</td>
                     </tr>
                     <tr>
-                        <td class="text-left">Нет</td>
-                        <td>@Model.CallList.Where(w => w.OutNumberAppeal == null).Count()</td>
+                        <td class=" text-left p-2">Нет</td>
+                        <td class=" text-left p-2">@Model.CallList.Where(w => w.OutNumberAppeal == null).Count()</td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td class="text-left"><b>Всего</b></td>
-                        <td><b>@Model.CallList.Count()</b></td>
+                        <td class=" text-left p-2"><strong>Всего</strong></td>
+                        <td class=" text-left p-2"><strong>@Model.CallList.Count()</strong></td>
                     </tr>
                 </tfoot>
             </table>

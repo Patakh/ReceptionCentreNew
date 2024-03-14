@@ -20,18 +20,19 @@ public class SystemController : Controller
     public IActionResult PartialTableSettings()
     {
         List<SprSetting> model = _repository.SprSetting.ToList();
-        return View(model);
+        return View("~/Views/System/Settting/PartialTableSettings.cshtml", model);
     }
 
+    [HttpGet]
     public IActionResult EditSetting(int settingId)
     {
         var model = _repository.SprSetting.Where(w => w.Id == settingId).SingleOrDefault();
-        return PartialView("System/PartialModalEditSettting", model);
+        return PartialView("~/Views/System/Settting/PartialModalEditSettting.cshtml", model);
     }
     public IActionResult SubmitSettingSave(SprSetting setting)
     {
         _repository.Update(setting);
-        return RedirectToAction("System/PartialTableSettings");
+        return RedirectToAction("~/Views/System/Settting/PartialTableSettings.cshtml");
     }
     public IActionResult ChangeLogs()
     {

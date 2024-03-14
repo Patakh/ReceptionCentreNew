@@ -48,7 +48,6 @@ public class AccountController : Controller
                     new Claim(ClaimTypes.Role, role), 
                 ]; 
 
-
                 ClaimsIdentity identity = new(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));

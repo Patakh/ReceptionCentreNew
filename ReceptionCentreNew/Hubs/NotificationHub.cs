@@ -75,7 +75,7 @@ public class ConnectionMapping<T>
 public class NotificationHub : Hub
 {
     private readonly static ConnectionMapping<string> _connections  = new();
-
+      
     public override async Task OnConnectedAsync()
     {
         string name = Context.User.Identity.Name;
@@ -85,9 +85,7 @@ public class NotificationHub : Hub
           await base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
-    
-    
+    public override async Task OnDisconnectedAsync(Exception exception) 
     {
         string name = Context.User.Identity.Name;
 
@@ -96,23 +94,25 @@ public class NotificationHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    public async Task SendNotification(string message)
+    public async Task sendNotification(string message)
     {
         string name = Context.User.Identity.Name;
 
-        await Clients.All.SendAsync("ReceiveNotification", name, message);
+        await Clients.All.SendAsync("sendNotification", name, message);
     }
-    public async Task SendComment(string message)
+
+    public async Task sendComment(string message)
     {
-        await Clients.All.SendAsync("IncomingCall", message);
+        await Clients.All.SendAsync("sendComment", message);
     }
-    public async Task IncomingCall(string message)
+    public async Task incomingCall(string message)
     {
         string name = Context.User.Identity.Name;
 
         await Clients.User(name).SendAsync("incomingCall", message);
     }
-    public Dictionary<string, HashSet<string>> GetOnlineUsers()
+
+    public Dictionary<string, HashSet<string>> get_online_users()
     {
         return _connections.GetAllConnections();
     }
