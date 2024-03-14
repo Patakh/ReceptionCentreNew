@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Количество звонков"; 
+    ViewBag.Title = "Количество звонков";
 }
 <link href="~/new_design/plugins/Charts/css/c3.css" rel="stylesheet" />
 @* @Html.MvcSiteMap().SiteMapPath() *@
@@ -8,62 +8,64 @@
         <div id="chart" style="height: 400px;"></div>
     </div>
 </div>
-@section scripts{
+@section scripts {
     <script src="~/plugins/print/printThis.js"></script>
     <script src="~/new_design/plugins/Charts/js/c3.js"></script>
     <script src="~/new_design/plugins/Charts/js/d3.v3.min.js"></script>
     <script>
-    $(document).ready(function () {        
-        $.ajax({
-            url: '@Url.Action("AppealsCallResult", "Statistics")',
-            type: 'POST',
-            success: function (data) {
-                var jsonn = JSON.parse(data);
-                GenerateChart('#chart', jsonn, 'bar', { "OutCountCallIncoming": "Входящие", "OutCountCallOutgoing": "Исходящие", "OutCountCallMissed": "Пропущенные" }, ['OutCountCallIncoming', 'OutCountCallOutgoing', 'OutCountCallMissed' ], "Месяцы", "", false);
-            }
-        });
-    });
-
-    var chart;
-    function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
-        if (transform != true) {
-            chart = c3.generate({
-                bindto: element,
-                //size: { height: 300 },
-                zoom: { enabled: false },
-                data: {
-                    json: data,
-                    type: type_chart,
-                    labels: true,
-                    names: names,
-                    keys: { x: "out_date", value: key_values },
-                },
-                axis: {
-                    x: { type: 'category', label: { text: edizmX, position: 'outer-right' } },
-                    y: { label: { text: edizmY, position: 'outer-top' } },
-                    rotated: rotate
-                },
-                grid: { x: { show: false }, y: { show: true } }
+        Show()
+        function Show() {
+            $.ajax({
+                url: '@Url.Action("AppealsCallResult", "Statistics")',
+                type: 'POST',
+                data: $('form#form').serializeArray(),
+                success: function (data) {
+                    var jsonn = JSON.parse(data);
+                    GenerateChart('#chart', jsonn, 'bar', { "OutCountCallIncoming": "Входящие", "OutCountCallOutgoing": "Исходящие", "OutCountCallMissed": "Пропущенные" }, ['OutCountCallIncoming', 'OutCountCallOutgoing', 'OutCountCallMissed'], "Месяцы", "", false);
+                }
             });
         }
-        else {
-            chart.transform(type_chart);
-        }
-    }
 
-    function printTable() {
-        $('#result').printThis({
-            debug: false,
-            importCSS: false,
-            importStyle: false,
-            printContainer: true,
-            loadCSS: "~/new_design/css/new_print.css",
-            pageTitle: "",
-            removeInline: false,
-            printDelay: 333,
-            header: null,
-            formValues: true
-        });
-    }
+        var chart;
+        function GenerateChart(element, data, type_chart, names, key_values, edizmX, edizmY, transform, rotate) {
+            if (transform != true) {
+                chart = c3.generate({
+                    bindto: element,
+                    //size: { height: 300 },
+                    zoom: { enabled: false },
+                    data: {
+                        json: data,
+                        type: type_chart,
+                        labels: true,
+                        names: names,
+                        keys: { x: "OutDate", value: key_values },
+                    },
+                    axis: {
+                        x: { type: 'category', label: { text: edizmX, position: 'outer-right' } },
+                        y: { label: { text: edizmY, position: 'outer-top' } },
+                        rotated: rotate
+                    },
+                    grid: { x: { show: false }, y: { show: true } }
+                });
+            }
+            else {
+                chart.transform(type_chart);
+            }
+        }
+
+        function printTable() {
+            $('#result').printThis({
+                debug: false,
+                importCSS: false,
+                importStyle: false,
+                printContainer: true,
+                loadCSS: "~/new_design/css/new_print.css",
+                pageTitle: "",
+                removeInline: false,
+                printDelay: 333,
+                header: null,
+                formValues: true
+            });
+        }
     </script>
 }
