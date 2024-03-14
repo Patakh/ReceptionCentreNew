@@ -99,7 +99,7 @@ public partial class ReceptionCentreContext : DbContext
     /// </summary>
     public virtual IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId)
     {
-        NpgsqlParameter param1 = new("@in_spr_mfc_id", (object)SprMfcId ?? DBNull.Value);
+        NpgsqlParameter param1 = new("@in_spr_mfc_id", (object)SprMfcId ?? DBNull.Value) ;
         NpgsqlParameter param2 = new("@in_spr_subject_treatment_id", (object)spr_treatment_id ?? DBNull.Value);
         NpgsqlParameter param3 = new("@in_spr_category_id", (object)SprCategoryId ?? DBNull.Value);
         NpgsqlParameter param4 = new("@in_spr_type_id", (object)SprTypeId ?? DBNull.Value);

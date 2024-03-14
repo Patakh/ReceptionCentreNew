@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Identity; 
+using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Models;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 
@@ -24,7 +24,7 @@ public class StatisticsController : Controller
     {
         return View();
     }
-     
+
     public JsonResult GetChartInYear()
     {
         var data = _repository.FuncChartInYear();
@@ -51,7 +51,7 @@ public class StatisticsController : Controller
         var data = _repository.FuncChartClaimForMfc().Where(w => w.OutMfcName != "Не выбран").OrderByDescending(o => o.OutCountClaim).Take(10).Select(s => new { s.OutCountClaim, s.OutCountNotify, OutDate = s.OutMfcName });
         return Json(JsonConvert.SerializeObject(data));
     }
-     
+
     public IActionResult AppealsCount()
     {
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.Where(e => e.IsRemove != true).OrderBy(o => o.MfcName), "Id", "MfcName");
@@ -61,38 +61,39 @@ public class StatisticsController : Controller
         ViewBag.SprTypeDifficulty = new SelectList(_repository.SprTypeDifficulty.Where(e => e.IsRemove != true).OrderBy(o => o.TypeName), "Id", "TypeName");
         return View("AppealsCount");
     }
-    public JsonResult AppealsCountResult(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId)
+    public IActionResult AppealsCountResult(Guid? SprMfcId, Guid? SprTreatmentId, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId)
     {
-        var data = _repository.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId).OrderBy(o => o.OutMonth).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutMonth + "." + s.OutYear });
+        var json = _repository.FuncStatisticsDataAppeal(SprMfcId, SprTreatmentId, SprCategoryId, SprTypeId, SprTypeDifficultyId);
+        var data = json.OrderBy(o => o.OutMonth).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutMonth + "." + s.OutYear });
         return Json(JsonConvert.SerializeObject(data));
     }
-     
+
     public IActionResult AppealsCall()
     {
         return View("AppealsCall");
     }
-    public JsonResult AppealsCallResult()
+    public IActionResult AppealsCallResult()
     {
         var data = _repository.FuncStatisticsDataAppealCall().OrderBy(o => o.OutMonth).Select(s => new { s.OutCountCallIncoming, s.OutCountCallOutgoing, s.OutCountCallMissed, OutDate = s.OutMonth + "." + s.OutYear }); ;
         return Json(JsonConvert.SerializeObject(data));
-    } 
+    }
     public IActionResult AppealsTreatment()
     {
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.Where(e => e.IsRemove != true).OrderBy(o => o.MfcName), "Id", "MfcName");
         return View("AppealsTreatment");
     }
 
-    public JsonResult AppealsTreatmentResult(Guid? SprMfcId, DateTime dateStart, DateTime dateStop)
+    public JsonResult AppealsTreatmentResult(Guid? SprMfcId, DateTime DateStart, DateTime DateStop)
     {
-        var data = _repository.FuncStatisticsDataAppealSubject(SprMfcId, dateStart, dateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutSubjectName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
-        List<object[]> mass = new List<object[]>();
+        var data = _repository.FuncStatisticsDataAppealSubject(SprMfcId, DateStart, DateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutSubjectName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
+        List<object[]> mass = new();
         foreach (var item in data)
         {
-            object[] obj = new object[] { item.OutDate, item.OutCount };
+            object[] obj = [item.OutDate, item.OutCount];
             mass.Add(obj);
         }
         return Json(JsonConvert.SerializeObject(mass));
-    } 
+    }
     public IActionResult AppealsCategory()
     {
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.Where(e => e.IsRemove != true).OrderBy(o => o.MfcName), "Id", "MfcName");
@@ -100,18 +101,18 @@ public class StatisticsController : Controller
         return View("AppealsCategory");
     }
 
-    public JsonResult AppealsCategoryResult(Guid? SprMfcId, DateTime dateStart, DateTime dateStop)
+    public JsonResult AppealsCategoryResult(Guid? SprMfcId, DateTime DateStart, DateTime DateStop)
     {
-        var data = _repository.FuncStatisticsDataAppealCategory(SprMfcId, dateStart, dateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutCategoryName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
-        List<object[]> mass = new List<object[]>();
+        var data = _repository.FuncStatisticsDataAppealCategory(SprMfcId, DateStart, DateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutCategoryName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
+        List<object[]> mass = new();
         foreach (var item in data)
         {
-            object[] obj = new object[] { item.OutDate, item.OutCount };
+            object[] obj = [item.OutDate, item.OutCount];
             mass.Add(obj);
         }
         return Json(JsonConvert.SerializeObject(mass));
     }
-     
+
     public IActionResult AppealsType()
     {
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.Where(e => e.IsRemove != true).OrderBy(o => o.MfcName), "Id", "MfcName");
@@ -119,32 +120,33 @@ public class StatisticsController : Controller
         return View("AppealsType");
     }
 
-    public JsonResult AppealsTypeResult(Guid? SprMfcId, DateTime dateStart, DateTime dateStop)
+    public JsonResult AppealsTypeResult(Guid? SprMfcId, DateTime DateStart, DateTime DateStop)
     {
-        var data = _repository.FuncStatisticsDataAppealType(SprMfcId, dateStart, dateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutTypeName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
-        List<object[]> mass = new List<object[]>();
+        var data = _repository.FuncStatisticsDataAppealType(SprMfcId, DateStart, DateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutTypeName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
+        List<object[]> mass = new();
         foreach (var item in data)
         {
-            object[] obj = new object[] { item.OutDate, item.OutCount };
+            object[] obj = [item.OutDate, item.OutCount];
             mass.Add(obj);
         }
         return Json(JsonConvert.SerializeObject(mass));
-    } 
+    }
     public IActionResult AppealsTypeDifficulty()
     {
         ViewBag.SprMfc = new SelectList(_repository.SprMfc.Where(e => e.IsRemove != true).OrderBy(o => o.MfcName), "Id", "MfcName");
         return View("AppealsTypeDifficulty");
     }
 
-    public JsonResult AppealsTypeDifficultyResult(Guid? SprMfcId, DateTime dateStart, DateTime dateStop)
+    public IActionResult AppealsTypeDifficultyResult(Guid? SprMfcId, DateTime DateStart, DateTime DateStop)
     {
-        var data = _repository.FuncStatisticsDataAppealTypeDifficulty(SprMfcId, dateStart, dateStop).Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutTypeName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
-        List<object[]> mass = new List<object[]>();
+        var json = _repository.FuncStatisticsDataAppealTypeDifficulty(SprMfcId, DateStart, DateStop);
+        var data = json.Select(s => new { OutCount = s.OutCountAppeal, OutDate = s.OutTypeName + " (" + s.OutCountAppeal + ")" }).OrderByDescending(o => o.OutCount);
+        List<object[]> mass = new();
         foreach (var item in data)
         {
-            object[] obj = new object[] { item.OutDate, item.OutCount };
+            object[] obj = [item.OutDate, item.OutCount];
             mass.Add(obj);
         }
         return Json(JsonConvert.SerializeObject(mass));
-    } 
+    }
 }

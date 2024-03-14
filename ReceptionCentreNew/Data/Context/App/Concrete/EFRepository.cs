@@ -72,7 +72,8 @@ public partial class EFRepository : IRepository
     public IEnumerable<DataAppealClaimWeek> FuncDataAppealClaimWeek(Guid? SprMfcId) => _context.FuncDataAppealClaimWeek(SprMfcId);
     public IEnumerable<DataAppealClaimYear> FuncDataAppealClaimYear(Guid? SprMfcId) => _context.FuncDataAppealClaimYear(SprMfcId);
 
-    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId) => _context.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId);
+    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId) => 
+                                          _context.FuncStatisticsDataAppeal(SprMfcId,       spr_treatment_id,       SprCategoryId,       SprTypeId,       SprTypeDifficultyId);
     public IEnumerable<StatisticsDataAppealCall> FuncStatisticsDataAppealCall() => _context.FuncStatisticsDataAppealCall();
     public IEnumerable<StatisticsDataAppealCategory> FuncStatisticsDataAppealCategory(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealCategory(SprMfcId, date_start, date_stop);
     public IEnumerable<StatisticsDataAppealSubject> FuncStatisticsDataAppealSubject(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealSubject(SprMfcId, date_start, date_stop);
