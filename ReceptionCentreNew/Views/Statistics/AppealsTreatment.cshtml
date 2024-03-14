@@ -59,7 +59,7 @@
     <script>
         $('form').validate();
         $('#Period').daterangepicker({
-            startDate: '@DateTime.Now.AddYears(-2)',
+            startDate: '@DateTime.Now.AddMonths(-1)',
             endDate: '@DateTime.Now',
             maxDate: '@DateTime.Now',
             autoApply: true,
@@ -80,14 +80,14 @@
             $('#DateStart').val(picker.startDate.format("YYYY.MM.DD HH:mm:ss"));
             $('#DateStop').val(picker.endDate.format("YYYY.MM.DD HH:mm:ss"));
             Show()
-        }).on('change', function () {
-            $('#DateStart').val($(this).val().split(' ')[0])
-            $('#DateStop').val($(this).val().split(' ')[2]);
+        }).on('change', function () { 
             Show()
         });
 
         Show()
         function Show() {
+            $('#DateStart').val($('#Period').val().split(' ')[0])
+            $('#DateStop').val($('#Period').val().split(' ')[2]);
             $.ajax({
                 url: '@Url.Action("AppealsTreatmentResult", "Statistics")',
                 type: 'POST',
