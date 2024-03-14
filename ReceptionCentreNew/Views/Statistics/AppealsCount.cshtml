@@ -66,7 +66,6 @@
                 success: function (data) {
                     var jsonn = JSON.parse(data);
                     GenerateChart('#chart', jsonn, 'bar', { "OutCount": "Количество" }, ['OutCount'], "Месяцы", "", false);
-
                 }
             });
         }
