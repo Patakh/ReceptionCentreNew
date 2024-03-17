@@ -171,7 +171,7 @@ $(document).ready(function () {
             connection.invoke("sendNotification", "Hello from client");
 
         }).catch(function (err) {
-            return console.error(err.toString());
+            return console.log(err.toString());
         });
     }
      

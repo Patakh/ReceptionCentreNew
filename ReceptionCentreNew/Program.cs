@@ -9,6 +9,10 @@ using ReceptionCentreNew.Models;
 using ReceptionCentreNew.Models.Account;
 using ReceptionCentreNew.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using SmartBreadcrumbs.Extensions;
+using ReceptionCentreNew.Controllers;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.CSharp.RuntimeBinder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,9 +67,9 @@ builder.Services.AddSignalR();
 
 builder.Services.AddScoped<Hub, NotificationHub>();
 
-//builder.Services.AddScoped<SmartBreadcrumbs.BreadcrumbManager>();
+builder.Services.AddBreadcrumbs(typeof(Program).Assembly);
 
-builder.Services.AddRazorPages(); 
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 

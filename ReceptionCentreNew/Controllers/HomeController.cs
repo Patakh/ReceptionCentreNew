@@ -9,9 +9,10 @@ using ReceptionCentreNew.Data.Context.App;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Models;
+using SmartBreadcrumbs.Attributes;
 
 namespace ReceptionCentreNew.Controllers;
-[Authorize]
+[Authorize] 
 public class HomeController : Controller
 {
     public int PageSize = 10;
@@ -23,6 +24,7 @@ public class HomeController : Controller
         _repository = repo;
     }
 
+    [DefaultBreadcrumb("Главная")]
     public IActionResult Index(string PhoneNumber)
     {
         ViewBag.IncomingCollFromJitsi = PhoneNumber;

@@ -1,24 +1,30 @@
 ﻿@{
     ViewBag.Title = "Вопрос-ответ";
 }
- 
+
 <!-- Категории обращения -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
 <div id="questionsContainer">
 </div>
 @section scripts {
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+
     <script>
         $(document).ready(function () {
+            LoadTable(false);
+        });
+
+        function LoadTable(isRemove) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableQuestions", "Reference")',
+                data: { isRemove: isRemove },
                 success: function (data) {
                     $('#questionsContainer').html(data);
                 }
             })
-        });
+        }
+
     </script>
-    <!--Категории обращения-->
-    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

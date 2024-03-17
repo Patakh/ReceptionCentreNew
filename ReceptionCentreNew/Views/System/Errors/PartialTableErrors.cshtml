@@ -1,53 +1,72 @@
-﻿@model  ReferenceViewModel
+﻿@model ReferenceViewModel
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 <div class="card-box p-0">
     <div class="table-responsive">
-        <table id="errorsTable" class="footable journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-            <div class="input-group">
-                <div class="input-group-prepend align-items-center">
-                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                </div>
-                <input type="text" id="searchTextErrors" name="search" value="@ViewBag.Serach" title=" ... нажмите Enter" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                <div class="input-group-append align-items-center">
-                    <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
-                </div>
+        <div class="input-group">
+            <div class="input-group-prepend align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
             </div>
+            <input type="text" id="searchTextErrors" name="search" value="@ViewBag.Serach" title=" ... нажмите Enter" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            <div class="input-group-append align-items-center">
+                <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
+            </div>
+        </div>
+        <table id="errorsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
             <tbody>
             <thead>
                 <tr class="text">
-                    <th class="number-row" style="min-width:45px;">№</th>
+                    <th>№</th>
                     <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().ErrorDate)</th>
                     <th>@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().ErrorMessage)</th>
                     <th class="p-r-20-important">@Html.DisplayNameFor(model => model.ErrorsList.FirstOrDefault().EmployeesName)</th>
                 </tr>
             </thead>
             <tbody>
-                @{ int index = 1;}
-                @foreach (var item in Model.ErrorsList)
-                {
+                    @{
+                        int index = 1;
+                    }
+                    @foreach (var item in Model.ErrorsList)
+                    {
                     <tr class="text">
                         <td class="number-row"> @(index++)</td>
                         <td class="p-l-20-important">@item.ErrorDate.ToString("yyyy.MM.dd HH:mm:ss")</td>
                         <td>@item.ErrorMessage</td>
                         <td class="p-r-20-important">@item.EmployeesName</td>
                     </tr>
-                }
+                    }
             </tbody>
             <tfoot>
-                <tr>
+                <tr class="foot-row">
                     <td colspan="2" class="text-left">
-                        <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>                        
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
                     </td>
-                    <td colspan="2">
-                        <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                            @* @Html.PageLinks(Model.PageInfo, x => Ajax.ActionLink(x.NameLink, "PartialTableErrors", "System", new { page = x.CurrentPage, search = ViewBag.Serach}, new AjaxOptions { UpdateTargetId = "partialTableErrorsContainer" })) *@
+                    <td colspan="3">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
                         </div>
                     </td>
-                </tr>                
+                </tr>
             </tfoot>
         </table>
     </div>
 </div>
+@section scripts {
+    <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script> 
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var filtering = $('#errorsTable');
+            filtering.footable();
+            $('#errorsTable #filter_count').text($('#errorsTable.footable tbody tr:not(.footable-filtered)').length);
+            $('#errorsTable #tr_count').text($('#errorsTable.footable tbody tr').length);
 
-<script>
- 
-</script>
+            // Search input
+            $('#searchTextSettings').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+                $('#errorsTable #filter_count').text($('#errorsTable.footable tbody tr:not(.footable-filtered)').length);
+            });
+        });
+    </script>
+
+}

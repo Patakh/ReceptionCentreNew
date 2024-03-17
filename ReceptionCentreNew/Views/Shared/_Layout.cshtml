@@ -7,45 +7,34 @@
     <title>@ViewBag.Title</title>
 
     <!-- Plugins css-->
-
+     
     <link href="~/new_design/plugins/jquery.steps/css/jquery.steps.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/new_design/plugins/animate/animate.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/plugins/sweet-alert2/sweetalert2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/plugins/select2/css/select2.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/plugins/custombox4/css/custombox.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
 
-    @RenderSection("css", false)
     <link href="~/new_design/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/plugins/bootstrap-daterangepicker/daterangepicker.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-      
+
     <link href="~/new_design/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/assets/css/icons.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/assets/css/style.css" rel="stylesheet" type="text/css" asp-append-version="true">
     <link href="~/new_design/css/main.css" rel="stylesheet" type="text/css" asp-append-version="true">
+
     <link href="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" type="text/css" asp-append-version="true" /> 
     <link href="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.core.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.resizable.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.selectable.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.accordion.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.autocomplete.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.button.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.dialog.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.slider.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.tabs.css" rel="stylesheet" type="text/css" asp-append-version="true" /> 
-    <link href="~/themes/base/jquery.ui.progressbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-    <link href="~/themes/base/jquery.ui.theme.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-     
+       
     <script src="~/new_design/assets/js/modernizr.min.js"></script>
 </head>
 <body class="fixed-left">
     <div id="wrapper">
         <partial name="LayoutPartial/_MainMenuPartial"/>
-        <partial name="LayoutPartial/_MenuLeft" />
-
+        <partial name="LayoutPartial/_MenuLeft" /> 
         <div class="content-page">
-            <div class="content"> 
+            <div class="content">
+                <breadcrumb></breadcrumb>
                 <div class="container-fluid">
                     @RenderBody()
                 </div>
@@ -72,9 +61,7 @@
     <script src="~/new_design/assets/js/wow.min.js"></script>
     <script src="~/new_design/assets/js/jquery.nicescroll.js"></script>
     <script src="~/new_design/assets/js/jquery.scrollTo.min.js"></script>
-@* 
-    @Scripts.Render("~/bundles/jqueryval")
- *@
+
     <script src="~/plugins/bootstrap-inputmask/bootstrap-inputmask.min.js"></script>
 
     <script src="~/new_design/plugins/select2/js/select2.min.js"></script>

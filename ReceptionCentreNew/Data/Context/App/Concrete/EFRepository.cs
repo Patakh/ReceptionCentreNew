@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NuGet.Protocol.Core.Types;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Data.Context.App.Abstract; 
+using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
 
 namespace AisReception.Data.Context.App;
@@ -32,8 +32,8 @@ public partial class EFRepository : IRepository
     public IQueryable<SprQuestion> SprQuestion => _context.SprQuestion;
     public IQueryable<SprSurveyQuestion> SprSurveyQuestion => _context.SprSurveyQuestion;
     public IQueryable<SprSurveyAnswer> SprSurveyAnswer => _context.SprSurveyAnswer;
-     
-     
+
+
     public IQueryable<DataAppeal> DataAppeal => _context.DataAppeal;
     public IQueryable<DataAppealCall> DataAppealCall => _context.DataAppealCall;
     public IQueryable<DataAppealCommentt> DataAppealCommentt => _context.DataAppealCommentt;
@@ -50,10 +50,10 @@ public partial class EFRepository : IRepository
     public IQueryable<DataAppealFile> DataAppealFile => _context.DataAppealFile;
     public IQueryable<DataCallback> DataCallback => _context.DataCallback;
     public IQueryable<DataCallbackCalls> DataCallbackCalls => _context.DataCallbackCalls;
-      
 
-    public IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime in_date_start, DateTime in_date_stop, Guid? in_spr_type_id, Guid? in_spr_type_difficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id) 
-                                   => _context.FuncDataAppealSelect(spr_employee_id,           in_date_start,           in_date_stop,       in_spr_type_id,       in_spr_type_difficulty_id,       in_spr_category_id,       in_spr_subject_treatment_id,      in_spr_status_id);
+
+    public IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime in_date_start, DateTime in_date_stop, Guid? in_spr_type_id, Guid? in_spr_type_difficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id)
+                                   => _context.FuncDataAppealSelect(spr_employee_id, in_date_start, in_date_stop, in_spr_type_id, in_spr_type_difficulty_id, in_spr_category_id, in_spr_subject_treatment_id, in_spr_status_id);
     public DataAppealSelect FuncDataAppealInfo(string number) => _context.FuncDataAppealInfo(number);
     public IEnumerable<DataAppealRouteStageNext> FuncDataAppealRouteStageNext(Guid DataAppealId) => _context.FuncDataAppealRoutesStageNextSelect(DataAppealId);
     public IEnumerable<DataAppealRouteStageSelect> FuncDataAppealRouteStageSelect(Guid DataAppealId) => _context.FuncDataAppealRoutesStageSelect(DataAppealId);
@@ -72,34 +72,34 @@ public partial class EFRepository : IRepository
     public IEnumerable<DataAppealClaimWeek> FuncDataAppealClaimWeek(Guid? SprMfcId) => _context.FuncDataAppealClaimWeek(SprMfcId);
     public IEnumerable<DataAppealClaimYear> FuncDataAppealClaimYear(Guid? SprMfcId) => _context.FuncDataAppealClaimYear(SprMfcId);
 
-    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId) => 
-                                          _context.FuncStatisticsDataAppeal(SprMfcId,       spr_treatment_id,       SprCategoryId,       SprTypeId,       SprTypeDifficultyId);
+    public IEnumerable<StatisticsDataAppeal> FuncStatisticsDataAppeal(Guid? SprMfcId, Guid? spr_treatment_id, Guid? SprCategoryId, Guid? SprTypeId, Guid? SprTypeDifficultyId) =>
+                                          _context.FuncStatisticsDataAppeal(SprMfcId, spr_treatment_id, SprCategoryId, SprTypeId, SprTypeDifficultyId);
     public IEnumerable<StatisticsDataAppealCall> FuncStatisticsDataAppealCall() => _context.FuncStatisticsDataAppealCall();
     public IEnumerable<StatisticsDataAppealCategory> FuncStatisticsDataAppealCategory(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealCategory(SprMfcId, date_start, date_stop);
     public IEnumerable<StatisticsDataAppealSubject> FuncStatisticsDataAppealSubject(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealSubject(SprMfcId, date_start, date_stop);
     public IEnumerable<StatisticsDataAppealType> FuncStatisticsDataAppealType(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealType(SprMfcId, date_start, date_stop);
     public IEnumerable<StatisticsDataAppealTypeDifficulty> FuncStatisticsDataAppealTypeDifficulty(Guid? SprMfcId, DateTime date_start, DateTime date_stop) => _context.FuncStatisticsDataAppealTypeDifficulty(SprMfcId, date_start, date_stop);
-     
+
 
     /// <summary>
     /// Создание универсального метода вставки
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <param name="entity"></param>
-    public void Insert<TEntity>(TEntity entity) where TEntity : class
-    { 
+    public async Task Insert<TEntity>(TEntity entity) where TEntity : class
+    {
         _context.Entry(entity).State = EntityState.Added;
-        _context.SaveChanges();
+        await _context.SaveChangesAsync();
     }
 
     /// <summary>
     /// Запись нескольких полей в БД
     /// </summary>
-    public void Inserts<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
-    { 
+    public async Task Inserts<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
+    {
         foreach (TEntity entity in entities)
             _context.Entry(entity).State = EntityState.Added;
-        _context.SaveChanges(); 
+        await _context.SaveChangesAsync();
     }
 
     /// <summary>
@@ -107,22 +107,22 @@ public partial class EFRepository : IRepository
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <param name="entity"></param>
-  
-    public void Update<TEntity>(TEntity entity) where TEntity : class
+
+    public async Task Update<TEntity>(TEntity entity) where TEntity : class
     {
         _context.Update(entity);
-        _context.SaveChanges(); // Предполагая, что в вашем репозитории есть метод для сохранения изменений
+        await _context.SaveChangesAsync(); // Предполагая, что в вашем репозитории есть метод для сохранения изменений
     }
-     
+
     /// <summary>
     /// Универсальный метод удаления данных
     /// </summary>
     /// <typeparam name="TEntity"></typeparam>
     /// <param name="entity"></param>
-    public void Delete<TEntity>(TEntity entity)
+    public async Task Delete<TEntity>(TEntity entity)
         where TEntity : class
-    {  
+    {
         _context.Entry<TEntity>(entity).State = EntityState.Deleted;
-        _context.SaveChanges();
-    } 
+        await _context.SaveChangesAsync();
+    }
 }

@@ -53,6 +53,7 @@
         });
     });
 </script>
+
 <div class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
@@ -60,11 +61,10 @@
             <h4 class="modal-title" id="myLargeModalLabel">Следующий этап</h4>
         </div>
         <div class="modal-body">
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        @Html.DropDownList("SprEmployeesId", ViewBag.Employees as SelectList, "Выберите сотрудника", new Dictionary<string, object> { { "class", "form-control select2" }, { "data-style", "btn-white" } })
+                        @Html.DropDownList("employeesId", ViewBag.Employees as SelectList, "Выберите сотрудника", new Dictionary<string, object> { { "class", "form-control select2" }, { "data-style", "btn-white" } })
                     </div>
                 </div>
             </div>
@@ -96,5 +96,5 @@
             <button type="button" class="btn btn-cancel waves-effect waves-light btn-block-xs" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
             <button type="button" id="nextRouteStage" class="btn btn-success waves-effect waves-light btn-block-xs"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
+    </div>
+</div>

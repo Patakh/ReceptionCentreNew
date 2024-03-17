@@ -2,14 +2,11 @@
 @{
     ViewBag.Title = "Обращение";
 }
-
 <style>
     .nav > li > a {
         padding: 0 10px;
     }
-    /*.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-            background-color: #b78068;
-        }*/
+
     @@media (min-width: 992px) {
         .modal-lg {
             max-width: 990px;
@@ -144,22 +141,18 @@
                                     if (d < 0)
                                     {
                                         <span class="font-16 text-nowrap"><i class="md md-timer-off m-r-5"></i><span class="text-danger">-@(tms.Days * (-1)) дн. @(tms.Hours * (-1)) ч. @(tms.Minutes * (-1)) мин.</span></span>
-
                                         <br />
                                     }
                                     else
                                     {
                                         <span class="font-16 text-nowrap"><i class="md  md-av-timer m-r-5"></i><span class="text-success">@(tms.Days) дн. @(tms.Hours) ч. @(tms.Minutes) мин.</span></span>
-
                                         <br />
                                     }
                                 }
                                 else
                                 {
                                     <i class="fa fa-calendar m-r-5"></i>
-
                                     <span class="font-500 text-nowrap">@Model.OutDateExecution.Value.ToShortDateString() </span> <i class="ion ion-ios7-clock-outline m-r-5"></i>
-
                                     <span class="font-500 text-nowrap">@Model.OutDateExecution.Value.ToShortTimeString()</span>
                                 }
                             </div>
@@ -176,7 +169,6 @@
                                     <span class="text-muted font-12">Дата и время </span><br />
                                     <i class="fa fa-calendar m-r-5"></i> @Model.OutDateAdd.Value.ToShortDateString() <i class="ion ion-ios7-clock-outline m-r-5"></i>@Model.OutDateAdd.Value.ToShortTimeString()
                                 </p>
-
                             </div>
                         </div>
                         <div class="row">
@@ -185,7 +177,6 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="card-box m-b-15" style="min-height:330px;">
                         <ul class="nav nav-pills m-b-15" id="pills-tab" role="tablist" style="border-bottom:1px solid #dee2e6; padding-bottom:10px;">
                             <li class="nav-item">
@@ -367,10 +358,23 @@
         var ntg = Model.OutDataAppealId;
     }
 
-    $(document).ready(function () {
-        $('select.select2').select2();
-        $('a[href="#notification-calls"]').click();
-    });
+        $(document).ready(function () {
+            $('select.select2').select2();
+            $('a[href="#notification-calls"]').click();
+            LoadStages();
+        });
+
+    function LoadStages() {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("PartialTableRouteStages", "Appeal")',
+            data: { id: '@Model.OutDataAppealId' },
+            success: function (data) {
+                $('#stages').html(data);
+            }
+        });
+    }
+
     $('.cancel_play, .close, [data-dismiss="modal"]').click(function () {
         $('#newModal #appeal_play_content audio').trigger("pause");
     });
@@ -388,8 +392,10 @@
         });
     });
 
+    $('a[href="#notes"]').click(function () { LoadNotes() });
+
     //---Вкладки---
-    $('a[href="#notes"]').click(function () {
+    function LoadNotes() {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialTableCommentts", "Appeal")',
@@ -398,7 +404,8 @@
                 $('#notes').html(data);
             }
         });
-    });
+    }
+
     $('a[href="#changeLogs"]').click(function () {
         $.ajax({
             type: 'POST',
@@ -506,10 +513,6 @@
 @section scripts {
     <script src="~/plugins/print/printThis.js"></script>
     <script>
-          
-        $.get('Appeal/PartialTableRouteStages?appealId=@(Model.OutDataAppealId)', function (data) {
-            $('#stages').html(data);
-        });
         var filteringCall = $('#callsTable');
         filteringCall.footable();
         $('#filter_count').text($('#callsTable.footable tbody tr:not(.footable-filtered)').length);
@@ -554,13 +557,13 @@
                 b = @Model.OutNumberAppeal;
             }
         }
-                        var d = '@b';
+                                                                var d = '@b';
                 console.log(@a + "-" + d);
                 onCallModalBtnClick('@a', d);
             });
         };
 
         $('#AddRouteStageForm').validate();
-         
+
     </script>
 }

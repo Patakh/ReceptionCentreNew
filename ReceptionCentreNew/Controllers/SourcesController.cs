@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Data.Context.App;
+using SmartBreadcrumbs.Attributes;
 namespace ReceptionCentreNew.Controllers;
 public class SourcesController : Controller
 {
@@ -17,38 +18,81 @@ public class SourcesController : Controller
         _repository = repo;
         _employee = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name);
     }
+
+    [Breadcrumb("Входящие", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult In()
     {
         return View();
     }
-    public IActionResult PartialTableSources(short? action_, Guid? sprEmployeeId, short? period, short? isConnected, short? sources, string search, int page = 1)
+    public IActionResult PartialTableSources(short? action_, DateTime DateStart, DateTime DateStop, Guid? sprEmployeeId, string Period, short? isConnected, short? sources, string search)
     {
-        DateTime dateStart;
-        switch (period)
-        {
-            case 1: dateStart = DateTime.Now; break;
-            case 2: dateStart = DateTime.Now.AddDays(-7); break;
-            case 3: dateStart = DateTime.Now.AddMonths(-1); break;
-            case 4: dateStart = DateTime.Now.AddYears(-1); break;
-            default: dateStart = DateTime.Now.AddYears(-2); break;
-        }
-
+        DateStop = DateStop.AddDays(1);
+        if(DateStart == DateStop && DateStart == DateTime.Now.Date) DateStart = DateTime.Now; 
+         
         IEnumerable<SourcesModel> m = new List<SourcesModel>();
+
         switch (sources)
         {
             case 1:
-                var calls = _repository.FuncDataAppealCallSelect(sprEmployeeId, dateStart, DateTime.Now.AddDays(1), action_, isConnected).ToArray();
-                m = calls.Select(s => new SourcesModel { Id = s.OutId, NumberAppeal = s.OutNumberAppeal, EmployeesName = s.OutEmployeesName, ApplicantName = s.ApplicantName, Contact = s.OutPhoneNumber, DateAdd = s.OutDateCall, Option = s.OutTimeTalk, SaveFtp = s.OutSaveFtp, Type = SourcesType.call }); break;
+                var calls = _repository.FuncDataAppealCallSelect(sprEmployeeId, DateStart, DateStop, action_, isConnected).ToArray();
+                m = calls.Select(s => new SourcesModel
+                {
+                    Id = s.OutId,
+                    NumberAppeal = s.OutNumberAppeal,
+                    EmployeesName = s.OutEmployeesName,
+                    ApplicantName = s.ApplicantName,
+                    Contact = s.OutPhoneNumber,
+                    DateAdd = s.OutDateCall,
+                    Option = s.OutTimeTalk,
+                    SaveFtp = s.OutSaveFtp,
+                    Type = SourcesType.call
+                });
+                break;
             case 2:
-                var emails = _repository.FuncDataAppealEmailSelect(sprEmployeeId, dateStart, DateTime.Now.AddDays(1), action_, isConnected).ToArray();
-                m = emails.Select(s => new SourcesModel { Id = s.OutId, NumberAppeal = s.OutNumberAppeal, EmployeesName = s.OutEmployeesName, ApplicantName = null, Contact = s.OutTextEmail, DateAdd = s.OutDateEmail, Option = s.OutCaption, SaveFtp = false, Type = SourcesType.email }); break;
-            case 3: break;
-            case 4: break;
+                var emails = _repository.FuncDataAppealEmailSelect(sprEmployeeId, DateStart, DateStop, action_, isConnected).ToArray();
+                m = emails.Select(s => new SourcesModel
+                {
+                    Id = s.OutId,
+                    NumberAppeal = s.OutNumberAppeal,
+                    EmployeesName = s.OutEmployeesName,
+                    ApplicantName = null,
+                    Contact = s.OutTextEmail,
+                    DateAdd = s.OutDateEmail,
+                    Option = s.OutCaption,
+                    SaveFtp = false,
+                    Type = SourcesType.email
+                });
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
             default:
-                calls = _repository.FuncDataAppealCallSelect(sprEmployeeId, dateStart, DateTime.Now.AddDays(1), action_, isConnected).ToArray();
-                var calls_model = calls.Select(s => new SourcesModel { Id = s.OutId, NumberAppeal = s.OutNumberAppeal, EmployeesName = s.OutEmployeesName, Contact = s.OutPhoneNumber, DateAdd = s.OutDateCall, SaveFtp = s.OutSaveFtp, Type = SourcesType.call });
-                emails = _repository.FuncDataAppealEmailSelect(sprEmployeeId, dateStart, DateTime.Now.AddDays(1), action_, isConnected).ToArray();
-                var emails_model = emails.Select(s => new SourcesModel { Id = s.OutId, NumberAppeal = s.OutNumberAppeal, EmployeesName = s.OutEmployeesName, ApplicantName = null, Contact = s.OutTextEmail, DateAdd = s.OutDateEmail, Option = s.OutCaption, SaveFtp = false, Type = SourcesType.email });
+                calls = _repository.FuncDataAppealCallSelect(sprEmployeeId, DateStart, DateStop, action_, isConnected).ToArray();
+                var calls_model = calls.Select(s => new SourcesModel
+                {
+                    Id = s.OutId,
+                    NumberAppeal = s.OutNumberAppeal,
+                    EmployeesName = s.OutEmployeesName,
+                    Contact = s.OutPhoneNumber,
+                    DateAdd = s.OutDateCall,
+                    SaveFtp = s.OutSaveFtp,
+                    Type = SourcesType.call
+                });
+                emails = _repository.FuncDataAppealEmailSelect(sprEmployeeId, DateStart, DateStop, action_, isConnected).ToArray();
+                var emails_model = emails.Select(s => new SourcesModel
+                {
+                    Id = s.OutId,
+                    NumberAppeal = s.OutNumberAppeal,
+                    EmployeesName = s.OutEmployeesName,
+                    ApplicantName = null,
+                    Contact = s.OutTextEmail,
+                    DateAdd = s.OutDateEmail,
+                    Option = s.OutCaption,
+                    SaveFtp = false,
+                    Type = SourcesType.email
+                });
+
                 m = calls_model.Concat(emails_model); break;
         }
 
@@ -62,9 +106,8 @@ public class SourcesController : Controller
             || (h.EmployeesName != null ? h.EmployeesName.ToLower().Contains(item) : false)
             ));
 
-        var getData = m.OrderByDescending(o => o.DateAdd).Skip((page - 1) * PageSize).Take(PageSize);
         List<SourcesModel> Sources = new();
-        foreach (var item in getData)
+        foreach (var item in m)
         {
             string phone = item.Contact;
             if (phone.Length == 11)
@@ -78,28 +121,22 @@ public class SourcesController : Controller
         SourcesViewModel model = new()
         {
             SourceModel = Sources,
-            PageInfo = new PageInfo
-            {
-                MaxPageList = 5,
-                CurrentPage = page,
-                ItemsPerPage = PageSize,
-                TotalItems = m.Count()
-            },
         };
         ViewBag.Action = action_;
         ViewBag.Sources = sources;
         ViewBag.SprEmployeesId = action_ == 1 ? _employee.Id : sprEmployeeId;
         ViewBag.Search = search;
-        ViewBag.Period = period;
         ViewBag.isConnected = isConnected;
 
         return PartialView("PartialTableSources", model);
     }
+
+    [Breadcrumb("Исходящие", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult Out()
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin"))
-            employees = employees.Where(se => se.EmployeesLogin ==SignInManager.Context.User.Identity.Name);
+            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
 
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName");
         return View();

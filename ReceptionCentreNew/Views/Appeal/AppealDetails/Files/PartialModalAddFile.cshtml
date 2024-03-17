@@ -24,13 +24,9 @@
             </button>
         </div>
         <div class="modal-body">
-            <div class="card-box p-0 slimscroll-route-container">
-
-                <form class="dropzone dz-clickable has-validation-callback" action="SubmitAddFile" method="post">
-                    <input type="hidden" name="appealId" value="@ViewBag.AppealId">
-                    <input type="file" name="file" style="display:none;">
-                </form>
-
+            <div class="card-box p-0 slimscroll-route-container"> 
+                <form class="dropzone dz-clickable has-validation-callback" asp-controller="Appeal" asp-action="SubmitAddFile" asp-route-appealId="@ViewBag.AppealId" method="post" enctype="multipart/form-data">
+                </form> 
             </div>
         </div>
         <div class="modal-footer">
@@ -53,7 +49,9 @@
 
     //-------скрипты загрузки файла------------------
     var folder_id;
-    Dropzone.autoDiscover = false;
+    Dropzone.options.UploadForm = {
+        uploadMultiple: true, 
+    };
     $("#newModal").find(".dropzone").dropzone({
         type: 'POST',
         maxFilesize: 15,
@@ -71,4 +69,5 @@
         }
     });
 
+    $("#newModal").find(".dropzone").files = t.hiddenFileInput.files;
 </script>

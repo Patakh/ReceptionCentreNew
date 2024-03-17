@@ -11,22 +11,25 @@
 		<Compile Remove=".config\**" />
 		<Compile Remove="Data\Context\Identity\**" />
 		<Compile Remove="Views\Manage\**" />
+		<Compile Remove="wwwroot\new_design\assets\scss\**" />
 		<Content Remove=".config\**" />
 		<Content Remove="Data\Context\Identity\**" />
 		<Content Remove="Views\Manage\**" />
+		<Content Remove="wwwroot\new_design\assets\scss\**" />
 		<EmbeddedResource Remove=".config\**" />
 		<EmbeddedResource Remove="Data\Context\Identity\**" />
 		<EmbeddedResource Remove="Views\Manage\**" />
+		<EmbeddedResource Remove="wwwroot\new_design\assets\scss\**" />
 		<None Remove=".config\**" />
 		<None Remove="Data\Context\Identity\**" />
 		<None Remove="Views\Manage\**" />
+		<None Remove="wwwroot\new_design\assets\scss\**" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="EPPlus" Version="7.0.9" />
 		<PackageReference Include="FluentFTP" Version="49.0.2" />
-		<PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
-		<PackageReference Include="Microsoft.AspNet.WebPages" Version="3.3.0" />
+		<PackageReference Include="MailKit" Version="4.4.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Html.Abstractions" Version="2.2.0" />
@@ -35,7 +38,6 @@
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.1.3" />
 		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.0" />
 		<PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-		<PackageReference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform" Version="4.1.0" />
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.2" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.2" />
@@ -44,17 +46,18 @@
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.jQuery.Unobtrusive.Ajax" Version="3.2.6" />
+		<PackageReference Include="Microsoft.NETCore.Runtime.CoreCLR" Version="2.0.8" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Npgsql" Version="8.0.0" />
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0" />
-		<PackageReference Include="OpenPop.NET" Version="2.0.6.1120" />
+		<PackageReference Include="SmartBreadcrumbs" Version="3.6.1" />
 		<PackageReference Include="System.Composition" Version="8.0.0" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
+		<PackageReference Include="System.Net.Security" Version="4.3.2" />
 		<PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
 		<PackageReference Include="System.Text.Json" Version="9.0.0-preview.1.24080.9" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-		<PackageReference Include="SmartBreadcrumbs" Version="3.6.1" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -66,7 +69,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="Properties\serviceDependencies.local.json.user" />
 		<None Include="Views\Account\Login.cshtml" />
 		<None Include="Views\Account\Register.cshtml" />
 		<None Include="Views\Account\_Layout.cshtml" />
@@ -189,6 +191,7 @@
 		<None Include="Views\System\Errors\PartialTableErrors.cshtml" />
 		<None Include="Views\System\Settting\PartialModalEditSettting.cshtml" />
 		<None Include="Views\System\Settting\PartialTableSettings.cshtml" />
+		<None Include="wwwroot\css\access-dineded.css" />
 		<None Include="wwwroot\js\admin\admin-layout.js" />
 		<None Include="wwwroot\js\jquery.signalR-6.0.1\signalr.min.js" />
 	</ItemGroup>

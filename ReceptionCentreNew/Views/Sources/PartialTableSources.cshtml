@@ -1,7 +1,9 @@
 ﻿@model SourcesViewModel
+
+<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 <div class="card-box p-0">
     <div class="table-responsive">
-        <table id="sourcesTable" class="footable journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+        <table id="sourcesTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
             <div class="input-group">
                 <div class="input-group-prepend align-items-center">
                     <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
@@ -14,14 +16,11 @@
             @if (Model.SourceModel.Any())
             {
                 <tbody>
-                    @{
-                        int i = Model.PageInfo.CurrentPage * 10 - 9;
-                    }
                     @foreach (var item in Model.SourceModel.OrderByDescending(o => o.DateAdd))
                     {
                         <tr>
                             <td>
-                                @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                                @Model.SourceModel.IndexOf(item)
                             </td>
                             <td class="vertical-middle p-l-20-important text-nowrap">
                                 @item.ApplicantName
@@ -77,25 +76,64 @@
                     <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span>
                 </div>
             }
-            <tfoot>
-                <tr class="tfoot-row">
+            <tfoot> 
+                <tr class="foot-row">
+                    <td colspan="7"> 
+                        <div style="height:50px" id="sources_play_content">
+                        </div>
+                    </td>
+                </tr>
+                <tr class="foot-row">
                     <td colspan="3" class="text-left">
-                        <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
                     </td>
                     <td colspan="4">
-                        <div class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5" id="datatable-editable_paginate">
-                            @*  @Html.PageLinks(Model.PageInfo, x =>  ) *@
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
                         </div>
                     </td>
                 </tr>
             </tfoot>
         </table>
     </div>
-    <hr />
-    <div id="sources_play_content">
-    </div>
 </div>
+
+<script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
+<script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+
 <script>
+    var filtering = $('#sourcesTable');
+    filtering.footable();
+    $('#sourcesTable #filter_count').text($('#sourcesTable.footable tbody tr:not(.footable-filtered)').length);
+    $('#sourcesTable #tr_count').text($('#sourcesTable.footable tbody tr').length);
+
+    // Search input
+    $('#searchTextSources').keyup(function (evt) {
+        evt.preventDefault();
+        filtering.trigger('footable_filter', { filter: $(this).val() });
+        $('#sourcesTable #filter_count').text($('#sourcesTable.footable tbody tr:not(.footable-filtered)').length);
+    });
+
+    $('button[data-tooltip-info]').tooltip({
+        title: function () {
+            var tooltipInfo = $(this).data('tooltipInfo');
+            return "<div class='text-left'>" +
+                "<strong>Номер дела:</strong> " + tooltipInfo['appeal_number'] + "</br>" +
+                "<strong>Сотрудник:</strong> " + tooltipInfo['EmployeesFio'] + "</br>" +
+                "</div>";
+        },
+        html: true,
+        placement: "left"
+    });
+
+
+    // Добавляем возможность выбора строки в таблице
+    if ($('#sourcesTable tr:not(.thead-row, .foot-row)'))
+        $('#sourcesTable tr:not(.thead-row, .foot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
+        });
+
     function InfoEmail(emailId) {
         $.ajax({
             url: '@Url.Action("PartialModalReadEmail", "Appeal")',
@@ -109,6 +147,7 @@
             },
         });
     }
+
     function Info(number, modal) {
         $.ajax({
             url: '@Url.Action("AppealInfo", "Appeal")',
@@ -124,7 +163,7 @@
     }
     function NewAppeal(id) {
         $.ajax({
-            url: '@Url.Action("NewAppeal", "Appeal")', 
+            url: '@Url.Action("NewAppeal", "Appeal")',
             type: 'POST',
             data: {
                 callId: id
@@ -136,52 +175,4 @@
         });
     }
 
-    $(document).ready(function () {
-        $('#loadPageLink').on('click', function (e) {
-            e.preventDefault(); // Prevent default link behavior
-            var url = '@Url.Action("PartialTableSources", "Sources")'; // Define your action URL
-
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: {
-                    page: @Model.PageInfo.CurrentPage,
-                    search: '@ViewBag.Search',
-                    action_: '@ViewBag.Action',
-                    sources: '@ViewBag.Sources',
-                    sprEmployeeId: '@ViewBag.SprEmployeesId',
-                    period: '@ViewBag.Period',
-                    is_connected: '@ViewBag.IsConnected'
-                },
-                success: function (result) {
-                    $('#sourcesTableContainer').html(result); // Update table content
-                },
-                error: function (xhr, status, error) {
-                    console.log('Error: ' + error);
-                }
-            });
-        });
-    });
-    $(function () {
-        $('button[data-tooltip-info]')
-        $('button[data-tooltip-info]').tooltip({
-            title: function () {
-                var tooltipInfo = $(this).data('tooltipInfo');
-                return "<div class='text-left'>" +
-                    "<strong>Номер дела:</strong> " + tooltipInfo['appeal_number'] + "</br>" +
-                    "<strong>Сотрудник:</strong> " + tooltipInfo['EmployeesFio'] + "</br>" +
-                    "</div>";
-            },
-            html: true,
-            placement: "left"
-        });
-    });
-
-
-    // Добавляем возможность выбора строки в таблице
-    if ($('#sourcesTable tr:not(.thead-row, .tfoot-row)'))
-        $('#sourcesTable tr:not(.thead-row, .tfoot-row)').click(function () {
-            $(this).siblings('tr:not(.thead-row)').removeClass('active');
-            $(this).addClass('active');
-        });
-</script>
+</script> 

@@ -7,13 +7,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.StaticFiles;
 using System.Text;
 using System.Security.Cryptography;
-using OpenPop.Mime;
-using OpenPop.Pop3;
+//using OpenPop.Mime;
+//using OpenPop.Pop3;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using System.Data;
 using ReceptionCentreNew.Models;
-using FluentFTP.Helpers;
 using Microsoft.EntityFrameworkCore;
+using MailKit.Net.Imap;
+using MailKit;
+using MimeKit;
+using Newtonsoft.Json;
+using MailKit.Security;
+using MailKit.Search;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -49,89 +54,70 @@ namespace ReceptionCentreNew.Controllers
 
             public IEnumerable<string> CallsInDayMissedList { get; set; }
         }
-        public JsonResult ListenerAsync()
+        public class EmailCredentials
+        {
+            public string Email { get; set; }
+            public string Password { get; set; }
+            public string ImapServer { get; set; }
+            public int ImapPort { get; set; }
+        }
+
+
+        public async Task<JsonResult> ListenerAsync()
         {
             SprEmployees employees = _repository.SprEmployees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault();
             Resultt rez = new();
-            using (Pop3Client client = new())
-            {                
-                List<string> uids_from_base = _repository.DataAppealEmail.Select(s => s.Uids).ToList();
-                long max_ = uids_from_base.Max() != null ? long.Parse(uids_from_base.Max()) : 0;
-                client.Connect("pop.yandex.ru", 995, true);
-                var setting = _repository.SprSetting;
-                string email_login = setting.Where(w => w.ParamName == "email_login").FirstOrDefault().ParamValue;
-                string email_password = setting.Where(w => w.ParamName == "email_password").FirstOrDefault().ParamValue;
-                client.Authenticate(email_login, email_password, OpenPop.Pop3.AuthenticationMethod.UsernameAndPassword);                
-                List<MessageInfo> _infos = client.GetMessageInfos();
-                List<MessageInfo> _infos_sort = _infos.Where(w=>long.Parse(w.Identifier)>max_).OrderByDescending(o => o.Identifier).ToList();
-                
-                List<Message> newMessages = new(); 
-                foreach (MessageInfo item in _infos_sort)
+
+            var setting = _repository.SprSetting;
+            string email_login = setting.FirstOrDefault(w => w.ParamName == "email_login")?.ParamValue;
+            string email_password = setting.FirstOrDefault(w => w.ParamName == "email_password")?.ParamValue;
+
+            using (var client = new ImapClient())
+            {
+                await client.ConnectAsync("imap.yandex.ru", 993, true); // Подключение к IMAP серверу
+                await client.AuthenticateAsync(email_login, email_password); // Аутентификация
+
+                var inbox = client.Inbox;
+                await inbox.OpenAsync(FolderAccess.ReadWrite); // Открытие почтового ящика
+
+                var uids_from_base = _repository.DataAppealEmail.Select(s => s.Uids).ToList();
+               int  max_ = uids_from_base.Max() != null ? int.Parse(uids_from_base.Max()) : 0;
+
+                var uniqueIds = await inbox.SearchAsync(SearchQuery.OlderThan(max_));
+                foreach (var uniqueId in uniqueIds)
                 {
-                    int index = _infos.IndexOf(item);
-                    Message unseenMessage = client.GetMessage(index + 1);
-                    string Body = "-";
-                    try
-                    {
-                        if (unseenMessage.MessagePart.MessageParts != null)
-                        {
-                            foreach (var parts in unseenMessage.MessagePart.MessageParts)
-                            {
-                                if (parts.IsText)
-                                {
-                                    Body = Body + parts != null ? parts.GetBodyAsText() : "-";
-                                }
-                                if (parts.IsAttachment)
-                                {   //===Пример скачивания файлов (можно вынести отдельно)===                                 
-                                    //using (var memoryStream = new MemoryStream(parts.Body, false))
-                                    //{
-                                    //    Response.ContentType = "application/msword";
-                                    //    Response.AddHeader("content-disposition", "attachment;  filename=xxx.doc");
-                                    //    memoryStream.WriteTo(Response.OutputStream);
-                                    //    Response.Flush();
-                                    //    Response.End();
-                                    //}
-                                }
-                            }
-                            //===Пример получения файлов 
-                            //foreach (MessagePart attachment in unseenMessage.FindAllAttachments())
-                            //{
-                            //    // Save the raw bytes to a file
-                            //    FileContentResult f = new FileContentResult(attachment.Body, attachment.FileName);
-                            //    return f;
-                            //}
-                        }                        
-                    }
-                    catch (Exception e)
-                    {
-                        Body = "Не удалось отобразить содержимое";
-                    }
+                    var message = await inbox.GetMessageAsync(uniqueId); // Получение сообщения
+
                     DataAppealEmail model = new()
                     {
-                        DateEmail = unseenMessage.Headers.DateSent,
+                        DateEmail =DateTime.Parse(message.Date.ToString("yyyy-MM-dd HH:mm:ss")),
                         EmployeesNameAdd = "Admin",
                         SprEmployeesId = Guid.Parse("3155fc8f-7bd4-4ba9-97e4-969c3ccd5a58"),
-                        Uids = item.Identifier,
-                        Email = unseenMessage.Headers.From.MailAddress.Address.ToString(),
-                        Caption = unseenMessage.Headers.Subject,
-                        TextEmail = Body,
+                        Uids = uniqueId.Id.ToString(),
+                        Email = message.From.Mailboxes.First()?.Address,
+                        Caption = message.Subject,
+                        TextEmail = message.TextBody,
                         EmailType = 2,
                         IsRead = false
                     };
+
                     try
                     {
-                        model.TextEmail = model.TextEmail == "" ? "-" : model.TextEmail;
-                        _repository.Insert(model);
+                        model.TextEmail = string.IsNullOrEmpty(model.TextEmail) ? "-" : model.TextEmail;
+                        await _repository.Insert(model);
                         rez.NewEmail += 1;
                     }
                     catch (Exception e)
                     {
                         string ee = e.Message;
                     }
-                    newMessages.Add(unseenMessage);
-                    uids_from_base.Add(item.Identifier);
-                }                
-            }        
+
+                    uids_from_base.Add(uniqueId.Id.ToString());
+                }
+
+                await client.DisconnectAsync(true); // Отключение от сервера
+            }
+
             return Json(rez);
         }
 

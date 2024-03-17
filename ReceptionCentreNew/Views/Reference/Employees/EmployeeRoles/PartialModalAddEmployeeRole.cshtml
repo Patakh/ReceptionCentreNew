@@ -1,4 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprEmployeesRoleJoin
+﻿@model SprEmployeesRoleJoin
 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
@@ -9,7 +9,8 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="addEmployeeRole" class="form-horizontal">
+            <form id="Form" class="form-horizontal">
+                <input type="hidden" asp-for="SprEmployeesId" />
                 <div class="form-group form-group-sm">
                     <div class="row">
                         <label class="col-md-4 control-label text-right">Роль</label>
@@ -21,28 +22,32 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" onclick="Cancel()" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="button" onclick="Save()" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
+    </div>
+</div>
 <script>
     $(document).ready(function () {
         $(".select2-nosearch").select2();
     });
-    $("#saveButton").click(function () {
+
+    function Save() {
         $.ajax({
             type: "POST",
             url: "/Reference/SubmitEmployeeRoleSave",
-            data: $("#addEmployeeRole").serialize(),
+            data: $("#Form").serialize(),
             success: function (response) {
-                // Handle success response
                 $('#newModal').modal('hide');
                 successAdd();
-            },
-            error: function () {
-                // Handle error
+                ShowRole('@(Model.SprEmployeesId)');
+                $('#newModal').on('hidden.bs.modal', function (e) {
+                    LoadTable(false)
+                })
             }
         });
-    });
+    }
+    function Cancel() {
+        $('#newModal').modal('hide');
+    }
 </script> 

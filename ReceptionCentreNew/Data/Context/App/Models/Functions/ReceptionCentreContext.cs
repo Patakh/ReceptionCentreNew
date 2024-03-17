@@ -49,8 +49,8 @@ public partial class ReceptionCentreContext : DbContext
     /// </summary>
     public virtual IEnumerable<DataAppealRouteStageNext> FuncDataAppealRoutesStageNextSelect(Guid appealId)
     {
-        NpgsqlParameter param1 = new("@in_data_appeal_id", appealId);
-        return this.Database.SqlQueryRaw<DataAppealRouteStageNext>("SELECT * FROM data_appeal_routes_stage_next_select(@in_data_appeal_id)", param1).ToArray();
+        NpgsqlParameter param1 = new("@in_data_appeal_id", NpgsqlDbType.Uuid) { Value = appealId };
+        return Database.SqlQueryRaw<DataAppealRouteStageNext>("SELECT * FROM data_appeal_routes_stage_next_select(@in_data_appeal_id)", param1).ToArray();
     }
     #endregion
 

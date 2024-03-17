@@ -4,17 +4,13 @@ using ReceptionCentreNew;
 
 public class FtpFileModel
 {
-    FtpClient client;
-    int timeOutFtp; // Таймаут
-    int ftpPort;
-    string ftpUser;
-    string ftpPass;
+    FtpClient client; 
 
     private void FtpConnetion(string ftpServer, string ftpLogin, string ftpPassword)
-    {
+    { 
         client = new FtpClient();
         client.Host = ftpServer;
-        client.Credentials = new NetworkCredential(ftpLogin, CRPassword.Decrypt(ftpPassword));
+        client.Credentials = new NetworkCredential(ftpLogin, ftpPassword);
         client.Connect();
     }
 

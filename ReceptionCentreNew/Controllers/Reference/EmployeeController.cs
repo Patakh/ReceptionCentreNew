@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using ReceptionCentreNew.Data.Context.App;
-using System.Web.Helpers;
+using ReceptionCentreNew.Data.Context.App; 
+using SmartBreadcrumbs.Attributes; 
+using ReceptionCentreNew.CustomCripto;
 
 namespace ReceptionCentreNew.Controllers;
 public partial class ReferenceController
 {
+    [Breadcrumb("Справочники \"Сотрудники\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult Employees()
     {
         return View("Employees/Main");
@@ -42,22 +44,22 @@ public partial class ReferenceController
     /// <param name="employee">объект Сотрудника</param>
     /// <returns>частичное представление таблицы</returns>
 
-    public async Task<IActionResult> SubmitEmployeeSave(SprEmployees employee)
+    public async Task SubmitEmployeeSave(SprEmployees employee)
     {
         if (employee.Id == Guid.Empty)
         {
             employee.EmployeesPass = Crypto.HashPassword(employee.EmployeesPass);
             employee.EmployeesNameAdd = UserName;
             employee.DateAdd = DateTime.Now;
-            _repository.Insert(employee);
+            await _repository.Insert(employee);
         }
         else
         {
             employee.EmployeesNameModify = UserName;
             employee.DateModify = DateTime.Now;
-            _repository.Update(employee);
+            await _repository.Update(employee);
         }
-        return RedirectToAction("PartialTableEmployees");
+
     }
 
     /// <summary>
@@ -65,12 +67,11 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employeeId">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeRecovery(Guid employeeId)
+    public async Task SubmitEmployeeRecovery(Guid id)
     {
-        SprEmployees recoveryEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId);
+        SprEmployees recoveryEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == id);
         recoveryEmployee.IsRemove = false;
-        _repository.Update(recoveryEmployee);
-        return RedirectToAction("PartialTableEmployees");
+        await _repository.Update(recoveryEmployee);
     }
 
     /// <summary>
@@ -78,21 +79,23 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employeeId">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeDelete(Guid employeeId)
+    public async Task SubmitEmployeeDelete(Guid id)
     {
-        SprEmployees deleteEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == employeeId);
-        deleteEmployee.IsRemove = true;
-        deleteEmployee.EmployeesNameModify = UserName;
-        deleteEmployee.DateModify = DateTime.Now;
-        _repository.Delete(deleteEmployee);
-        return RedirectToAction("PartialTableEmployees");
+        SprEmployees deleteEmployee = _repository.SprEmployees.SingleOrDefault(se => se.Id == id);
+        if (deleteEmployee != null)
+        {
+            deleteEmployee.IsRemove = true;
+            deleteEmployee.EmployeesNameModify = UserName;
+            deleteEmployee.DateModify = DateTime.Now;
+            await _repository.Delete(deleteEmployee);
+        }
     }
 
     public IActionResult PartialTableEmployees(string search, bool isRemove = false, int page = 1)
     {
         ViewBag.IsRemove = isRemove;
         ViewBag.Search = search;
-        var employees = _repository.SprEmployees.Include(se => se.SprEmployeesJobPos).Include(i => i.SprEmployeesRoleJoin).Where(o => o.IsRemove != true);
+        var employees = _repository.SprEmployees.Include(se => se.SprEmployeesJobPos).Include(i => i.SprEmployeesRoleJoin).Where(o => o.IsRemove == isRemove);
 
         EmployeeViewModel model = new()
         {
@@ -113,11 +116,11 @@ public partial class ReferenceController
     /// Добавление роль Сотрудника
     /// </summary>
     /// <returns>частичное представление модального окна</returns> 
-    public IActionResult PartialModalAddEmployeeRole(Guid employeeId)
+    public IActionResult PartialModalAddEmployeeRole(Guid id)
     {
-        ViewBag.EmployeeId = employeeId;
+        ViewBag.EmployeeId = id;
         ViewBag.EmployeeRoles = new SelectList(_repository.SprEmployeesRole, "Id", "Commentt");
-        return PartialView("Employees/EmployeeRoles/PartialModalAddEmployeeRole", new SprEmployeesRoleJoin { SprEmployeesId = employeeId });
+        return PartialView("Employees/EmployeeRoles/PartialModalAddEmployeeRole", new SprEmployeesRoleJoin { SprEmployeesId = id });
     }
 
     /// <summary>
@@ -125,17 +128,16 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employeeRole">объект роль Сотрудника</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeRoleSave(SprEmployeesRoleJoin employeeRole)
+    public async Task SubmitEmployeeRoleSave(SprEmployeesRoleJoin employeeRole)
     {
         if (employeeRole.Id == Guid.Empty)
         {
-            _repository.Insert(employeeRole);
+            await _repository.Insert(employeeRole);
         }
         else
         {
-            _repository.Update(employeeRole);
+            await _repository.Update(employeeRole);
         }
-        return RedirectToAction("PartialTableEmployeeRoles", new { employeeId = employeeRole.SprEmployeesId });
     }
 
     /// <summary>
@@ -143,17 +145,16 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employeeRoleId">Id роли Сотрудника</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeRoleDelete(Guid employeeRoleId)
+    public async Task SubmitEmployeeRoleDelete(Guid employeeRoleId)
     {
         var employeeRole = _repository.SprEmployeesRoleJoin.SingleOrDefault(ser => ser.Id == employeeRoleId);
-        _repository.Delete(employeeRole);
-        return RedirectToAction("PartialTableEmployeeRoles", new { employeeId = employeeRole.SprEmployeesId });
+        if (employeeRole != null) await _repository.Delete(employeeRole);
     }
 
-    public IActionResult PartialTableEmployeeRoles(Guid employeeId)
+    public IActionResult PartialTableEmployeeRoles(Guid id)
     {
-        ViewBag.EmployeeId = employeeId;
-        var employeeRoleJoins = _repository.SprEmployeesRoleJoin.Where(ser => ser.SprEmployeesId == employeeId).Include(se => se.SprEmployeesRole);
+        ViewBag.EmployeeId = id;
+        var employeeRoleJoins = _repository.SprEmployeesRoleJoin.Where(ser => ser.SprEmployeesId == id).Include(se => se.SprEmployeesRole);
         EmployeeViewModel model = new()
         {
             SprEmployeesRoleJoin = employeeRoleJoins.OrderBy(e => e.SprEmployeesRole.RoleName),
@@ -179,9 +180,9 @@ public partial class ReferenceController
     /// Изменение
     /// </summary>
     /// <returns>частичное представление модального окна</returns> 
-    public IActionResult PartialModalEditDepartment(Guid departmentId)
+    public IActionResult PartialModalEditDepartment(Guid id)
     {
-        return PartialView("Employees/Departments/PartialModalEditDepartment", _repository.SprEmployeesDepartment.SingleOrDefault(ed => ed.Id == departmentId));
+        return PartialView("Employees/Departments/PartialModalEditDepartment", _repository.SprEmployeesDepartment.SingleOrDefault(ed => ed.Id == id));
     }
 
     /// <summary>
@@ -189,21 +190,20 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="department">объект</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitDepartmentSave(SprEmployeesDepartment department)
+    public async Task SubmitDepartmentSave(SprEmployeesDepartment department)
     {
         if (department.Id == Guid.Empty)
         {
             department.EmployeesNameAdd = UserName;
             department.DateAdd = DateTime.Now;
-            _repository.Insert(department);
+            await _repository.Insert(department);
         }
         else
         {
             department.EmployeesNameModify = UserName;
             department.DateModify = DateTime.Now;
-            _repository.Update(department);
+            await _repository.Update(department);
         }
-        return RedirectToAction("PartialTableDepartments");
     }
 
     /// <summary>
@@ -211,13 +211,14 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="departmentId">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitDepartmentRecovery(Guid departmentId)
+    public async Task SubmitDepartmentRecovery(Guid id)
     {
-        SprEmployeesDepartment recoveryDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(so => so.Id == departmentId);
-
-        recoveryDepartment.IsRemove = false;
-        _repository.Update(recoveryDepartment);
-        return RedirectToAction("PartialTableDepartments");
+        SprEmployeesDepartment recoveryDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(so => so.Id == id);
+        if (recoveryDepartment != null)
+        {
+            recoveryDepartment.IsRemove = false;
+            await _repository.Update(recoveryDepartment);
+        }
     }
 
     /// <summary>
@@ -225,22 +226,22 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="departmentId">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitDepartmentDelete(Guid departmentId)
+    public async Task SubmitDepartmentDelete(Guid id)
     {
-        SprEmployeesDepartment deleteDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(sed => sed.Id == departmentId);
-
-        deleteDepartment.IsRemove = true;
-        deleteDepartment.EmployeesNameModify = UserName;
-        deleteDepartment.DateModify = DateTime.Now;
-        _repository.Delete(deleteDepartment);
-        return RedirectToAction("PartialTableDepartments");
+        SprEmployeesDepartment deleteDepartment = _repository.SprEmployeesDepartment.SingleOrDefault(sed => sed.Id == id);
+        if (deleteDepartment != null)
+        {
+            deleteDepartment.IsRemove = true;
+            deleteDepartment.EmployeesNameModify = UserName;
+            deleteDepartment.DateModify = DateTime.Now;
+            await _repository.Update(deleteDepartment);
+        }
     }
 
     public IActionResult PartialTableDepartments(bool isRemove = false, int page = 1)
     {
         ViewBag.IsRemove = isRemove;
-        var departments = _repository.SprEmployeesDepartment;
-        departments = !isRemove ? departments.Where(o => o.IsRemove != true) : departments;
+        var departments = _repository.SprEmployeesDepartment.Where(o => o.IsRemove == isRemove); 
 
         EmployeeViewModel model = new()
         {
@@ -273,9 +274,9 @@ public partial class ReferenceController
     /// Изменение
     /// </summary>
     /// <returns>частичное представление модального окна</returns> 
-    public IActionResult PartialModalEditEmployeeJobPos(Guid employeeJobPosId)
+    public IActionResult PartialModalEditEmployeeJobPos(Guid id)
     {
-        return PartialView("Employees/EmployeeJobPos/PartialModalEditEmployeeJobPos", _repository.SprEmployeesJobPos.SingleOrDefault(ed => ed.Id == employeeJobPosId));
+        return PartialView("Employees/EmployeeJobPos/PartialModalEditEmployeeJobPos", _repository.SprEmployeesJobPos.SingleOrDefault(ed => ed.Id == id));
     }
 
     /// <summary>
@@ -283,60 +284,59 @@ public partial class ReferenceController
     /// </summary>
     /// <param name="employeeJobPos">объект</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeJobPosSave(SprEmployeesJobPos employeeJobPos)
+    public async Task SubmitEmployeeJobPosSave(SprEmployeesJobPos employeeJobPos)
     {
         if (ModelState.IsValid)
         {
             if (employeeJobPos.Id == Guid.Empty)
-            {
+            { 
                 employeeJobPos.EmployeesNameAdd = UserName;
-                employeeJobPos.DateAdd = DateTime.Now;
-                _repository.Insert(employeeJobPos);
+                employeeJobPos.DateAdd = DateTime.Now; 
+                await _repository.Insert(employeeJobPos);
             }
             else
             {
                 employeeJobPos.EmployeesNameModify = UserName;
                 employeeJobPos.DateModify = DateTime.Now;
-                _repository.Update(employeeJobPos);
+                await _repository.Update(employeeJobPos);
             }
-            return RedirectToAction("PartialTableEmployeeJobPos");
         }
-        return View(employeeJobPos);
     }
 
     /// <summary>
     /// Восстанавливает запись по указанному Id
     /// </summary>
-    /// <param name="employeeJobPosId">Id</param>
+    /// <param name="id">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeJobPosRecovery(Guid employeeJobPosId)
+    public async Task SubmitEmployeeJobPosRecovery(Guid id)
     {
-        SprEmployeesJobPos recoveryEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == employeeJobPosId);
-
-        recoveryEmployeeJobPos.IsRemove = false;
-        _repository.Update(recoveryEmployeeJobPos);
-        return RedirectToAction("PartialTableEmployeeJobPos");
+        SprEmployeesJobPos recoveryEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == id);
+        if (recoveryEmployeeJobPos != null)
+        {
+            recoveryEmployeeJobPos.IsRemove = false;
+            await _repository.Update(recoveryEmployeeJobPos);
+        }
     }
 
     /// <summary>
     /// Удаляет запись по указанному Id
     /// </summary>
-    /// <param name="employeeJobPosId">Id</param>
+    /// <param name="id">Id</param>
     /// <returns>частичное представление таблицы</returns> 
-    public IActionResult SubmitEmployeeJobPosDelete(Guid employeeJobPosId)
+    public async Task SubmitEmployeeJobPosDelete(Guid id)
     {
-        SprEmployeesJobPos deleteEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == employeeJobPosId);
-
-        deleteEmployeeJobPos.IsRemove = true;
-        _repository.Delete(deleteEmployeeJobPos);
-        return RedirectToAction("PartialTableEmployeeJobPos");
+        SprEmployeesJobPos deleteEmployeeJobPos = _repository.SprEmployeesJobPos.SingleOrDefault(sejp => sejp.Id == id);
+        if (deleteEmployeeJobPos != null)
+        {
+            deleteEmployeeJobPos.IsRemove = true;
+            await _repository.Delete(deleteEmployeeJobPos);
+        }
     }
 
     public IActionResult PartialTableEmployeeJobPos(bool isRemove = false, int page = 1)
     {
         ViewBag.IsRemove = isRemove;
-        var employeeJobPos = _repository.SprEmployeesJobPos;
-        employeeJobPos = !isRemove ? employeeJobPos.Where(o => o.IsRemove != true) : employeeJobPos;
+        var employeeJobPos = _repository.SprEmployeesJobPos.Where(o => o.IsRemove == isRemove);
 
         EmployeeViewModel model = new()
         {

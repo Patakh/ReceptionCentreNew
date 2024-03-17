@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using Microsoft.AspNetCore.Authorization;
+using SmartBreadcrumbs.Attributes;
+using System.Drawing.Printing;
 
 namespace ReceptionCentreNew.Controllers;
 [Authorize]
@@ -17,6 +19,7 @@ public class SystemController : Controller
     }
 
     [HttpGet]
+    [Breadcrumb("Настройки", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult PartialTableSettings()
     {
         List<SprSetting> model = _repository.SprSetting.ToList();
@@ -34,31 +37,26 @@ public class SystemController : Controller
         _repository.Update(setting);
         return RedirectToAction("~/Views/System/Settting/PartialTableSettings.cshtml");
     }
+
+    [Breadcrumb("Изменения", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ChangeLogs()
     {
         return View("ChangeLogs/Main");
     }
-    public IActionResult PartialTableChangeLogs(string search, int page = 1)
+     
+    public IActionResult PartialTableChangeLogs(string search)
     {
         ViewBag.Serach = search;
         var dataChangeLogs = _repository.DataChangeLog;
-        dataChangeLogs = string.IsNullOrEmpty(search) ? dataChangeLogs :
-            search.ToLower().Split().Aggregate(dataChangeLogs, (current, item) => current.Where(h => h.FieldName.ToLower().Contains(item) || h.TableName.ToLower().Contains(item) || h.OldValue.ToLower().Contains(item) || h.NewValue.ToLower().Contains(item) || h.EmployeesName.ToLower().Contains(item)));
-
+    
         ReferenceViewModel model = new()
         {
-            DataChangeLogList = dataChangeLogs.OrderByDescending(a => a.DateChange).Skip((page - 1) * PageSize).Take(PageSize),
-            PageInfo = new PageInfo
-            {
-                MaxPageList = 5,
-                CurrentPage = page,
-                ItemsPerPage = PageSize,
-                TotalItems = dataChangeLogs.Count()
-            },
+            DataChangeLogList = dataChangeLogs.OrderByDescending(a => a.DateChange).OrderByDescending(d => d.DateChange).Take(200).ToList(),
         };
         return PartialView("ChangeLogs/PartialTableChangeLogs", model);
     }
 
+    [Breadcrumb("Ошибки", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult Errors()
     {
         return View("Errors/Main");
@@ -73,14 +71,7 @@ public class SystemController : Controller
 
         ReferenceViewModel model = new()
         {
-            ErrorsList = errors.OrderByDescending(a => a.ErrorDate).Skip((page - 1) * PageSize).Take(PageSize),
-            PageInfo = new PageInfo
-            {
-                MaxPageList = 5,
-                CurrentPage = page,
-                ItemsPerPage = PageSize,
-                TotalItems = errors.Count()
-            },
+            ErrorsList = errors.OrderByDescending(a => a.ErrorDate).OrderByDescending(d=>d.ErrorDate).Take(200),
         };
         return PartialView("Errors/PartialTableErrors", model);
     }

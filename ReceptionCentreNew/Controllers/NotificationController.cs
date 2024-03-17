@@ -7,6 +7,7 @@ using ReceptionCentreNew.Data.Context.App;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using SmartBreadcrumbs.Attributes;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -19,13 +20,15 @@ namespace ReceptionCentreNew.Controllers
         private IRepository _repository;
         private string? UserName;
         public SignInManager<ApplicationUser> SignInManager;
+
         public NotificationController(IRepository repo, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager)
         {
             _repository = repo;
             SignInManager = signInManager;
             UserName = _repository.SprEmployees.First(s => s.EmployeesLogin == signInManager.Context.User.Identity.Name).EmployeesName;
-        } 
-        
+        }
+
+        [Breadcrumb("Уведомления", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
         public IActionResult Notifications()
         {
             var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);

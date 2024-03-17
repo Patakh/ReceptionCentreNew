@@ -10,7 +10,7 @@ namespace ReceptionCentreNew.Models
     }
     public class SourcesViewModel
     {
-        public IEnumerable<SourcesModel> SourceModel { get; set; }
+        public List<SourcesModel> SourceModel { get; set; }
 
         public PageInfo PageInfo { get; set; }
     }

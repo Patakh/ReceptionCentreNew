@@ -14,7 +14,7 @@
                     </div>
                     <div class="col-sm-3">
                         <div class="text-right">
-                            <button type="button" onclick="Add('@(ViewBag.SurveyQuestionId)')" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                            <button type="button" onclick="AddSurveyAnswers('@(ViewBag.SurveyQuestionId)')" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
                         </div>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
                                 <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                             </div>
                             <input type="text" id="searchTextSurveyAnswers" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                            <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="right" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+                            <button id="showRemoves" onclick="ShowSurveyAnswers('@ViewBag.SurveyQuestionId', '@(!ViewBag.IsRemoveSurveyAnswer)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemoveSurveyAnswer ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="right" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemoveSurveyAnswer ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
                         </div>
                         @if (Model.SprSurveyAnswerList.Any())
                         {
@@ -35,7 +35,7 @@
                                 {
                                     <tr data-survey-answer-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
                                         <td class="number-row p-l-20-important">
-                                            @((Model.PageInfo.CurrentPage - 1) * Model.PageInfo.ItemsPerPage + ++Model.PageInfo.NumberRow)
+                                            @(Model.SprSurveyAnswerList.IndexOf(item)+1)
                                         </td>
                                         <td>
                                             <span>@Html.DisplayFor(i => item.Answer)</span><br>
@@ -48,12 +48,12 @@
                                             {
                                                 if (item.IsRemove != true)
                                                 {
-                                                    <button type="button" class="edit-row btn btn-link" onclick="Edit('@(item.Id)')"><i class="ion-edit"></i></button>
-                                                    <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
+                                                    <button type="button" class="edit-row btn btn-link" onclick="EditSurveyAnswers('@(item.Id)')"><i class="ion-edit"></i></button>
+                                                    <button class="remove-row btn btn-link" onclick="RemoveSurveyAnswers('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                                 }
                                                 else
                                                 {
-                                                    <button class="btn btn-link recovery-row" onclick="Recovery('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                                    <button class="btn btn-link recovery-row" onclick="RecoverySurveyAnswers('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                                 }
                                             }
                                         </td>
@@ -85,10 +85,46 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Закрыть</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+        </div>
+    </div>
     <script>
-        function Add(id) {
+        var filtering = $('#SurveyAnswersTable');
+        filtering.footable();
+        $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
+        $('#SurveyAnswersTable #tr_count').text($('#SurveyAnswersTable.footable tbody tr').length);
+
+        // Search input
+        $('#searchTextSurveyAnswers').keyup(function (evt) {
+            evt.preventDefault();
+            filtering.trigger('footable_filter', { filter: $(this).val() });
+            $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
+        });
+          
+        $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
+
+        $('button[data-tooltip-info]').tooltip({
+            title: function () {
+                var tooltipInfo = $(this).data('tooltipInfo');
+                return "<div class='text-left'>" +
+                    "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
+                    "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
+                    "<hr class='m-t-5 m-b-5'>" +
+                    "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
+                    "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
+                    "</div>";
+            }, 
+            trigger: 'hover',
+            html: true,
+            placement: "left"
+        });
+          
+        // Добавляем возможность выбора строки в таблице
+        $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
+        });
+
+        function AddSurveyAnswers(id) {
             $.ajax({
                 url: '@Url.Action("PartialModalAddSurveyAnswer", "Reference")',
                 type: 'GET',
@@ -100,7 +136,7 @@
             });
         }
 
-        function Edit(id) {
+        function EditSurveyAnswers(id) {
             $.ajax({
                 type: "POST",
                 url: "/Reference/PartialModalEditSurveyAnswer",
@@ -109,85 +145,34 @@
                     $('#newModal').html(response);
                     $('#newModal').modal('show');
                 },
-                error: function () {
-                    // Handle error
-                }
             });
         }
 
-        function Remove(id) {
+        function RemoveSurveyAnswers(id) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SubmitSurveyAnswerDelete", "Reference")',
                 data: { id: id },
                 success: function (data) {
                     successDelete();
-                    ShowSurveyAnswers('@ViewBag.SurveyQuestionId');
+                    ShowSurveyAnswers('@ViewBag.SurveyQuestionId', '@(ViewBag.IsRemoveSurveyAnswer)');
+                    LoadTable('@(ViewBag.IsRemove)');
                 }
             });
         }
 
-        function Recovery(id) {
+        function RecoverySurveyAnswers(id) {
             var paramObject = {
                 url: '@Url.Action("SubmitSurveyAnswerRecovery", "Reference")',
                 params: { surveyAnswerId: id },
                 onSuccess: function (data) {
                     $('#newModal').html(data);
-                    ShowSurveyAnswers('@ViewBag.SurveyQuestionId')
+                    ShowSurveyAnswers('@ViewBag.SurveyQuestionId', '@(ViewBag.IsRemoveSurveyAnswer)');
+                    LoadTable('@(ViewBag.IsRemove)');
                 }
             }
             removeRecovery(paramObject);
         }
-
-        $(document).ready(function () {
-            var filtering = $('#SurveyAnswersTable');
-            filtering.footable();
-            $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
-            $('#SurveyAnswersTable #tr_count').text($('#SurveyAnswersTable.footable tbody tr').length);
-
-            // Search input
-            $('#searchTextSurveyAnswers').keyup(function (evt) {
-                evt.preventDefault();
-                filtering.trigger('footable_filter', { filter: $(this).val() });
-                $('#SurveyAnswersTable #filter_count').text($('#SurveyAnswersTable.footable tbody tr:not(.footable-filtered)').length);
-            });
-        });
-
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
-            $('button[data-tooltip-info]').tooltip({
-                title: function () {
-                    var tooltipInfo = $(this).data('tooltipInfo');
-                    return "<div class='text-left'>" +
-                        "<strong>Добавил</strong>: " + tooltipInfo['EmployeesFio'] + "</br>" +
-                        "<strong>Дата добавления</strong>: " + tooltipInfo['DateAdd'] + "</br>" +
-                        "<hr class='m-t-5 m-b-5'>" +
-                        "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
-                        "<strong>Дата изменения</strong>: " + tooltipInfo['DateModify'] + "</br>" +
-                        "</div>";
-                },
-                html: true,
-                placement: "left"
-            });
-        });
-
-        $('.modal-body #showRemoves').click(function () {
-            var surveyQuestionId = '@ViewBag.SurveyQuestionId';
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("PartialTableSurveyAnswers", "Reference")',
-                data: { id: surveyQuestionId, isRemove: '@(!ViewBag.IsRemove)' },
-                success: function (data) {
-                    $('#newModal').html(data);
-                }
-            });
-        });
-
-
-        // Добавляем возможность выбора строки в таблице
-        $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
-            $(this).siblings('tr:not(.thead-row)').removeClass('active');
-            $(this).addClass('active');
-        });
+         
     </script>
 </div>

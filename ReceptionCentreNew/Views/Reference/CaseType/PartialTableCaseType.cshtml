@@ -9,18 +9,19 @@
             </div>
         </div>
     </div>
-    @if (Model.SprCaseTypeList.Any())
-    {
-        <div class="table-responsive">
-            <table id="caseTypeTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextCaseType" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+    <div class="table-responsive">
+        <table id="caseTypeTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
-                <tbody>
+                <input type="text" id="searchTextCaseType" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button onclick=" LoadTable('@(!ViewBag.IsRemove)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+            </div>
+            <tbody>
+
+                @if (Model.SprCaseTypeList.Any())
+                {
                     @foreach (var item in Model.SprCaseTypeList)
                     {
                         <tr data-case-type-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
@@ -38,9 +39,9 @@
                                 {
                                     if (item.IsRemove != true)
                                     {
-                                        <form id="myForm" action="@Url.Action("PartialModalEditCaseType", "Reference", new { caseTypeId = item.Id })" method="post" class="form-submit">
-                                            <button type="button" class="btn btn-link edit-row"><i class="ion-edit"></i></button>
-                                        </form>
+
+                                        <button type="button" onclick="Edit('@(item.Id)')" class="btn btn-link edit-row"><i class="ion-edit"></i></button>
+
                                         <button class="remove-row btn btn-link" onclick="removeCaseType('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
@@ -51,44 +52,100 @@
                             </td>
                         </tr>
                     }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="1">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
+                    }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
                     </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+                }
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="1">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
 </div>
 
 <script>
 
+    function addCaseType() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddCaseType", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
 
+    function removeCaseType(id) {
+        console.log(id)
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitCaseTypeDelete", "Reference")',
+            data: { id: id },
+            success: function (data) {
+                successDelete();
+                LoadTable(false);
+            }
+        });
+    }
+
+    function Edit(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditCaseType",
+            data: { id: id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+        });
+    }
+
+    function Recovery(id) {
+        var paramObject = {
+            url: '@Url.Action("SubmitCaseTypeRecovery", "Reference")',
+            params: { id: id },
+            onSuccess: function (data) {
+                LoadTable(true);
+            }
+        }
+        removeRecovery(paramObject);
+    }
 
     $(document).ready(function () {
-        var filtering = $('#caseTypeTable');
-        filtering.footable();
+        var table = $('#caseTypeTable');
+
+        table.footable();
+
+        var pageSize = 15;
+        if (table.data('row-count') <= pageSize) {
+            table.data('page-size', pageSize);
+        } else {
+            table.data('page-size', 10);
+        }
+        table.trigger('footable_redraw');
+
         $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
         $('#tr_count').text($('.footable tbody tr').length);
 
         // Search input
         $('#searchTextCaseType').keyup(function (evt) {
             evt.preventDefault();
-            filtering.trigger('footable_filter', { filter: $(this).val() });
+            table.trigger('footable_filter', { filter: $(this).val() });
             $('#filter_count').text($('.footable tbody tr:not(.footable-filtered)').length);
         });
 
@@ -122,30 +179,6 @@
             placement: "left"
         });
     });
-
-    $('#showRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableCaseType", "Reference")',
-            data: { isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#caseTypeContainer').html(data);
-            }
-        });
-    });
-
-    $('#caseTypeContainer table td button.recovery-row').click(function () {
-        var caseTypeId = $(this).closest('tr').data('caseTypeId');
-        var paramObject = {
-            url: '@Url.Action("SubmitCaseTypeRecovery", "Reference")',
-            params: { caseTypeId: caseTypeId },
-            onSuccess: function (data) {
-                $('#caseTypeContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
-
     $('#caseTypeContainer table td button.remove-row').click(function () {
         var caseTypeId = $(this).closest('tr').data('caseTypeId');
         $.ajax({

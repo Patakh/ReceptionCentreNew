@@ -1,20 +1,21 @@
 ﻿@model AppealViewModel
-
-
-<form id="AddRouteStageForm" class="form-submit">
-    <div class="case-next-stage form-row p-b-10">
-        <div class="col-md-6 col-lg-6">
-            @Html.DropDownList("employeeId", ViewBag.Employees as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
+@if ((ViewBag.RouteStages as SelectList).Any())
+{
+    <form id="Form" class="form-submit">
+        <input type="hidden" name="appealId" value="@Model.DataAppealId" />
+        <div class="case-next-stage form-row p-b-10">
+            <div class="col-md-6 col-lg-6">
+                @Html.DropDownList("employeeId", ViewBag.Employees as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
+            </div>
+            <div class="col-md-3">
+                @Html.DropDownList("routeStageId", ViewBag.RouteStages as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
+            </div>
+            <div class="col-auto">
+                <button type="button" onclick="Save()" class="btn btn-primary waves-effect waves-light">Добавить этап</button>
+            </div>
         </div>
-        <div class="col-md-3">
-            @Html.DropDownList("routeStageId", ViewBag.RouteStages as SelectList, new Dictionary<string, object> { { "class", "form-control select2 required" } })
-        </div>
-        <div class="col-auto">
-            <button type="button" onclick="Add()" class="btn btn-primary waves-effect waves-light">Добавить этап</button>
-        </div>
-    </div>
-</form>
-
+    </form>
+}
 @if (Model.DataAppealRoutesStageList.Any())
 {
     <div class="panel panel-border panel-primary">
@@ -64,16 +65,18 @@ else
 }
 
 <script>
-    function Add() {
+    function Save() {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("SubmitNextRouteStageSave", "Appeal")',
-            data: $("#EditAppealForm").serialize(),
+            data: $("#Form").serialize(),
             success: function (data) {
-                $('#stages').html(data);
+                successAdd();
+                LoadStages();
             }
         });
     }
+
     $(document).ready(function () {
         $('select.select2').select2();
     });
