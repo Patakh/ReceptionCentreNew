@@ -28,8 +28,7 @@
     }
 </style>
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-@* @Html.MvcSiteMap().SiteMapPath() *@
-
+  
 <div class="row">
     <input type="hidden" value="@Model.OutDataAppealId" class="_glAppealId" />
     <div class="col-lg-9">
@@ -91,7 +90,7 @@
                             {
                                 if (item.Length != 0)
                                 {
-                                    <a href="http://192.168.34.9:81/Case?CaseId=@item.Replace("#","")" target="_blank">@item</a>
+                                    <a href='http://192.168.34.9:81/Case?CaseId=@(item.Replace("#",""))' target="_blank">@item</a>
                                 }
                             }
                         }
@@ -214,11 +213,18 @@
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 
     <script>
-        $.get("Appeal/PartialTableRouteStages/appealId=@Model.OutDataAppealId", function (data) {
-            $('#stages').html(data);
-        });
+      
         $(document).ready(function () {
             $('a[href="#notification-calls"]').click();
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PartialTableRouteStages", "Appeal")',
+                data: { id: '@Model.OutDataAppealId' },
+                success: function (data) {
+                    $('#stages').html(data);
+                }
+            });
 
             $('#text-appeal').click(function () {
                 if ($(this).hasClass("long")) {

@@ -10,53 +10,17 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $(".select2").select2();
+            LoadTable(false);
+        });
+        function LoadTable(isRemove) {
             $.ajax({
                 type: 'POST',
+                data: { isRemove: isRemove },
                 url: '@Url.Action("PartialTableCaseTypeDifficulty", "Reference")',
                 success: function (data) {
                     $('#caseTypeDifficultyContainer').html(data);
                 }
             })
-        }); 
-
-        function editCaseTypeDifficulty(id) { 
-            $.ajax({
-                type: "POST",
-                url: "/Reference/PartialModalEditCaseTypeDifficulty",
-                data: { caseTypeDifficultyId: id },
-                success: function (response) {
-                    $('#newModal').html(response);
-                    $('#newModal').modal('show');
-                },
-                error: function () {
-                    // Handle error
-                }
-            });
-        }
-
-        function addCaseTypeDifficulty() {
-            $.ajax({
-                url: '@Url.Action("PartialModalAddCaseTypeDifficulty", "Reference")',
-                type: 'GET',
-                success: function (data) {
-                    $('#newModal').html(data);
-                    $('#newModal').modal('show');
-                }
-            });
-        }
-
-        function removeCaseTypeDifficulty(id) {
-            console.log(id)
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("SubmitCaseTypeDifficultyDelete", "Reference")',
-                data: { caseTypeDifficultyId: id },
-                success: function (data) {
-                    successDelete();
-                    $('#caseTypeDifficultyContainer').html(data);
-                }
-            });
         }
     </script>
     <!--Сложность обращения-->

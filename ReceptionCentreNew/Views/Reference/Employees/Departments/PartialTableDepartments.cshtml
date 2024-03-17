@@ -1,35 +1,33 @@
-﻿@model  EmployeeViewModel
+﻿@model EmployeeViewModel
 <div class="card-box p-0">
-    <div class="row">
-        <div class="col-sm-10">
-
-        </div>
+    <div class="row justify-content-end">
         <div class="col-sm-2">
-            <div class="text-right"> 
+            <div class="text-right">
                 <form id="partialModalForm" class="form-submit">
-                    <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                    <button type="button" onclick="AddDepartment()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
                 </form>
             </div>
         </div>
     </div>
-    @if (Model.SprEmployeesDepartmentList.Any())
-    {
-        <div class="table">
-            <table id="departmentsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextDepartments" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showDepartmentsRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+
+    <div class="table">
+        <table id="departmentsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
-                <thead>
-                    <tr>
-                        <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployeesDepartmentList.First().DepartmentName)</th>                        
-                    </tr>
-                </thead>
-                <tbody>
+                <input type="text" id="searchTextDepartments" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button onclick="LoadTableDepartment('@(!ViewBag.IsRemove)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+            </div>
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                    <th>@Html.DisplayNameFor(model => model.SprEmployeesDepartmentList.First().DepartmentName)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SprEmployeesDepartmentList.Any())
+                {
                     @foreach (var item in Model.SprEmployeesDepartmentList)
                     {
                         <tr data-department-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
@@ -40,50 +38,50 @@
                                 @Html.DisplayFor(i => item.DepartmentName)
                             </td>
                             <td class="actions text-right">
-                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"DepartmentName": "@(item.DepartmentName)", "EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "set_date": "@Html.DisplayFor(i=>item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
+                                <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;" data-tooltip-info='{"DepartmentName": "@(item.DepartmentName)", "EmployeesFio": "@(item.EmployeesNameAdd)", "employees_fio_modifi": "@(item.IpAddressModify ?? "-")", "set_date": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
                                     if (item.IsRemove != true)
-                                    {  
-                                        <button type="button" class="edit-row btn btn-link" onclick="Edit('@item.Id')"><i class="ion-edit"></i></button>
-                                        <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
+                                    {
+                                        <button type="button" class="edit-row btn btn-link" onclick="EditDepartment('@item.Id')"><i class="ion-edit"></i></button>
+                                        <button class="remove-row btn btn-link" onclick="RemoveDepartment('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
-                                        <button class="recovery-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                        <button class="recovery-row btn btn-link" onclick="RecoveryDepartment('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                     }
                                 }
                             </td>
                         </tr>
                     }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="3">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
+                }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
                     </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+                }
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="3">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
-    function Add() {
+    function AddDepartment() {
         $.ajax({
             url: '@Url.Action("PartialModalAddDepartment", "Reference")',
             type: 'GET',
@@ -93,30 +91,39 @@
             }
         });
     }
-    function Edit(id) {
+    function EditDepartment(id) {
         $.ajax({
             type: "POST",
             url: "/Reference/PartialModalEditDepartment",
-            data: { departmentId: id },
+            data: { id: id },
             success: function (response) {
                 $('#newModal').html(response);
                 $('#newModal').modal('show');
             },
-            error: function () {
-                // Handle error
-            }
         });
     }
-    function Remove(id) { 
+
+    function RemoveDepartment(id) {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("SubmitDepartmentDelete", "Reference")',
-            data: { departmentId: id },
+            data: { id: id },
             success: function (data) {
                 successDelete();
-                $('#departmentsPillContainer').html(data);
+                LoadTableDepartment(false);
             }
         });
+    }
+
+    function RecoveryDepartment(id) {
+        var paramObject = {
+            url: '@Url.Action("SubmitDepartmentRecovery", "Reference")',
+            params: { id: id },
+            onSuccess: function (data) {
+                LoadTableJobPos(true)
+            }
+        }
+        removeRecovery(paramObject);
     }
 
     $(document).ready(function () {
@@ -131,9 +138,9 @@
             filtering.trigger('footable_filter', { filter: $(this).val() });
             $('#departmentsTable #filter_count').text($('#departmentsTable.footable tbody tr:not(.footable-filtered)').length);
         });
-    }); 
+    });
 
-     $(function () {
+    $(function () {
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -146,10 +153,10 @@
                     "<hr class='m-t-5 m-b-5'>" +
                     "<strong>Изменил</strong>: " + tooltipInfo['employees_fio_modifi'] + "</br>" +
                     (tooltipInfo['IsRemove'] ?
-                            "<hr class='m-t-5 m-b-5'>" +
-                            "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
-                            "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
-                            "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
+                        "<hr class='m-t-5 m-b-5'>" +
+                        "<strong>Удалил</strong>: " + tooltipInfo['employees_fio_remove'] + "</br>" +
+                        "<strong>Причина удаления</strong>: " + tooltipInfo['commentt_remove'] + "</br>" +
+                        "<strong>Дата удаления</strong>: " + tooltipInfo['date_remove'] + "</br>" : "") +
                     "</div>";
             },
             html: true,
@@ -157,33 +164,9 @@
         });
     });
 
-    $('#showDepartmentsRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableDepartments", "Reference")',
-            data: { isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#departmentsPillContainer').html(data);
-            }
-        });
-    });
-
-    $('#departmentsPillContainer table td button.recovery-row').click(function () {
-        var departmentId = $(this).closest('tr').data('departmentId');
-        var paramObject = {
-            url: '@Url.Action("SubmitDepartmentRecovery", "Reference")',
-            params: { departmentId: departmentId },
-            onSuccess: function (data) {
-                $('#departmentsPillContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
-     
-
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
         $(this).siblings('tr:not(.thead-row)').removeClass('active');
         $(this).addClass('active');
     });
-        </script>
+</script>

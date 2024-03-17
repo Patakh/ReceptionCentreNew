@@ -69,8 +69,8 @@ public interface IRepository
     IEnumerable<StatisticsDataAppealTypeDifficulty> FuncStatisticsDataAppealTypeDifficulty(Guid? SprMfcId, DateTime DateStart, DateTime date_stop);
 
 
-    void Insert<TEntity>(TEntity entity) where TEntity : class;
-    void Inserts<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
-    void Update<TEntity>(TEntity entity) where TEntity : class;
-    void Delete<TEntity>(TEntity entity) where TEntity : class;
+    Task Insert<TEntity>(TEntity entity) where TEntity : class;
+    Task Inserts<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
+    Task Update<TEntity>(TEntity entity) where TEntity : class;
+    Task Delete<TEntity>(TEntity entity) where TEntity : class;
 }

@@ -1,30 +1,30 @@
-﻿@model  ReferenceViewModel
+﻿@model ReferenceViewModel
 <div class="card-box p-0">
     <div class="row">
         <div class="col-sm-10">
-
         </div>
         <div class="col-sm-2">
             <div class="text-right">
-                <form id="partialModalAddCaseTypeDifficultyForm">
+               
                     <button type="button" class="btn btn-mfc waves-effect waves-light" onclick="addCaseTypeDifficulty()"> Добавить <i class="fa fa-plus m-l-5"></i></button>
-                </form>
+                
             </div>
         </div>
     </div>
 
-    @if (Model.SprCaseTypeDifficultyList.Any())
-    {
-        <div class="table-responsive">
-            <table id="caseTypeDifficultyTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextCaseTypeDifficulty" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+    <div class="table-responsive">
+        <table id="caseTypeDifficultyTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
-                <tbody>
+                <input type="text" id="searchTextCaseTypeDifficulty" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button onclick="LoadTable('@(!ViewBag.IsRemove)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+            </div>
+            <tbody>
+
+                @if (Model.SprCaseTypeDifficultyList.Any())
+                {
                     @foreach (var item in Model.SprCaseTypeDifficultyList)
                     {
                         <tr data-case-type-difficulty-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
@@ -44,43 +44,93 @@
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
                                 {
                                     @if (!item.IsRemove)
-                                    { 
+                                    {
                                         <button type="button" class="edit-row btn btn-link" onclick="editCaseTypeDifficulty('@item.Id')"><i class="ion-edit"></i></button>
                                         <button class="remove-row btn btn-link" onclick="removeCaseTypeDifficulty('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
-                                        <button class="recovery-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                        <button class="recovery-row btn btn-link" onclick="Recovery('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                     }
                                 }
                             </td>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="2">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
+                    } 
+                }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
                     </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+                }
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="2">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
+
+    function editCaseTypeDifficulty(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Reference/PartialModalEditCaseTypeDifficulty",
+            data: { caseTypeDifficultyId: id },
+            success: function (response) {
+                $('#newModal').html(response);
+                $('#newModal').modal('show');
+            },
+            error: function () {
+                // Handle error
+            }
+        });
+    }
+
+    function addCaseTypeDifficulty() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddCaseTypeDifficulty", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
+            }
+        });
+    }
+
+    function removeCaseTypeDifficulty(id) {
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SubmitCaseTypeDifficultyDelete", "Reference")',
+            data: { id: id },
+            success: function (data) {
+                successDelete();
+                LoadTable(false);
+            }
+        });
+    }
+
+    function Recovery(id) {
+        var paramObject = {
+            url: '@Url.Action("SubmitCaseTypeDifficultyRecovery", "Reference")',
+            params: { id: id },
+            onSuccess: function (data) {
+                LoadTable(true);
+            }
+        }
+        removeRecovery(paramObject);
+    }
+
     $(document).ready(function () {
         var filtering = $('#caseTypeDifficultyTable');
         filtering.footable();
@@ -96,8 +146,8 @@
     });
 
 
-     $(function () {
-          
+    $(function () {
+
         $('[data-toggle="tooltip"]').tooltip({ trigger: 'hover' });
         $('button[data-tooltip-info]').tooltip({
             title: function () {
@@ -115,28 +165,6 @@
         });
     });
 
-    $('#showRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableCaseTypeDifficulty", "Reference")',
-            data: { isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#caseTypeDifficultyContainer').html(data);
-            }
-        });
-    });
-
-    $('#caseTypeDifficultyContainer table td button.recovery-row').click(function () {
-        var caseTypeDifficultyId = $(this).closest('tr').data('caseTypeDifficultyId');
-        var paramObject = {
-            url: '@Url.Action("SubmitCaseTypeDifficultyRecovery", "Reference")',
-            params: { caseTypeDifficultyId: caseTypeDifficultyId },
-            onSuccess: function (data) {
-                $('#caseTypeDifficultyContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {

@@ -1,4 +1,4 @@
-﻿@model  EmployeeViewModel
+﻿@model EmployeeViewModel
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -11,28 +11,26 @@
             <div class="card-box p-0">
                 <div class="row">
                     <div class="col-sm-10">
-
                     </div>
                     <div class="col-sm-2">
-                        <div class="text-right"> 
+                        <div class="text-right">
                             <form id="partialModalForm" class="form-submit">
-                                <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
+                                <button type="button" onclick="AddRole('@ViewBag.EmployeeId')" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
                             </form>
                         </div>
                     </div>
                 </div>
-                @if (Model.SprEmployeesRoleJoin.Any())
-                {
-                    <div class="table">
-                        <table id="employeesRoleTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">                            
-                            <thead>
-                                <tr>
-                                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                                    <th>@Html.DisplayNameFor(model => model.SprEmployeesRoleJoin.First().SprEmployeesRoleId)</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
+                <div class="table">
+                    <table id="employeesRoleTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                        <thead>
+                            <tr>
+                                <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                                <th>@Html.DisplayNameFor(model => model.SprEmployeesRoleJoin.First().SprEmployeesRoleId)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.SprEmployeesRoleJoin.Any())
+                            {
                                 @foreach (var item in Model.SprEmployeesRoleJoin)
                                 {
                                     <tr data-employee-role-id="@item.Id">
@@ -45,58 +43,61 @@
                                         <td class="actions text-right">
                                             @if (User.IsInRole("superadmin"))
                                             {
-                                                <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
+                                                <button class="remove-row btn btn-link" onclick="RemoveRole('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                             }
                                         </td>
                                     </tr>
                                 }
-                            </tbody>                            
-                        </table>
-                    </div>
-                }
-                else
-                {
-                    <div class="alert-no-record">
-                        <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-                    </div>
-                }
+                            }
+                            else
+                            {
+                                <tr class="alert-no-record">
+                                    <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Закрыть</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+        </div>
+    </div>
     <script>
-        function Add() {
+        function AddRole(id) {
             $.ajax({
                 url: '@Url.Action("PartialModalAddEmployeeRole", "Reference")',
                 type: 'GET',
+                data: { id: id },
                 success: function (data) {
                     $('#newModal').html(data);
                     $('#newModal').modal('show');
                 }
             });
-        } 
-        function Remove(id) {
+        }
+        function RemoveRole(id) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SubmitEmployeeRoleDelete", "Reference")',
                 data: { employeeRoleId: id },
                 success: function (data) {
                     successDelete();
-                    $('#employeeRolesContainer').html(data);
+                    ShowRole('@ViewBag.EmployeeId');
+                    LoadTable(false)
                 }
             });
         }
+
         $(document).ready(function () {
             var filteringRole = $('#employeesRoleTable');
-            filteringRole.footable();            
+            filteringRole.footable();
         });
-          
-    // Добавляем возможность выбора строки в таблице
-    $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
-        $(this).siblings('tr:not(.thead-row)').removeClass('active');
-        $(this).addClass('active');
-    });
+
+        // Добавляем возможность выбора строки в таблице
+        $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
+            $(this).siblings('tr:not(.thead-row)').removeClass('active');
+            $(this).addClass('active');
+        });
     </script>
 

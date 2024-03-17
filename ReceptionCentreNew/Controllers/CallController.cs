@@ -67,22 +67,21 @@ public class CallController : Controller
         return PartialView("../Common/Play_Audio");
     }
 
+    [HttpGet]
     public IActionResult Get_Audio(Guid Id)
     {
         Response.AppendTrailer("Accept-Ranges", "bytes");
         var settings = _repository.SprSetting.ToList();
         string ftpServer = settings.SingleOrDefault(ss => ss.ParamName == "ftp_server")?.ParamValue;
         string ftpFolder = settings.SingleOrDefault(ss => ss.ParamName == "ftp_folder_calls")?.ParamValue;
-        string ftpLogin = settings.SingleOrDefault(ss => ss.ParamName == "ftp_user")?.ParamValue;
-        string pass = settings.SingleOrDefault(ss => ss.ParamName == "ftp_password")?.ParamValue;
+        string ftpLogin = settings.SingleOrDefault(ss => ss.ParamName == "ftp_user").ParamValue;
+        string ftpPass = settings.SingleOrDefault(ss => ss.ParamName == "ftp_password").ParamValue;
 
-        string ftpPass = CRPassword.Encrypt(pass);
         FtpFileModel ftp = new();
 
         byte[] songbyte = ftp.OpenURI(ftpServer, ftpLogin, ftpPass, "/RECEPTION/" + ftpFolder, Id + ".mp3");
 
         return File(songbyte, "audio/mp3");
-
     }
 
     public IActionResult UserInfo(string PhoneNumber)

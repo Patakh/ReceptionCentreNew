@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using ReceptionCentreNew.CustomCripto;
 using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Models;
-using System.Web.Helpers;
+using ReceptionCentreNew.Models; 
+
 namespace ReceptionCentreNew.Providers;
 
 public class CustomMembershipProvider : IUserPasswordStore<ApplicationUser>

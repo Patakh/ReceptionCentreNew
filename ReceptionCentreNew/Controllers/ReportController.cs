@@ -1,15 +1,11 @@
-﻿using ReceptionCentreNew.Models;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using OfficeOpenXml;
 using ReceptionCentreNew.Data.Context.App.Abstract;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Ajax.Utilities;
+using ReceptionCentreNew.Models;
+using SmartBreadcrumbs.Attributes;
 using System.Security.Claims;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Mvc.Routing;
-using NuGet.Protocol.Core.Types;
 
 namespace ReceptionCentreNew.Controllers;
 public class ReportController : Controller
@@ -25,14 +21,15 @@ public class ReportController : Controller
 
         ExcelPackage.LicenseContext = LicenseContext.Commercial;
     }
+
     public IActionResult Index()
     {
         return View();
     }
 
-    #region ReportAppeals
+    [Breadcrumb("Отчеты \"Реестр обращений\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ReportAppeals(ReportParameters parameters)
-    { 
+    {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
 
         if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
@@ -52,43 +49,47 @@ public class ReportController : Controller
     }
 
     public IActionResult ReportAppealsTable(ReportParameters parameters)
-    { 
-        var appeals = 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now; 
+        var appeals =
             _repository.FuncDataAppealSelect(
-           spr_employee_id:             parameters.SprEmployeeId,
-           in_date_start:               parameters.DateStart,
-           in_date_stop:                parameters.DateStop,
-           in_spr_type_id:              parameters.SprTypeId,
-           in_SprTypeDifficulty_id:     parameters.SprTypeDifficultyId,
-           in_spr_category_id:          parameters.SprCategoryId,
+           spr_employee_id: parameters.SprEmployeeId,
+           in_date_start: parameters.DateStart,
+           in_date_stop: parameters.DateStop,
+           in_spr_type_id: parameters.SprTypeId,
+           in_SprTypeDifficulty_id: parameters.SprTypeDifficultyId,
+           in_spr_category_id: parameters.SprCategoryId,
            in_spr_subject_treatment_id: parameters.SprSubjectId,
-           in_spr_status_id:            parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
+           in_spr_status_id: parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
 
         AppealViewModel model = new()
         {
             DataAppealSelectList = appeals.OrderByDescending(o => o.OutDateAdd)
-        }; 
+        };
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         ViewBag.Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         ViewBag.TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         ViewBag.Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         ViewBag.Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        ViewBag.Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
+        ViewBag.Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
 
         return PartialView("ReportAppeals/_Table", model);
     }
 
 
     public IActionResult DownloadExcelReportAppeals(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
-        
+
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         var TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
+        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/reestr_appeals.xlsx"));
 
@@ -126,9 +127,8 @@ public class ReportController : Controller
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_обращений.xlsx");
 
     }
-    #endregion
 
-    #region StatisticsAppeals
+    [Breadcrumb("Отчеты \"Статистика обращений\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult StatisticsAppeals(ReportParameters parameters)
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
@@ -143,25 +143,29 @@ public class ReportController : Controller
     }
 
     public IActionResult StatisticsAppealsTable(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var appeals = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
         AppealViewModel model = new()
         {
             DataAppealSelectList = appeals.OrderByDescending(o => o.OutDateAdd)
-        }; 
-        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все"; 
+        };
+        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         return PartialView("StatisticsAppeals/_Table", model);
     }
     public IActionResult DownloadExcelStatisticAppeals(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncDataAppealSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.SprTypeId, parameters.SprTypeDifficultyId, parameters.SprCategoryId, parameters.SprSubjectId, parameters.SprStatusId).OrderByDescending(o => o.OutDateAdd);
-     
+
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.SprTypeId != null ? _repository.SprType.Where(w => w.Id == parameters.SprTypeId).FirstOrDefault().TypeName : "Все";
         var TypeDifficulty = parameters.SprTypeDifficultyId != null ? _repository.SprTypeDifficulty.Where(w => w.Id == parameters.SprTypeDifficultyId).FirstOrDefault().TypeName : "Все";
         var Category = parameters.SprCategoryId != null ? _repository.SprCategory.Where(w => w.Id == parameters.SprCategoryId).FirstOrDefault().CategoryName : "Все";
         var Subject = parameters.SprSubjectId != null ? _repository.SprSubjectTreatment.Where(w => w.Id == parameters.SprSubjectId).FirstOrDefault().SubjectName : "Все";
-        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все"; 
+        var Status = parameters.SprStatusId != null ? _repository.SprStatus.Where(w => w.Id == parameters.SprStatusId).FirstOrDefault().StatusName : "Все";
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/statistic_appeals.xlsx"));
 
@@ -246,9 +250,8 @@ public class ReportController : Controller
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_обращений.xlsx");
 
     }
-    #endregion
 
-    #region ReportCalls
+    [Breadcrumb("Отчеты \"Реестр звонков\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ReportCalls(ReportParameters parameters)
     {
 
@@ -264,7 +267,9 @@ public class ReportController : Controller
     }
 
     public IActionResult ReportCallsTable(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         CallsViewModel model = new CallsViewModel
         {
@@ -273,19 +278,21 @@ public class ReportController : Controller
         ViewBag.Period = $"{parameters.DateStart} - {parameters.DateStop}";
         ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         ViewBag.Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
-        ViewBag.IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все"; 
+        ViewBag.IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
         return PartialView("ReportCalls/_Table", model);
     }
 
 
     public IActionResult DownloadExcelReportCalls(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
 
         var Period = $"{parameters.DateStart} - {parameters.DateStop}";
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
-        var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все"; 
+        var IsConnected = parameters.IsConnected != null ? parameters.IsConnected == 1 ? "Да" : "Нет" : "Все";
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/reestr_calls.xlsx"));
 
@@ -315,9 +322,8 @@ public class ReportController : Controller
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Реестр_звонков.xlsx");
 
     }
-    #endregion
 
-    #region StatisticsCalls
+    [Breadcrumb("Отчеты \"Статистика звонков\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult StatisticsCalls(ReportParameters parameters)
     {
         var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
@@ -329,23 +335,27 @@ public class ReportController : Controller
         Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
-         
+
         return View("StatisticsCalls/_Page", parameters);
     }
 
     public IActionResult StatisticsCallsTable(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var calls = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         CallsViewModel model = new()
         {
             CallList = calls.OrderByDescending(o => o.OutDateCall),
         };
-        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все"; 
+        ViewBag.Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         return PartialView("StatisticsCalls/_Table", model);
     }
 
     public IActionResult DownloadExcelStatisticCalls(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncDataAppealCallSelect(parameters.SprEmployeeId, parameters.DateStart, parameters.DateStop, parameters.Type, parameters.IsConnected).ToArray();
         var Employee = parameters.SprEmployeeId != null ? _repository.SprEmployees.Where(w => w.Id == parameters.SprEmployeeId).FirstOrDefault().EmployeesName : "Все";
         var Type = parameters.Type != null ? parameters.Type == 2 ? "Входящие" : "Исходящие" : "Все";
@@ -402,27 +412,28 @@ public class ReportController : Controller
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Статистика_звонков.xlsx");
 
     }
-    #endregion
 
-    #region ReportCategory
+    [Breadcrumb("Отчеты \"Отчет по категориям\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ReportCategory()
     {
         return View("ReportCategory/_Filter");
     }
     public IActionResult ReportCategoryTable(ReportParameters parameters)
-    { 
+    {
         ReportViewModel model = new()
         {
             ReportCategoryList = _repository.FuncReportCategory(parameters.DateStart, parameters.DateStop)
-        }; 
+        };
         return PartialView("ReportCategory/_Table", model);
     }
 
     public IActionResult DownloadExcelReportCategory(ReportParameters parameters)
-    { 
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncReportCategory(parameters.DateStart, parameters.DateStop).ToArray();
 
-        var Period = $"{parameters.DateStart} - {parameters.DateStop}"; 
+        var Period = $"{parameters.DateStart} - {parameters.DateStop}";
 
         var package = new ExcelPackage(new FileInfo("wwwroot/excel/report/report_category.xlsx"));
 
@@ -475,27 +486,30 @@ public class ReportController : Controller
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_категориям.xlsx");
 
     }
-    #endregion
 
-    #region ReportTreatment
+    [Breadcrumb("Отчеты \"Отчет по предмету обращения\"", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ReportTreatment()
     {
         return View("ReportTreatment/_Filter");
     }
     public IActionResult ReportTreatmentTable(ReportParameters parameters)
     {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         ReportViewModel model = new()
         {
             ReportTreatmentList = _repository.FuncReportTreatment(parameters.DateStart, parameters.DateStop)
-        }; 
+        };
         return PartialView("ReportTreatment/_Table", model);
     }
 
     public IActionResult DownloadExcelReportTreatment(ReportParameters parameters)
-    {  
+    {
+        parameters.DateStop = parameters.DateStop.AddDays(1);
+        if (parameters.DateStart == parameters.DateStop && parameters.DateStart == DateTime.Now.Date) parameters.DateStart = DateTime.Now;
         var model = _repository.FuncReportTreatment(parameters.DateStart, parameters.DateStop).ToArray();
 
-        var Period = $"{parameters.DateStart} - {parameters.DateStop}"; 
+        var Period = $"{parameters.DateStart} - {parameters.DateStop}";
 
         ExcelPackage pck = new(new FileInfo("wwwroot/excel/report/report_treatment.xlsx"));
 
@@ -552,5 +566,4 @@ public class ReportController : Controller
         memoryStream.Position = 0;
         return File(memoryStream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Отчет_по_предмету_обращения.xlsx");
     }
-    #endregion
 }

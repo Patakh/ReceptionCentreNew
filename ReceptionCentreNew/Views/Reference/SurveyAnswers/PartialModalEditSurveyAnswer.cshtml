@@ -9,7 +9,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="EditSurveyAnswerForm" class="form-horizontal">
+            <form id="Form" class="form-horizontal">
                 <input type="hidden" asp-for="Id" />
                 @Html.HiddenFor(model => model.SprSurveyQuestionId)
                 <div class="form-group form-group-sm">
@@ -31,24 +31,29 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-cancel waves-effect waves-light"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" onclick="Cancel()" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="button" onclick="Save()" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-<script>
-    $("#saveButton").click(function () {
+    </div>
+</div>
+<script> 
+    function Save() {
         $.ajax({
             type: "POST",
             url: "/Reference/SubmitSurveyAnswerSave",
-            data: $("#EditSurveyAnswerForm").serialize(),
+            data: $("#Form").serialize(),
             success: function (response) {
                 $('#newModal').modal('hide');
-                successEdit();
-                ShowSurveyAnswers('@ViewBag.SurveyQuestionId');
-            },
-            error: function () {
+                $('#newModal').html('');
+                successAdd();
+                ShowSurveyAnswers('@(Model.SprSurveyQuestionId)', '@(ViewBag.IsRemoveSurveyAnswer)');
+                LoadTable('@(ViewBag.IsRemove)');
             }
         });
-    });
+    }
+
+    function Cancel() {
+        $('#newModal').modal('hide');
+        $('#newModal').html('');
+    }
 </script>

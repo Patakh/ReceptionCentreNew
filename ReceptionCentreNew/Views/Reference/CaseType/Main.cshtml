@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "Тип обращения";
-} 
+}
 <!-- Тип обращения -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
@@ -10,39 +10,19 @@
 @section scripts {
     <script>
         $(document).ready(function () {
-            $(".select2").select2();
+            LoadTable(false);
+        });
+        function LoadTable(isRemove) {
             $.ajax({
                 type: 'POST',
+                data: { isRemove: isRemove },
                 url: '@Url.Action("PartialTableCaseType", "Reference")',
                 success: function (data) {
                     $('#caseTypeContainer').html(data);
                 }
             })
-        });
+        }
 
-        function addCaseType() {
-            $.ajax({
-                url: '@Url.Action("PartialModalAddCaseType", "Reference")',
-                type: 'GET',
-                success: function (data) {
-                    $('#newModal').html(data);
-                    $('#newModal').modal('show');
-                }
-            });
-        }
-         
-        function removeCaseType(id) {
-            console.log(id)
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("SubmitCaseTypeDelete", "Reference")',
-                data: { caseTypeId: caseTypeId },
-                success: function (data) {
-                    successDelete();
-                    $('#caseTypeDifficultyContainer').html(data);
-                }
-            });
-        }
     </script>
     <!--Тип обращения-->
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>

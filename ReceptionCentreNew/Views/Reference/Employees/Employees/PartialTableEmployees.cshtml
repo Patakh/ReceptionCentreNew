@@ -10,26 +10,27 @@
             </div>
         </div>
     </div>
-    @if (Model.SprEmployees.Any())
-    {
-        <div class="table">
-            <table id="employeesTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextEmployees" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showEmployeeRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+
+    <div class="table">
+        <table id="employeesTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
-                <thead>
-                    <tr>
-                        <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().EmployeesName)</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().SprEmployeesJobPosId)</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployees.First().CanTakeAppeal)</th>
-                    </tr>
-                </thead>
-                <tbody>
+                <input type="text" id="searchTextEmployees" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button id="showEmployeeRemoves" onclick="LoadTable('@(!ViewBag.IsRemove)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+            </div>
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                    <th>@Html.DisplayNameFor(model => model.SprEmployees.First().EmployeesName)</th>
+                    <th>@Html.DisplayNameFor(model => model.SprEmployees.First().SprEmployeesJobPosId)</th>
+                    <th>@Html.DisplayNameFor(model => model.SprEmployees.First().CanTakeAppeal)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SprEmployees.Any())
+                {
                     @foreach (var item in Model.SprEmployees)
                     {
                         <tr data-employee-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
@@ -47,7 +48,7 @@
                             </td>
                             <td class="actions vertical-middle-important text-right">
                                 <button type="button" class="btn btn-link" style="font-size: 22px;line-height: 22px;"
-                                data-tooltip-info='{"EmployeesFio": "@item.EmployeesName","EmployeesLogin": "@item.EmployeesLogin","EmployeesNameAdd": "@(item.EmployeesNameAdd)","IpAddressModify": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
+                                        data-tooltip-info='{"EmployeesFio": "@item.EmployeesName","EmployeesLogin": "@item.EmployeesLogin","EmployeesNameAdd": "@(item.EmployeesNameAdd)","IpAddressModify": "@(item.IpAddressModify ?? "-")", "DateAdd": "@Html.DisplayFor(i => item.DateAdd)", "IsRemove": "@(item.IsRemove)"}'>
                                     <i class="ion-ios7-information-outline"></i>
                                 </button>
                                 <button class="on-default btn btn-link" onclick="ShowRole('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Роли">
@@ -63,34 +64,34 @@
                                     }
                                     else
                                     {
-                                        <button class="recovery-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                        <button class="recovery-row btn btn-link" onclick="Recovery('@item.Id')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                     }
                                 }
                             </td>
                         </tr>
                     }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="3">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
+                }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
                     </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+                }
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="3">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
@@ -114,9 +115,6 @@
                 $('#newModal').html(response);
                 $('#newModal').modal('show');
             },
-            error: function () {
-                // Handle error
-            }
         });
     }
 
@@ -127,7 +125,7 @@
             data: { employeeId: id },
             success: function (data) {
                 successDelete();
-                $('#employeesPillContainer').html(data);
+                LoadTable(false);
             }
         });
     }
@@ -136,12 +134,23 @@
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialTableEmployeeRoles", "Reference")',
-            data: { employeeId: id },
+            data: { id: id },
             success: function (data) {
                 $('#newModal').html(data);
                 $('#newModal').modal('show');
             }
         });
+    }
+
+    function Recovery(id) {
+        var paramObject = {
+            url: '@Url.Action("SubmitEmployeeRecovery", "Reference")',
+            params: { id: id },
+            onSuccess: function (data) {
+                LoadTable(true);
+            }
+        }
+        removeRecovery(paramObject);
     }
 
     $(document).ready(function () {
@@ -183,54 +192,7 @@
         });
     });
 
-    $("#employeesPillContainer tbody > tr > td:not(.actions)").on("click", function () {
-        var employeeId = $(this).closest('tr').data('employeeId');
-        $.ajax({
-            type: 'POST',
-            url: 'PartialTableEmployeeRoles',
-            data: { employeeId: employeeId },
-            success: function (data) {
-                $("#employeeRolesContainer").html(data);
-            }
-        });
-    });
 
-
-    $('#showEmployeeRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableEmployees", "Reference")',
-            data: { search: $('#searchTextAnimals').val(), isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#employeesPillContainer').html(data);
-            }
-        });
-    });
-
-    $('#employeesPillContainer table td button.recovery-row').click(function () {
-        var employeeId = $(this).closest('tr').data('employeeId');
-        var paramObject = {
-            url: '@Url.Action("SubmitEmployeeRecovery", "Reference")',
-            params: { employeeId: employeeId },
-            onSuccess: function (data) {
-                $('#employeesPillContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
-
-    $('#employeesPillContainer table td button.remove-row').click(function () {
-        var employeeId = $(this).closest('tr').data('employeeId');
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitEmployeeDelete", "Reference")',
-            data: { employeeId: employeeId },
-            success: function (data) {
-                successDelete();
-                $('#employeesPillContainer').html(data);
-            }
-        });
-    });
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {

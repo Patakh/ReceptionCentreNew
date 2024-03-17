@@ -1,10 +1,5 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprEmployeesDepartment
-<script>
-    $(document).ready(function () {
-        $(".select2-nosearch").select2();
-        $('#AddDepartmentForm').validate();
-    });
-</script>
+﻿@model SprEmployeesDepartment
+
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -14,7 +9,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="AddDepartmentForm" class="form-horizontal">
+            <form id="Form" class="form-horizontal">
                 <div class="form-group form-group-sm">
                     <div class="row">
                         @Html.LabelFor(model => model.DepartmentName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
@@ -26,25 +21,25 @@
             </form>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
-            <button type="button" id="saveButton" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
+            <button type="button" onclick="Cancel()" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
+            <button type="button" onclick="SaveDepartment()" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-<script> 
-    $("#saveButton").click(function () {
+    </div>
+</div>
+<script>
+    function SaveDepartment() {
         $.ajax({
             type: "POST",
             url: "/Reference/SubmitDepartmentSave",
-            data: $("#AddDepartmentForm").serialize(),
+            data: $("#Form").serialize(),
             success: function (response) {
-                // Handle success response
                 $('#newModal').modal('hide');
                 successAdd();
-            },
-            error: function () {
-                // Handle error
+                LoadTableDepartment(false);
             }
         });
-    });
+    }
+    function Cancel() {
+        $('#newModal').modal('hide');
+    }
 </script>

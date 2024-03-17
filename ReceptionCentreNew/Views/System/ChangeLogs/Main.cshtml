@@ -1,39 +1,98 @@
-﻿@{
+﻿@model ReferenceViewModel
+@{
     ViewBag.Title = "История изменений";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <!--  История изменений -->
+
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
 
-<div class="row m-t-15 m-b-15">
-    <div class="col-sm-12">
-        @* @Html.MvcSiteMap().SiteMapPath() *@
+<div>
+    <div class="card-box p-0">
+        <div class="table-responsive">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                </div>
+                <input type="text" id="searchTextChangeLogs" name="search" value="@ViewBag.Serach" title=" ... нажмите Enter" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <div class="input-group-append align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
+                </div>
+                <table id="ChangeLogsTable" class="footable journal-incoming table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+                    <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Таблица</th>
+                            <th>@Html.DisplayNameFor(model => model.DataChangeLogList.First().OldValue)</th>
+                            <th>@Html.DisplayNameFor(model => model.DataChangeLogList.First().NewValue)</th>
+                            <th>@Html.DisplayNameFor(model => model.DataChangeLogList.First().EmployeesName)</th>
+                            <th>Дата</th>
+                        </tr>
+                    </thead>
+                    <tbody id="changeLogsContainer">
+                         
+                    </tbody>
+                    <tfoot>
+                        <tr class="foot-row">
+                            <td colspan="3" class="text-left">
+                                <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                            </td>
+                            <td colspan="3">
+                                <div class="text-right">
+                                    <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
     </div>
-</div>
-
-<div id="changeLogsContainer"> 
-</div>
-@section scripts{
+</div> 
+@section scripts {
+    <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
     <script>
-        
-        $.ajax({
-            url: '@Url.Action("PartialTableChangeLogs", "System")',
-            type: 'Post',
-            data: { search: $('#searchTextChangeLogs').val() },
-            success: function (data) {
-                $('#changeLogsContainer').html(data);
-            }
+        loadData();
+
+        function loadData() {
+            $.ajax({
+                url: '@Url.Action("PartialTableChangeLogs", "System")',
+                type: 'Post',
+                async: true,
+                data: { search: $('#searchTextChangeLogs').val() },
+                success: function (data) {
+                    $('#changeLogsContainer').html(data);
+
+                    $('#ChangeLogsTable #filter_count').text($('#ChangeLogsTable.footable tbody tr:not(.footable-filtered)').length);
+                    $('#ChangeLogsTable #tr_count').text($('#ChangeLogsTable.footable tbody tr').length);
+                    $('#ChangeLogsTable #filter_count').text($('#ChangeLogsTable.footable tbody tr:not(.footable-filtered)').length);
+                }
+            });
+        }
+          
+        $(document).ready(function () {
+            var filtering = $('#ChangeLogsTable');
+            filtering.footable();
+             
+            // Search input
+            $('#searchTextSettings').keyup(function (evt) {
+                evt.preventDefault();
+                filtering.trigger('footable_filter', { filter: $(this).val() });
+            });
         });
 
-         $(document).on('change', '#searchTextChangeLogs', function () {
-             $.ajax({
-                 url: '@Url.Action("PartialTableChangeLogs", "System")',
-                 type: 'Post',
-                 data: { search: $(this).val() },
-                 success: function (data) {
-                     $('#changeLogsContainer').html(data);
-                 }
-             });
+        $(document).on('change', '#searchTextChangeLogs', function () {
+            $.ajax({
+                url: '@Url.Action("PartialTableChangeLogs", "System")',
+                type: 'Post',
+                data: { search: $(this).val() },
+                success: function (data) {
+                    $('#changeLogsContainer').html(data);
+                }
+            });
         });
+
     </script>
+
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

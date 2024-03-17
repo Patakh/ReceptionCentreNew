@@ -16,7 +16,6 @@
         border-radius: .25rem;
     }
 </style>
-@* @Html.MvcSiteMap().SiteMapPath() *@
 
 <div class="card-box p-3 m-b-0">
     <form class="form-horizontal" id="appealsForm">
@@ -29,11 +28,11 @@
                                 <label>Сотрудник</label>
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
                                 {
-                                    @Html.DropDownList("sprEmployeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("employeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 }
                                 else
                                 {
-                                    @Html.DropDownList("sprEmployeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                    @Html.DropDownList("employeeId", ViewBag.SprEmployees as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                                 }
                             </div>
                             <div class="col-md-3 m-b-10">
@@ -47,7 +46,7 @@
                             </div>
                             <div class="col-md-3 m-b-10">
                                 <label>Статус</label>
-                                @Html.DropDownList("sprStatusId", ViewBag.SprStatus as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                @Html.DropDownList("statusId", ViewBag.SprStatus as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                         </div>
                     </div>
@@ -59,19 +58,19 @@
                         <div class="row p-l-r-10">
                             <div class="col-md-3 m-b-10">
                                 <label>Тип</label>
-                                @Html.DropDownList("sprTypeId", ViewBag.SprType as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                @Html.DropDownList("typeId", ViewBag.SprType as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                             <div class="col-md-3 m-b-10">
                                 <label>Тип сложности</label>
-                                @Html.DropDownList("sprTypeDifficultyId", ViewBag.SprTypeDifficulty as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                @Html.DropDownList("typeDifficultyId", ViewBag.SprTypeDifficulty as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                             <div class="col-md-3 m-b-10">
                                 <label>Предмет обращения</label>
-                                @Html.DropDownList("sprSubjectId", ViewBag.SprSubject as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                @Html.DropDownList("subjectId", ViewBag.SprSubject as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                             <div class="col-md-3 m-b-10">
                                 <label>Категория</label>
-                                @Html.DropDownList("sprCategoryId", ViewBag.SprCategory as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
+                                @Html.DropDownList("categoryId", ViewBag.SprCategory as SelectList, "Все", new Dictionary<string, object> { { "class", "select2 input-sm" } })
                             </div>
                         </div>
                     </div>
@@ -98,14 +97,13 @@
 </div>
 <div id="appealsTableContainer">
 </div>
-
 @section scripts {
     <script>
         function Search() {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableAppeals", "Appeal")',
-                data: $("#CallForm").serialize(),
+                data: $("#appealsForm").serialize(),
                 success: function (data) {
                     $('#appealsTableContainer').html(data);
                 }
@@ -122,30 +120,9 @@
                 $(this).addClass("appeal_active");
             });
         });
-        $(document).on('change', '#searchTextAppeals', function () {
-            var sprEmployeeId = $('#sprEmployeeId').val();
-            var period = $('#period').val();
-            var sprTypeId = $('#sprTypeID').val();
-            var sprTypeDifficultyId = $('#sprTypeDifficultyId').val();
-            var sprSubjectId = $('#sprSubjectId').val();
-            var sprStatusId = $('#sprStatusId').val();
-            var sprCategoryId = $('#sprCategoryId').val();
 
-            $.ajax({
-                url: '@Url.Action("PartialTableAppeals", "Appeal")',
-                type: 'Post',
-                data: { search: $(this).val(), period: period, sprEmployeeId: sprEmployeeId, sprTypeId: sprTypeId, sprTypeDifficultyId: sprTypeDifficultyId, sprSubjectId: sprSubjectId, sprStatusId: sprStatusId, sprCategoryId: sprCategoryId },
-                success: function (data) {
-                    $('#appealsTableContainer').html(data);
-                    $('#searchTextAppeals').focus();
-                    var tmpStr = $('#searchTextAppeals').val();
-                    $('#searchTextAppeals').val('');
-                    $('#searchTextAppeals').val(tmpStr);
-                }
-            });
+        $(document).on('change', '#searchTextAppeals', function () {
+            Search();
         });
     </script>
-
 }
-
-

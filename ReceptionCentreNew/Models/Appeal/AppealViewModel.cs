@@ -9,7 +9,7 @@ using System.Web;
 namespace ReceptionCentreNew.Models
 {
     public partial class AppealViewModel
-    {
+    { 
         public IEnumerable<DataAppealSelect> DataAppealSelectList { get; set; }
         public IEnumerable<DataAppealCommentt> DataAppealCommenttList { get; set; }
         public IEnumerable<DataAppealCommenttRecipients> DataAppealCommenttRecipientList { get; set; }

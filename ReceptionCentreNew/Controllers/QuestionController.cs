@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using ReceptionCentreNew.Models;
+using SmartBreadcrumbs.Attributes;
 
 namespace ReceptionCentreNew.Controllers
 {
@@ -21,6 +22,8 @@ namespace ReceptionCentreNew.Controllers
         }
         #endregion
         // GET: Question
+
+        [Breadcrumb("Вопрос-ответ", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
         public IActionResult Questions()
         {
             return View(_repository.SprQuestion.Where(w=>w.IsRemove!=true));

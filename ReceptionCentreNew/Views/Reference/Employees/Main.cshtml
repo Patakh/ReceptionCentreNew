@@ -6,25 +6,23 @@
 
 <ul class="nav nav-tabs tabs">
     <li class="tab">
-        <a href="#employeesPillContainer" data-toggle="tab" aria-expanded="true">Сотрудники</a>
+        <a href="#employeesPillContainer" onclick="LoadTable('false')" data-toggle="tab" aria-expanded="true">Сотрудники</a>
     </li>
     <li class="tab">
-        <a href="#jobPosPillContainer" data-toggle="tab" aria-expanded="true">Должности</a>
+        <a href="#jobPosPillContainer" onclick="LoadTableJobPos('false')" data-toggle="tab" aria-expanded="true">Должности</a>
     </li>
     <li class="tab">
-        <a href="#departmentsPillContainer" data-toggle="tab" aria-expanded="true">Отделы</a>
+        <a href="#departmentsPillContainer" onclick="LoadTableDepartment('false')" data-toggle="tab" aria-expanded="true">Отделы</a>
     </li>
 </ul>
 <div class="tab-content d-block">
     <div id="employeesPillContainer" class="tab-pane case-tab-pane employees active">
-                
     </div>
     <div id="jobPosPillContainer" class="tab-pane case-tab-pane jobPos">
     </div>
 
     <div id="departmentsPillContainer" class="tab-pane case-tab-pane departments">
     </div>
-
 </div>
 
 @section scripts {
@@ -32,46 +30,43 @@
 
     <script>
         $(document).ready(function () {
+            LoadTable(false);
             $(".select2").select2();
+        });
+
+        function LoadTable(isRemove) {
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("PartialTableEmployees", "Reference")',
+                data: { isRemove: isRemove },
                 success: function (data) {
                     $('#employeesPillContainer').html(data);
                 }
             })
-        });
+        }
 
-        $('a[href="#jobPosPillContainer"]').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableEmployeeJobPos", "Reference")',
-            success: function (data) {
-                $('#jobPosPillContainer').html(data);
-            }
-        });
-    });
+        function LoadTableJobPos(isRemove) {
+            $.ajax({
+                type: 'POST',
+                data: { isRemove: isRemove },
+                url: '@Url.Action("PartialTableEmployeeJobPos", "Reference")',
+                success: function (data) {
+                    $('#jobPosPillContainer').html(data);
+                }
+            });
+        }
 
-        $('a[href="#employeesPillContainer"]').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableEmployees", "Reference")',
-            success: function (data) {
-                $('#employeesPillContainer').html(data);
-            }
-        });
-        });
-
-    $('a[href="#departmentsPillContainer"]').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableDepartments", "Reference")',
-            success: function (data) {
-                $('#departmentsPillContainer').html(data);
-            }
-        });
-    });
+        function LoadTableDepartment(isRemove) {
+            $.ajax({
+                type: 'POST',
+                data: { isRemove: isRemove },
+                url: '@Url.Action("PartialTableDepartments", "Reference")',
+                success: function (data) {
+                    $('#departmentsPillContainer').html(data);
+                }
+            });
+        }
     </script>
-     
+
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

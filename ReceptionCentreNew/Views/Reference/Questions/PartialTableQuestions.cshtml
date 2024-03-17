@@ -27,7 +27,7 @@
             <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
         </div>
         <input type="text" id="searchTextQuestions" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on" value="@ViewBag.Search">
-        <button id="showRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+        <button id="showRemoves" onclick="LoadTable('@(!ViewBag.IsRemove)')" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
         <button type="button" onclick="Add()" class="btn btn-link" style="padding-top:5px; padding-right:10px;"><i class="fa fa-plus" style="font-size: 20px;"></i></button>
     </div>
     <div class="row">
@@ -67,7 +67,7 @@
                                         }
                                         else
                                         {
-                                            <button class="btn btn-link recovery-row" data-question-id="@item.Id" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                            <button class="btn btn-link recovery-row" onclick="Recovery('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                         }
                                     }
                                 </div>
@@ -84,42 +84,30 @@
             </div>
         }
     </div>
-
     <div class="panel-footer">
         <table class="footable table cases-table table-vertical-middle">
             <tr>
                 <td class="text-left">
-                    <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div>
-                </td> 
+                    @* <div class="text-muted divider">Показаны  <span id="filter_count">@((Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage > Model.PageInfo.TotalItems) ? Model.PageInfo.TotalItems : Model.PageInfo.CurrentPage * Model.PageInfo.ItemsPerPage)</span> из <span id="tr_count">@Model.PageInfo.TotalItems</span> записей</div> *@
+                </td>
             </tr>
         </table>
     </div>
 </div>
+
 <script>
-    function Add() {
-        $.ajax({
-            url: '@Url.Action("PartialModalAddQuestion", "Reference")',
-            type: 'GET',
-            success: function (data) {
-                $('#newModal').html(data);
-                $('#newModal').modal('show');
-            }
-        });
-    }
     function Edit(id) {
         $.ajax({
             type: "POST",
             url: "/Reference/PartialModalEditQuestion",
-            data: { id : id },
+            data: { id: id },
             success: function (response) {
                 $('#newModal').html(response);
                 $('#newModal').modal('show');
             },
-            error: function () {
-                // Handle error
-            }
         });
     }
+
     function Remove(id) {
         $.ajax({
             type: 'POST',
@@ -128,6 +116,18 @@
             success: function (data) {
                 successDelete();
                 $('#employeesPillContainer').html(data);
+                LoadTable(false);
+            }
+        });
+    }
+
+    function Add() {
+        $.ajax({
+            url: '@Url.Action("PartialModalAddQuestion", "Reference")',
+            type: 'GET',
+            success: function (data) {
+                $('#newModal').html(data);
+                $('#newModal').modal('show');
             }
         });
     }
@@ -164,30 +164,18 @@
             }
         });
     });
-
-    $('#questionsContainer #showRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableQuestions", "Reference")',
-            data: { isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#questionsContainer').html(data);
-            }
-        });
-    });
-
-    $('#questionsContainer button.recovery-row').click(function () {
-        var questionId = $(this).data('questionId');
+      
+    function Recovery(id) {
         var paramObject = {
             url: '@Url.Action("SubmitQuestionRecovery", "Reference")',
-            params: { questionId: questionId, search: '@ViewBag.Search', isRemove: '@ViewBag.IsRemove', page: '@Model.PageInfo.CurrentPage' },
+            params: { id: id },
             onSuccess: function (data) {
-                $('#questionsContainer').html(data);
+                LoadTable(true);
             }
         }
         removeRecovery(paramObject);
-    });
-     
+        LoadTable(true);
+    }
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {

@@ -103,7 +103,7 @@ else
         <div class="col-md-6 text-right">
             @if (User.IsInRole("superadmin") || User.IsInRole("admin") || User.IsInRole("operator"))
             {
-                <button type="button" onclick="Add('@Model.DataAppealId)" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i> Добавить файл</button>
+                <button type="button" onclick="Add('@Model.DataAppealId')" class="btn btn-primary waves-effect waves-light"><i class="md md-add"></i> Добавить файл</button>
             }
         </div>
     </div>
@@ -129,7 +129,6 @@ else
     }
     $(function () {
         $('a[href="#notification-files"]').find('.badge').text(@Model.DataAppealFileListCount);
-
         $('button[data-tooltip-info]').tooltip({
             title: function () {
                 var tooltipInfo = $(this).data('tooltipInfo');

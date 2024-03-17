@@ -3,25 +3,18 @@
     ViewBag.Title = "Настройки";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <!-- Все настройки -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-
-<div class="row m-t-15 m-b-15">
-    <div class="col-sm-12">
-        @* @Html.MvcSiteMap().SiteMapPath() *@
-    </div>
-</div>
 <div id="settings">
     <div class="card-box p-0">
         <div class="table-responsive">
-            <table id="settingsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextSettings" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
                 </div>
+                <input type="text" id="searchTextSettings" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+            </div>
+            <table id="settingsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
                 <tbody>
                     @{
                         int i = 0;
@@ -55,9 +48,9 @@
                 </tbody>
                 <tfoot>
                     <tr class="foot-row">
-                        <td colspan="3" class="text-left">
+                        <td colspan="2" class="text-left">
                             <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
+                        </td> 
                         <td colspan="3">
                             <div class="text-right">
                                 <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
@@ -71,8 +64,9 @@
 </div>
 
 @section scripts {
-    <script>
-
+    <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
+    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+    <script> 
         $(document).ready(function () {
             var filtering = $('#settingsTable');
             filtering.footable();
@@ -99,5 +93,4 @@
             });
         }
     </script>
-    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
 }

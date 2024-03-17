@@ -9,7 +9,6 @@ namespace ReceptionCentreNew
     {
         private static string keyCrypt = "electron$_key^";
         /// /// Шифрует строку value
-        /// 
         /// Строка которую необходимо зашифровать
         /// Ключ шифрования
         public static string Encrypt(string str)
@@ -50,7 +49,7 @@ namespace ReceptionCentreNew
         private static byte[] Encrypt(byte[] key, string value)
         {
             SymmetricAlgorithm Sa = Rijndael.Create();
-            ICryptoTransform Ct = Sa.CreateEncryptor(new PasswordDeriveBytes(value, null).GetBytes(16), new byte[16]);
+            ICryptoTransform Ct = Sa.CreateEncryptor((new PasswordDeriveBytes(value, null)).GetBytes(16), new byte[16]);
 
             MemoryStream Ms = new MemoryStream();
             CryptoStream Cs = new CryptoStream(Ms, Ct, CryptoStreamMode.Write);
@@ -68,16 +67,16 @@ namespace ReceptionCentreNew
 
             Ct.Dispose();
 
+
             return Result;
         }
 
         private static CryptoStream InternalDecrypt(byte[] key, string value)
         {
             SymmetricAlgorithm sa = Rijndael.Create();
-            PasswordDeriveBytes passwordDeriveBytes = new(value, key);
-            ICryptoTransform ct = sa.CreateEncryptor(key, passwordDeriveBytes.GetBytes(16));
+            ICryptoTransform ct = sa.CreateDecryptor((new PasswordDeriveBytes(value, null)).GetBytes(16), new byte[16]);
 
-            MemoryStream ms = new(key);
+            MemoryStream ms = new MemoryStream(key);
             return new CryptoStream(ms, ct, CryptoStreamMode.Read);
         }
 

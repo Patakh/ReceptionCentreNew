@@ -5,29 +5,29 @@
         </div>
         <div class="col-sm-2">
             <div class="text-right">
-                <button type="button" onclick="Add()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button> 
+                <button type="button" onclick="AddJobPos()" class="btn btn-mfc waves-effect waves-light"> Добавить <i class="fa fa-plus m-l-5"></i></button>
             </div>
         </div>
     </div>
-    @if (Model.SprEmployeesJobPosList.Any())
-    {
-        <div class="table">
-            <table id="employeesJobsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
-                <div class="input-group">
-                    <div class="input-group-prepend align-items-center">
-                        <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
-                    </div>
-                    <input type="text" id="searchTextEmployeesJobs" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
-                    <button id="showEmployeeJobRemoves" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
-                </div>
-                <thead>
-                    <tr>
-                        <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
-                        <th>@Html.DisplayNameFor(model => model.SprEmployeesJobPosList.First().JobPosName)</th>
 
-                    </tr>
-                </thead>
-                <tbody>
+    <div class="table">
+        <table id="employeesJobsTable" class="journal-incoming table route-table table-td-sm table-vertical-middle mb-0" data-page-size="10" data-limit-navigation="5">
+            <div class="input-group">
+                <div class="input-group-prepend align-items-center">
+                    <span class="px-3 text-secondary" id="basic-addon1"><i class="fa fa-search"></i></span>
+                </div>
+                <input type="text" id="searchTextEmployeesJobs" class="form-control pl-0 border-0" placeholder="Поиск ..." aria-label="Username" aria-describedby="basic-addon1" autocomplete="on">
+                <button onclick="LoadTableJobPos('@(!ViewBag.IsRemove)');" type="button" class="btn btn-link text-custom" style="padding-left:10px; padding-right:10px;"><i class="@(ViewBag.IsRemove ? "ion-ios7-trash" : "ion-ios7-trash-outline") m-l-5" style="font-size: 20px;" data-placement="bottom" data-toggle="tooltip" data-original-title="@(ViewBag.IsRemove ? "Скрыть удаленные" : "Показать удаленные")"></i></button>
+            </div>
+            <thead>
+                <tr>
+                    <th class="number-row p-l-20-important" style="min-width:45px;">№</th>
+                    <th>@Html.DisplayNameFor(model => model.SprEmployeesJobPosList.First().JobPosName)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.SprEmployeesJobPosList.Any())
+                {
                     @foreach (var item in Model.SprEmployeesJobPosList)
                     {
                         <tr data-employee-job-pos-id="@item.Id" class="@(item.IsRemove == true ? "danger" : "")">
@@ -46,45 +46,46 @@
                                     if (item.IsRemove != true)
                                     {
                                         <form id="@item.Id" class="form-submit">
-                                            <button type="button" class="edit-row btn btn-link" onclick="Edit('@item.Id')"><i class="ion-edit"></i></button>
+                                            <button type="button" class="edit-row btn btn-link" onclick="EditJobPos('@item.Id')"><i class="ion-edit"></i></button>
                                         </form>
 
-                                        <button class="remove-row btn btn-link" onclick="Remove('@(item.Id)')"><i class="ion-trash-b"></i></button>
+                                        <button class="remove-row btn btn-link" onclick="RemoveJobPos('@(item.Id)')"><i class="ion-trash-b"></i></button>
                                     }
                                     else
                                     {
-                                        <button class="recovery-row btn btn-link" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
+                                        <button class="recovery-row btn btn-link" onclick="RecoveryJobPos('@(item.Id)')" data-placement="top" data-toggle="tooltip" data-original-title="Восстановление"><i class="fa fa-history"></i></button>
                                     }
                                 }
                             </td>
                         </tr>
                     }
-                </tbody>
-                <tfoot>
-                    <tr class="foot-row">
-                        <td colspan="2" class="text-left">
-                            <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
-                        </td>
-                        <td colspan="3">
-                            <div class="text-right">
-                                <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
-                            </div>
-                        </td>
+
+                }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
                     </tr>
-                </tfoot>
-            </table>
-        </div>
-    }
-    else
-    {
-        <div class="alert-no-record">
-            <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span>
-        </div>
-    }
+                }
+            </tbody>
+            <tfoot>
+                <tr class="foot-row">
+                    <td colspan="2" class="text-left">
+                        <div class="text-muted divider">Найдено  <span id="filter_count"></span> из <span id="tr_count"></span> записей</div>
+                    </td>
+                    <td colspan="3">
+                        <div class="text-right">
+                            <ul class="pagination pagination-split footable-pagination justify-content-end m-t-5 m-b-5"></ul>
+                        </div>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
 </div>
 
 <script>
-    function Add() {
+    function AddJobPos() {
         $.ajax({
             url: '@Url.Action("PartialModalAddEmployeeJobPos", "Reference")',
             type: 'GET',
@@ -94,30 +95,40 @@
             }
         });
     }
-    function Edit(id) {
+    function EditJobPos(id) {
         $.ajax({
             type: "POST",
             url: "/Reference/PartialModalEditEmployeeJobPos",
-            data: { employeeJobPosId: id },
+            data: { id : id },
             success: function (response) {
                 $('#newModal').html(response);
                 $('#newModal').modal('show');
             },
-            error: function () {
-                // Handle error
+        });
+    }
+    function RemoveJobPos(id) {
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: '@Url.Action("SubmitEmployeeJobPosDelete", "Reference")',
+            data: { id: id },
+            success: function (data) {
+                successDelete();
+                LoadTableJobPos(false);
             }
         });
     }
-    function Remove(id) {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitEmployeeJobPosDelete", "Reference")',
-            data: { employeeJobPosId: id },
-            success: function (data) {
-                successDelete();
-                $('#departmentsPillContainer').html(data);
+
+    function RecoveryJobPos(id) {
+        var paramObject = {
+            url: '@Url.Action("SubmitEmployeeJobPosRecovery", "Reference")',
+            async: true,
+            params: { id: id },
+            onSuccess: function (data) {
+                LoadTableJobPos(true);
             }
-        });
+        }
+        removeRecovery(paramObject);
     }
 
     $(document).ready(function () {
@@ -159,30 +170,6 @@
             placement: "left"
         });
     });
-
-    $('#showEmployeeJobRemoves').click(function () {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("PartialTableEmployeeJobPos", "Reference")',
-            data: { isRemove: '@(!ViewBag.IsRemove)' },
-            success: function (data) {
-                $('#jobPosPillContainer').html(data);
-            }
-        });
-    });
-
-    $('#jobPosPillContainer table td button.recovery-row').click(function () {
-        var employeeJobPosId = $(this).closest('tr').data('employeeJobPosId');
-        var paramObject = {
-            url: '@Url.Action("SubmitEmployeeJobPosRecovery", "Reference")',
-            params: { employeeJobPosId: employeeJobPosId },
-            onSuccess: function (data) {
-                $('#jobPosPillContainer').html(data);
-            }
-        }
-        removeRecovery(paramObject);
-    });
-
 
     // Добавляем возможность выбора строки в таблице
     $('.route-table tr:not(.thead-row, .foot-row)').click(function () {
