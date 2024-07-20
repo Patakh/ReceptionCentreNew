@@ -7,7 +7,6 @@
 <script src="~/new_design/plugins/bootstrap-fileinput/themes/explorer/theme.min.js"></script>
 <script src="~/new_design/plugins/bootstrap-fileinput/js/locales/ru.js"></script>
 
-
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -148,6 +147,7 @@
      
     $('#create_new_appeal').on('click', function () {
         if ($('#AddNewAppealForm').valid()) {
+
             var result = true;
             var main_form = $('#AddNewAppealForm');
             var emailId = $('input[name="newEmailId"]').val();

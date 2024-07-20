@@ -78,7 +78,14 @@ public class StatisticsController : Controller
 
     public IActionResult AppealsCallResult()
     {
-        var data = _repository.FuncStatisticsDataAppealCall().OrderBy(o => o.OutMonth).Select(s => new { s.OutCountCallIncoming, s.OutCountCallOutgoing, s.OutCountCallMissed, OutDate = s.OutMonth + "." + s.OutYear }); ;
+        var data = _repository.FuncStatisticsDataAppealCall()
+            .Select(s => new {
+                s.OutCountCallIncoming,
+                s.OutCountCallOutgoing,
+                s.OutCountCallMissed,
+                OutDate = new DateTime(s.OutYear, s.OutMonth, DateTime.Now.Day).ToString("dd.MM.yyyy")
+        }).OrderBy(o => DateTime.Parse(o.OutDate));
+
         return Json(JsonConvert.SerializeObject(data));
     }
       

@@ -1,8 +1,4 @@
-﻿@model ReceptionCentreNew.Data.Context.App.SprEmployeesMessageTemplate
-<script>
-    $('#AddMessageTemplatesForm').validate();
-</script>
-
+﻿@model SprEmployeesMessageTemplate 
 <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -12,7 +8,7 @@
             </button>
         </div>
         <div class="modal-body">
-            <form id="AddMessageTemplatesForm" class="form-horizontal">
+            <form id="Form" class="form-horizontal">
                 <input type="hidden" name="number" value="@ViewBag.AppealNumber" />
                 <div class="form-group form-group-sm">
                     <div class="row">
@@ -32,33 +28,33 @@
                 </div>
             </form>
             <div class="modal-footer">
-                <button type="button" onclick="Back('@ViewBag.AppealNumber')" class="btn btn-secondary waves-effect waves-light">Назад</button>
-                <button type="button" onclick="Add()" form="AddMessageTemplatesForm" class="btn btn-primary waves-effect waves-light">Добавить</button>
+                <button type="button" onclick="Back()" class="btn btn-secondary waves-effect waves-light">Назад</button>
+                <button type="button" onclick="Add()" class="btn btn-primary waves-effect waves-light">Добавить</button>
             </div>
         </div>
     </div>
 </div>
 <script>
+    $('#Form').validate();
     function Add() {
-        $.ajax({
-            type: 'POST',
-            url: '@Url.Action("SubmitEmployeesMessageTemplateSave", "Appeal")',
-            data: $("#AddMessageTemplatesForm").serialize(),
-            success: function (data) {
-                $('#newModal').modal('show');
-                successAdd();
-            }
-        });
+        if ($('#Form').valid())
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("SubmitEmployeesMessageTemplateSave", "Appeal")',
+                data: $("#Form").serialize(),
+                success: function (data) {
+                    $('#newModal').html(data).modal('show');
+                    successAdd();
+                }
+            });
     }
     function Back(number) {
         $.ajax({
             type: 'POST',
             url: '@Url.Action("PartialTableEmployeesMessageTemplate", "Appeal")',
-            data: { number: number }
-            ,
+            data: { number: '@ViewBag.AppealNumber' },
             success: function (data) {
-                $('#newModal').modal('show');
-                successEdit();
+                $('#newModal').html(data).modal('show');
             }
         });
     }
