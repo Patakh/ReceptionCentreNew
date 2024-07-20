@@ -66,11 +66,9 @@ public class CallController : Controller
         ViewBag.CallId = Id;
         return PartialView("../Common/Play_Audio");
     }
-
-    [HttpGet]
+     
     public IActionResult Get_Audio(Guid Id)
     {
-        Response.AppendTrailer("Accept-Ranges", "bytes");
         var settings = _repository.SprSetting.ToList();
         string ftpServer = settings.SingleOrDefault(ss => ss.ParamName == "ftp_server")?.ParamValue;
         string ftpFolder = settings.SingleOrDefault(ss => ss.ParamName == "ftp_folder_calls")?.ParamValue;
@@ -79,7 +77,7 @@ public class CallController : Controller
 
         FtpFileModel ftp = new();
 
-        byte[] songbyte = ftp.OpenURI(ftpServer, ftpLogin, ftpPass, "/RECEPTION/" + ftpFolder, Id + ".mp3");
+        byte[] songbyte = ftp.OpenURI(ftpServer, ftpLogin, ftpPass, "/RECEPTION/" + ftpFolder+"/", Id + ".mp3");
 
         return File(songbyte, "audio/mp3");
     }

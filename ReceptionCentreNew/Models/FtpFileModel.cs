@@ -48,8 +48,7 @@ public class FtpFileModel
             using (MemoryStream ms = new())
             {
                 using (Stream istream = client.OpenRead(ftpFolder + "/" + fileName, FtpDataType.Binary))
-                {
-
+                { 
                     int read;
                     try
                     {

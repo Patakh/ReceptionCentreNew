@@ -46,6 +46,7 @@ namespace ReceptionCentreNew.Controllers
             }
             return Json("x");
         }
+        /*
         private static void Listen()
         {
             try
@@ -81,7 +82,8 @@ namespace ReceptionCentreNew.Controllers
             {
                 Close();
             }
-        }
+        }*/
+
         private static void Close()
         {
             if (listeningSocket != null)

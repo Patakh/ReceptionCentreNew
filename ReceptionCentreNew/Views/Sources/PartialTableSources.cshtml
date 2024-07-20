@@ -13,14 +13,14 @@
                     <span class="px-3 text-secondary" id="basic-addon1"><i class="md md-keyboard-return"></i></span>
                 </div>
             </div>
-            @if (Model.SourceModel.Any())
-            {
-                <tbody>
+            <tbody>
+                @if (Model.SourceModel.Any())
+                {
                     @foreach (var item in Model.SourceModel.OrderByDescending(o => o.DateAdd))
                     {
                         <tr>
                             <td>
-                                @Model.SourceModel.IndexOf(item)
+                                @(Model.SourceModel.Count() - Model.SourceModel.IndexOf(item))
                             </td>
                             <td class="vertical-middle p-l-20-important text-nowrap">
                                 @item.ApplicantName
@@ -68,17 +68,17 @@
                             </td>
                         </tr>
                     }
-                </tbody>
-            }
-            else
-            {
-                <div class="alert-no-record">
-                    <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> По данному запросу ничего не найдено.</span>
-                </div>
-            }
-            <tfoot> 
+                }
+                else
+                {
+                    <tr class="alert-no-record">
+                        <td colspan="3"> <span style="color: #00545c;"><strong><i class="icon-info"></i></strong> Нет данных </span></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
                 <tr class="foot-row">
-                    <td colspan="7"> 
+                    <td colspan="7">
                         <div style="height:50px" id="sources_play_content">
                         </div>
                     </td>
