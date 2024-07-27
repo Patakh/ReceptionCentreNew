@@ -37,6 +37,7 @@ public class ReportController : Controller
             employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
         }
         Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+
         ViewBag.SprEmployeesId = empId;
         ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
         ViewBag.SprCategory = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), "Id", "CategoryName");

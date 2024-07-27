@@ -36,7 +36,7 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {  
-            SprEmployees employee = await (from u in _repository.SprEmployees
+            SprEmployees? employee = await (from u in _repository.SprEmployees
                                            where u.EmployeesLogin == model.Name
                                            select u).FirstOrDefaultAsync();
 

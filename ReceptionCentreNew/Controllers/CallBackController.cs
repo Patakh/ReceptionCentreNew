@@ -1,5 +1,4 @@
-﻿using ReceptionCentreNew.Filters;
-using ReceptionCentreNew.Hubs;
+﻿using ReceptionCentreNew.Filters; 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,16 +13,18 @@ public class CallBackController : Controller
 {
     private IRepository _repository;
     SignInManager<ApplicationUser> SignInManager;
-    public CallBackController(IRepository repo,SignInManager<ApplicationUser> signInManager)
+    public CallBackController(IRepository repo, SignInManager<ApplicationUser> signInManager)
     {
         SignInManager = signInManager;
         _repository = repo;
     }
+
     // GET: CallBack
     public IActionResult Index()
     {
         return View();
     }
+
     //[AllowAnonymous]
     //public void signalRCallback(Guid Id)
     //{
@@ -41,6 +42,7 @@ public class CallBackController : Controller
         var model = _repository.DataCallback.Where(w => w.Status == 1 && w.DateOrder >= date_).Count();
         return Json(model);
     }
+
     /// <summary>
     /// Список звонков
     /// </summary>
@@ -51,6 +53,7 @@ public class CallBackController : Controller
         var model = _repository.DataCallback.Include(i => i.DataCallbackCalls).Where(w => w.Status == 1).OrderBy(o => o.DateOrder);
         return PartialView("_Table", model);
     }
+
     public IActionResult CallBackClose(Guid Id)
     {
         var model = _repository.DataCallback.FirstOrDefault(f => f.Id == Id);
