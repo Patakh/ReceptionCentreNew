@@ -83,8 +83,7 @@ public class FtpFileModel
         return null;
     }
 
-    public FtpStatusCode RemoveFile(string ftpServer, string ftpLogin, string ftpPassword, string ftpFolder, string fileName, string subFolder)
-    => FtpStatusCode.CommandOK;
+    public FtpStatusCode RemoveFile(string ftpServer, string ftpLogin, string ftpPassword, string ftpFolder, string fileName, string subFolder) => FtpStatusCode.CommandOK;
 
     public HttpStatusCode UploadFileFtp(byte[] uploadFile, string ftpServer, string ftpLogin, string ftpPass, string fileName)
     {

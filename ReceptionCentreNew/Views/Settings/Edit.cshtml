@@ -1,9 +1,5 @@
 ﻿@model SprSetting
-<script>
-    $(document).ready(function () {
-        $('#EditSettingsForm').validate();
-    });
-</script>
+
 <div class="modal-dialog" role="document">
     <div class="modal-content">
         <div class="modal-header">
@@ -14,27 +10,28 @@
         </div>
         <div class="modal-body">
             <form id="EditSettingsForm" class="form-horizontal">
+                <input type="hidden" asp-for="Id" />
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.ParamName, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="ParamName" class="col-md-4 control-label text-right">Переменная</label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.ParamName, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ParamName) } })
+                            <input asp-for="ParamName" class="form-control required" placeholder="Переменная" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.ParamValue, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="ParamValue" class="col-md-4 control-label text-right">Значение переменной</label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.ParamValue, new Dictionary<string, object> { { "class", "form-control required" }, { "placeholder", Html.DisplayNameFor(model => model.ParamValue) } })
+                            <input asp-for="ParamValue" class="form-control required" placeholder="Значение переменной" />
                         </div>
                     </div>
                 </div>
                 <div class="form-group form-group-sm">
                     <div class="row">
-                        @Html.LabelFor(model => model.Commentt, new Dictionary<string, object> { { "class", "col-md-4 control-label text-right" } })
+                        <label asp-for="Commentt" class="col-md-4 control-label text-right">Комментарий</label>
                         <div class="col-md-6">
-                            @Html.TextBoxFor(model => model.Commentt, new Dictionary<string, object> { { "class", "form-control" }, { "placeholder", Html.DisplayNameFor(model => model.Commentt) } })
+                            <input asp-for="Commentt" class="form-control required" placeholder="Комментарий" />
                         </div>
                     </div>
                 </div>
@@ -44,18 +41,34 @@
             <button type="button" class="btn btn-cancel waves-effect waves-light" data-dismiss="modal"><i class="fa fa-times m-r-5"></i> Отмена</button>
             <button type="button" onclick="Submit()" class="btn btn-success waves-effect waves-light"> Сохранить <i class="fa fa-check m-l-5"></i></button>
         </div>
-    </div> 
+    </div>
 </div>
- 
+
 <script>
+    $(document).ready(function () {
+        $('#EditSettingsForm').validate();
+    });
+
+    var id = $("#Id");
+    var paramName = $("#ParamName");
+    var paramValue = $("#ParamValue");
+    var commentt = $("#Commentt");
+    var tr = $('#' + id.val());
+
     function Submit() {
         $.ajax({
             type: 'POST',
-            url: '@Url.Action("SubmitSettingSave", "System")',
-            data: $("#searchHashtagsForm").serialize(),
+            url: 'Settings/Edit',
+            data: $("#EditSettingsForm").serialize(),
             success: function (data) {
-                $('#newModal').modal('hide');
                 successEdit();
+                $('#newModal').modal('hide');
+                tr.find('[name]').text(paramName.val());
+                tr.find('[val]').text(paramValue.val());
+                tr.find('[comment]').text(commentt.val());
+            },
+            error: function () {
+                errorAction();
             }
         });
     }

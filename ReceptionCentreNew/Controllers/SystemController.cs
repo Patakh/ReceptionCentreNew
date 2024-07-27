@@ -4,7 +4,7 @@ using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using SmartBreadcrumbs.Attributes;
-using System.Drawing.Printing;
+using Microsoft.EntityFrameworkCore;
 
 namespace ReceptionCentreNew.Controllers;
 [Authorize]
@@ -17,38 +17,18 @@ public class SystemController : Controller
     {
         _repository = repo;
     }
-
-    [HttpGet]
-    [Breadcrumb("Настройки", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
-    public IActionResult PartialTableSettings()
-    {
-        List<SprSetting> model = _repository.SprSetting.ToList();
-        return View("~/Views/System/Settting/PartialTableSettings.cshtml", model);
-    }
-
-    [HttpGet]
-    public IActionResult EditSetting(int settingId)
-    {
-        var model = _repository.SprSetting.Where(w => w.Id == settingId).SingleOrDefault();
-        return PartialView("~/Views/System/Settting/PartialModalEditSettting.cshtml", model);
-    }
-    public IActionResult SubmitSettingSave(SprSetting setting)
-    {
-        _repository.Update(setting);
-        return RedirectToAction("~/Views/System/Settting/PartialTableSettings.cshtml");
-    }
-
+      
     [Breadcrumb("Изменения", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult ChangeLogs()
     {
         return View("ChangeLogs/Main");
     }
-     
+
     public IActionResult PartialTableChangeLogs(string search)
     {
         ViewBag.Serach = search;
         var dataChangeLogs = _repository.DataChangeLog;
-    
+
         ReferenceViewModel model = new()
         {
             DataChangeLogList = dataChangeLogs.OrderByDescending(a => a.DateChange).OrderByDescending(d => d.DateChange).Take(200).ToList(),
@@ -71,14 +51,16 @@ public class SystemController : Controller
 
         ReferenceViewModel model = new()
         {
-            ErrorsList = errors.OrderByDescending(a => a.ErrorDate).OrderByDescending(d=>d.ErrorDate).Take(200),
+            ErrorsList = errors.OrderByDescending(a => a.ErrorDate).OrderByDescending(d => d.ErrorDate).Take(200),
         };
         return PartialView("Errors/PartialTableErrors", model);
     }
 
-    public IActionResult DeleteDublicationCall()
+    public IActionResult DeleteDuplicationCall()
     {
         _repository.FuncDeleteDublicationCall();
         return null;
     }
+
+    public async Task<List<SprSetting>> GetSettingsAsync() => await _repository.SprSetting.AsNoTracking().ToListAsync();
 }

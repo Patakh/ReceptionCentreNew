@@ -1,12 +1,12 @@
-﻿using ReceptionCentreNew.Models;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ReceptionCentreNew.Data.Context.App;
-using Microsoft.AspNetCore.Identity;
-using ReceptionCentreNew.Data.Context.App.Abstract; 
 using Microsoft.AspNetCore.SignalR;
-using ReceptionCentreNew.Hubs; 
-using Microsoft.AspNetCore.Authorization;
+using ReceptionCentreNew.Data.Context.App;
+using ReceptionCentreNew.Data.Context.App.Abstract;
+using ReceptionCentreNew.Hubs;
+using ReceptionCentreNew.Models;
 
 namespace ReceptionCentreNew.Controllers.Appeal;
 public partial class AppealController : Controller

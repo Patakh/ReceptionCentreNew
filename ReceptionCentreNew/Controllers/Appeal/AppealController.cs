@@ -1,14 +1,15 @@
-﻿using ReceptionCentreNew.Data.Context.App;
-using ReceptionCentreNew.Filters;
-using ReceptionCentreNew.Models;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Net.Mail;
 using Microsoft.EntityFrameworkCore;
-using ReceptionCentreNew.Hubs;
+using ReceptionCentreNew.Data.Context.App;
+using ReceptionCentreNew.Filters;
+using ReceptionCentreNew.Models;
+using ReceptionCentreNew.Models.Appeal;
 using SmartBreadcrumbs.Attributes;
 using System.Net;
+using System.Net.Mail;
+using System.Security.Claims;
 
 namespace ReceptionCentreNew.Controllers.Appeal;
 [ClientErrorHandler]
@@ -17,29 +18,28 @@ public partial class AppealController : Controller
 {
     // GET: Appeal
     [Breadcrumb("Все обращения", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
-    public IActionResult Appeals()
-    {
-        var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
-        if (!User.IsInRole("superadmin") && !User.IsInRole("admin") && !User.IsInRole("operator"))
+    public async Task<IActionResult> Appeals()
+    { 
+        Guid empId = GetCurrentEmployeeId(SignInManager.Context.User);
+         
+        AppealsViewModel viewModel = new()
         {
-            employees = employees.Where(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name).OrderBy(o => o.EmployeesName);
-        }
-        Guid empId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
-
-        ViewBag.SprEmployeesId = empId;
-        ViewBag.SprEmployees = new SelectList(employees, "Id", "EmployeesName", empId);
-        ViewBag.SprCategory = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), "Id", "CategoryName");
-        ViewBag.SprType = new SelectList(_repository.SprType, "Id", "TypeName");
-        ViewBag.SprTypeDifficulty = new SelectList(_repository.SprTypeDifficulty.Where(e => e.IsRemove != true), "Id", "TypeName");
-        ViewBag.SprSubject = new SelectList(_repository.SprSubjectTreatment.Where(e => e.IsRemove != true), "Id", "SubjectName");
-        ViewBag.SprStatus = new SelectList(_repository.SprStatus, "Id", "StatusName", 0);
-        return View();
+            CurrentEmployeeId = empId,
+            Employees = new SelectList(GetEmployees(SignInManager.Context.User), nameof(SprEmployees.Id), nameof(SprEmployees.EmployeesName) , empId),
+            Categories = new SelectList(_repository.SprCategory.Where(e => e.IsRemove != true), nameof(SprCategory.Id), nameof(SprCategory.CategoryName)),
+            Types = new SelectList(_repository.SprType, nameof(SprType.Id), nameof(SprType.TypeName)),
+            TypeDifficulties = new SelectList(_repository.SprTypeDifficulty.Where(e => e.IsRemove != true), nameof(SprTypeDifficulty.Id), nameof(SprTypeDifficulty.TypeName)),
+            Subjects = new SelectList(_repository.SprSubjectTreatment.Where(e => e.IsRemove != true), nameof(SprSubjectTreatment.Id), nameof(SprSubjectTreatment.SubjectName)),
+            Statuses = new SelectList(_repository.SprStatus, nameof(SprStatus.Id), nameof(SprStatus.StatusName), 0)
+        };
+           
+        return View(viewModel);
     }
 
-    [Breadcrumb("Информация по обращени", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
+    [Breadcrumb("Информация по обращении", FromAction = nameof(HomeController.Index), FromController = typeof(HomeController))]
     public IActionResult AppealInfo(string number, Guid? notificationId, bool modal = false)
     {
-        if (number != string.Empty && number != "" && number != null)
+        if (!string.IsNullOrEmpty(number))
         {
             if (notificationId.HasValue)
             {
@@ -50,6 +50,7 @@ public partial class AppealController : Controller
                     _repository.Update(notify);
                 }
             }
+
             DataAppealSelect dataAppeal = _repository.FuncDataAppealInfo(number);
             ViewBag.CallCount = _repository.DataAppealCall.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count();
             ViewBag.EmailCount = _repository.DataAppealEmail.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count();
@@ -57,10 +58,8 @@ public partial class AppealController : Controller
             ViewBag.RouteStageCount = _repository.DataAppealRoutesStage.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count();
             ViewBag.CommentsCount = _repository.DataAppealCommentt.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count();
             ViewBag.NotithCount = _repository.DataAppealCall.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count() + _repository.DataAppealMessage.Where(w => w.DataAppealId == dataAppeal.OutDataAppealId).Count();
-            ViewBag.ChangeLogCount = _repository.DataChangeLog.Where(w => w.RowId == dataAppeal.OutDataAppealId).Count();
-
-            var employees = _repository.SprEmployees.Where(e => e.IsRemove != true);
-            ViewBag.SprEmployeesId = employees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id;
+            ViewBag.ChangeLogCount = _repository.DataChangeLog.Where(w => w.RowId == dataAppeal.OutDataAppealId).Count(); 
+            ViewBag.SprEmployeesId = GetCurrentEmployeeId(SignInManager.Context.User);
 
             if (modal)
             {
@@ -248,7 +247,7 @@ public partial class AppealController : Controller
                      .Select(s => new { s.Id, s.EmployeesName, s.SprEmployeesJobPos.JobPosName }),
                     dataValueField: "Id",
                     dataTextField: "EmployeesName",
-                    selectedValue: _repository.SprEmployees.Where(w => w.EmployeesLogin == SignInManager.Context.User.Identity.Name).FirstOrDefault().Id);
+                    selectedValue: GetCurrentEmployeeId(SignInManager.Context.User));
 
         ViewBag.SprEmployeesMessageTemplates = new SelectList(
             items: _repository.SprEmployeesMessageTemplate.Where(w => w.IsRemove != true && w.SprEmployeesId == employee.Id).OrderByDescending(o => o.Sort),
@@ -812,50 +811,50 @@ public partial class AppealController : Controller
         ViewBag.AppealNumber = _repository.DataAppeal.Where(w => w.Id == appealId).FirstOrDefault().NumberAppeal;
         return PartialView("AppealDetails/Files/PartialModalAddFile");
     }
-     
-    public  IActionResult SubmitAddFile(Guid appealId, List<IFormFile> files)
+
+    public IActionResult SubmitAddFile(Guid appealId, List<IFormFile> files)
     {
         if (files.Any())
         {
             HttpStatusCode res = HttpStatusCode.NoContent;
-             files.ForEach(async file =>
-            {
-                string theFileName = Path.GetFileNameWithoutExtension(file.FileName);
+            files.ForEach(async file =>
+           {
+               string theFileName = Path.GetFileNameWithoutExtension(file.FileName);
 
-                byte[] thePictureAsbytes = new byte[file.Length];
-                using (MemoryStream memoryStream = new())
-                {
-                    await file.CopyToAsync(memoryStream);
-                    thePictureAsbytes = memoryStream.ToArray();
-                }
+               byte[] thePictureAsbytes = new byte[file.Length];
+               using (MemoryStream memoryStream = new())
+               {
+                   await file.CopyToAsync(memoryStream);
+                   thePictureAsbytes = memoryStream.ToArray();
+               }
 
-                var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
-                var employeeId = employee?.Id ?? Guid.Empty;
-                DataAppealFile saveModel = new() // Модель для сохранения в таблицу 
-                {
-                    DataAppealId = appealId,
-                    FileName = theFileName,
-                    FileExt = Path.GetExtension(file.FileName),
-                    FileSize = thePictureAsbytes.Length,
-                    EmployeesNameAdd = employee.EmployeesName,
-                    SprEmployeesId = employeeId,
-                    DateAdd = DateTime.Now
-                };
-                await _repository.Insert(saveModel); //Запись в таблицу 
+               var employee = _repository.SprEmployees.SingleOrDefault(se => se.EmployeesLogin == SignInManager.Context.User.Identity.Name);
+               var employeeId = employee?.Id ?? Guid.Empty;
+               DataAppealFile saveModel = new() // Модель для сохранения в таблицу 
+               {
+                   DataAppealId = appealId,
+                   FileName = theFileName,
+                   FileExt = Path.GetExtension(file.FileName),
+                   FileSize = thePictureAsbytes.Length,
+                   EmployeesNameAdd = employee.EmployeesName,
+                   SprEmployeesId = employeeId,
+                   DateAdd = DateTime.Now
+               };
+               await _repository.Insert(saveModel); //Запись в таблицу 
 
-                var settings = _repository.SprSetting.ToList();
-                var ftpModel =
-                    new
-                    {
-                        ftpServer = settings.SingleOrDefault(ss => ss.ParamName == "ftp_server")?.ParamValue,
-                        ftpFolder = settings.SingleOrDefault(ss => ss.ParamName == "ftp_folder_files")?.ParamValue,
-                        ftpLogin = settings.SingleOrDefault(ss => ss.ParamName == "ftp_user")?.ParamValue,
-                        ftpPass = CRPassword.Encrypt(settings.SingleOrDefault(ss => ss.ParamName == "ftp_password")?.ParamValue)
-                    };
+               var settings = _repository.SprSetting.ToList();
+               var ftpModel =
+                   new
+                   {
+                       ftpServer = settings.SingleOrDefault(ss => ss.ParamName == "ftp_server")?.ParamValue,
+                       ftpFolder = settings.SingleOrDefault(ss => ss.ParamName == "ftp_folder_files")?.ParamValue,
+                       ftpLogin = settings.SingleOrDefault(ss => ss.ParamName == "ftp_user")?.ParamValue,
+                       ftpPass = CRPassword.Encrypt(settings.SingleOrDefault(ss => ss.ParamName == "ftp_password")?.ParamValue)
+                   };
 
-                FtpFileModel ftp = new();
-                  res = ftp.UploadFileFtp(thePictureAsbytes, ftpModel.ftpServer, ftpModel.ftpLogin, ftpModel.ftpPass, saveModel.Id + saveModel.FileExt);
-            });
+               FtpFileModel ftp = new();
+               res = ftp.UploadFileFtp(thePictureAsbytes, ftpModel.ftpServer, ftpModel.ftpLogin, ftpModel.ftpPass, saveModel.Id + saveModel.FileExt);
+           });
 
             return Json(res);
         }
@@ -883,5 +882,24 @@ public partial class AppealController : Controller
         return RedirectToAction("PartialTableFiles", new { appealId = deleteFile.DataAppealId });
     }
     #endregion
+
+
+    private IEnumerable<SprEmployees> GetEmployees(ClaimsPrincipal user)
+    {
+        var employees = _repository.SprEmployees.Where(e => e.IsRemove != true).OrderBy(o => o.EmployeesName);
+
+        if (user.IsInRole("superadmin") || user.IsInRole("admin") || user.IsInRole("operator"))
+        {
+            return employees;
+        }
+
+        return employees.Where(se => se.EmployeesLogin == user.Identity.Name).OrderBy(o => o.EmployeesName);
+    }
+
+    private Guid GetCurrentEmployeeId(ClaimsPrincipal user)
+    {
+        var employee = GetEmployees(user).FirstOrDefault(w => w.EmployeesLogin == user.Identity.Name);
+        return employee?.Id ?? Guid.Empty;
+    }
 
 }

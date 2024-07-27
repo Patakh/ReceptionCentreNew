@@ -67,14 +67,14 @@
                     </div>
                     @if (User.IsInRole("superadmin"))
                     {
-                        <a asp-controller="System" asp-action="PartialTableSettings" class="dropdown-item notify-item">
-                            <i class="md md-settings"></i> <span>Настройки</span>
+                        <a asp-controller="Settings" asp-action="Index" class="dropdown-item notify-item">
+                            <i class="md md-settings"></i><span>Настройки</span>
                         </a>
                         <a asp-controller="System" asp-action="Errors" class="dropdown-item notify-item">
-                            <i class="md md-error"></i> <span>Ошибки</span>
+                            <i class="md md-error"></i><span>Ошибки</span>
                         </a>
                         <a asp-controller="System" asp-action="ChangeLogs" class="dropdown-item notify-item">
-                            <i class="md md-history"></i> <span>Изменения</span>
+                            <i class="md md-history"></i><span>Изменения</span>
                         </a>
                     }
                     @if (User.Identity.Name == "begamagomed" || Context.User.Identity.Name == "эльмира")

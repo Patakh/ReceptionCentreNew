@@ -9,10 +9,7 @@ using ReceptionCentreNew.Models;
 using ReceptionCentreNew.Models.Account;
 using ReceptionCentreNew.Providers;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using SmartBreadcrumbs.Extensions;
-using ReceptionCentreNew.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.CSharp.RuntimeBinder;
+using SmartBreadcrumbs.Extensions; 
 
 var builder = WebApplication.CreateBuilder(args);
 

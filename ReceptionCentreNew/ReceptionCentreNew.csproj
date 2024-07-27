@@ -189,8 +189,8 @@
 		<None Include="Views\System\ChangeLogs\Main.cshtml" />
 		<None Include="Views\System\Errors\Main.cshtml" />
 		<None Include="Views\System\Errors\PartialTableErrors.cshtml" />
-		<None Include="Views\System\Settting\PartialModalEditSettting.cshtml" />
-		<None Include="Views\System\Settting\PartialTableSettings.cshtml" />
+		<None Include="Views\Settings\Edit.cshtml" />
+		<None Include="Views\Settings\Index.cshtml" />
 		<None Include="wwwroot\css\access-dineded.css" />
 		<None Include="wwwroot\js\admin\admin-layout.js" />
 		<None Include="wwwroot\js\jquery.signalR-6.0.1\signalr.min.js" />

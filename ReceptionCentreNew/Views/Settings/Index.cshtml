@@ -1,10 +1,12 @@
-﻿@model List<SprSetting>
+﻿@model List<SprSetting> 
 @{
     ViewBag.Title = "Настройки";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
 <!-- Все настройки -->
 <link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
+
 <div id="settings">
     <div class="card-box p-0">
         <div class="table-responsive">
@@ -22,18 +24,18 @@
                     @foreach (var item in Model)
                     {
                         { i++; }
-                        <tr data-settings-id="@item.Id">
+                        <tr id="@item.Id">
                             <td class="number-row p-l-20-important">
                                 @i.ToString()
                             </td>
                             <td>
-                                <span>@item.ParamName</span><br>
+                                <span name>@item.ParamName</span>
                             </td>
                             <td>
-                                <span>@item.ParamValue</span><br>
+                                <span val>@item.ParamValue</span>
                             </td>
                             <td>
-                                <span>@item.Commentt</span><br>
+                                <span comment>@item.Commentt</span>
                             </td>
                             <td class="actions text-right">
                                 @if (User.IsInRole("superadmin") || User.IsInRole("admin"))
@@ -66,7 +68,9 @@
 @section scripts {
     <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
     <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
+
     <script> 
+
         $(document).ready(function () {
             var filtering = $('#settingsTable');
             filtering.footable();
@@ -80,14 +84,18 @@
                 $('#settingsTable #filter_count').text($('#settingsTable.footable tbody tr:not(.footable-filtered)').length);
             });
         });
+
         function Edit(settingId) {
             $.ajax({
                 type: 'GET',
-                url: '@Url.Action("EditSetting", "System")',
+                url: 'Settings/Edit',
                 data: { settingId: settingId },
                 success: function (data) {
                     $('#newModal').html(data);
                     $('#newModal').modal('show');
+                },
+                error: function () {
+                    errorAction();
                 }
             });
         }
