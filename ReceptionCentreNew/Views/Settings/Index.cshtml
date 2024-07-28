@@ -1,12 +1,8 @@
-﻿@model List<SprSetting> 
+﻿@model PagerViewModel<SprSetting>
 @{
-    ViewBag.Title = "Настройки";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Настройки"; 
 }
-
-<!-- Все настройки -->
-<link href="~/new_design/plugins/footable/css/footable.core.css" rel="stylesheet">
-
+ 
 <div id="settings">
     <div class="card-box p-0">
         <div class="table-responsive">
@@ -21,7 +17,7 @@
                     @{
                         int i = 0;
                     }
-                    @foreach (var item in Model)
+                    @foreach (var item in Model.Items)
                     {
                         { i++; }
                         <tr id="@item.Id">
@@ -61,27 +57,27 @@
                     </tr>
                 </tfoot>
             </table>
+            <ul id="emp-pagination" class="pagination"></ul> 
+            <input asp-for="Pager.NumberOfPages" type="hidden" id="hdnTotalNumberOfPages" value="@Model.Pager.NumberOfPages" />
+            <input asp-for="Pager.CurrentPage" type="hidden" id="hdnCurrentPage" value="@Model.Pager.CurrentPage" />
         </div>
     </div>
 </div>
 
-@section scripts {
-    <script src="~/new_design/plugins/jquery.steps/js/jquery.steps.min.js"></script>
-    <script src="~/new_design/plugins/footable/js/footable.all.min.js"></script>
-
-    <script> 
-
-        $(document).ready(function () {
-            var filtering = $('#settingsTable');
-            filtering.footable();
-            $('#settingsTable #filter_count').text($('#settingsTable.footable tbody tr:not(.footable-filtered)').length);
-            $('#settingsTable #tr_count').text($('#settingsTable.footable tbody tr').length);
-
-            // Search input
-            $('#searchTextSettings').keyup(function (evt) {
-                evt.preventDefault();
-                filtering.trigger('footable_filter', { filter: $(this).val() });
-                $('#settingsTable #filter_count').text($('#settingsTable.footable tbody tr:not(.footable-filtered)').length);
+@section scripts {  
+    <script>
+        $(function () {
+            $('#emp-pagination').pagination({
+                pages: $('#hdnTotalNumberOfPages').val(),
+                currentPage: $('#hdnCurrentPage').val(),
+                itemsOnPage: 10,
+                cssStyle: 'light-theme',
+                onPageClick: function (pageNo) {
+                    var url = "/Settings/Index?pageNumber=" + pageNo;
+                    window.location.href = url;
+                },
+                hrefTextSuffix: '',
+                selectOnClick: true
             });
         });
 
