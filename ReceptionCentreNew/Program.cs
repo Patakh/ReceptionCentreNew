@@ -1,15 +1,17 @@
 using AisReception.Data.Context.App;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Data.Context.App.Abstract;
+using ReceptionCentreNew.Helpers;
+using ReceptionCentreNew.Helpers.PageHelper;
 using ReceptionCentreNew.Hubs;
-using Microsoft.AspNetCore.Identity;
 using ReceptionCentreNew.Models;
 using ReceptionCentreNew.Models.Account;
 using ReceptionCentreNew.Providers;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using SmartBreadcrumbs.Extensions; 
+using SmartBreadcrumbs.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,6 +55,9 @@ builder.Services.AddScoped<IRepository, EFRepository>();
 
 builder.Services.AddScoped<IUserPasswordStore<ApplicationUser>, CustomMembershipProvider>();
 builder.Services.AddScoped<IUserRoleStore<ApplicationUser>, CustomRoleProvider>();
+
+builder.Services.AddTransient(typeof(IPageHelper<>), typeof(PageHelper<>));
+builder.Services.AddSingleton<IPageConfig, PageConfig>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>

@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="~/img/ico.png">
     <title>@ViewBag.Title</title>
-
-    <!-- Plugins css-->
      
     <link href="~/new_design/plugins/jquery.steps/css/jquery.steps.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/new_design/plugins/animate/animate.min.css" rel="stylesheet" type="text/css" asp-append-version="true">
@@ -25,8 +23,11 @@
     <link href="~/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css" asp-append-version="true" />
     <link href="~/plugins/lobibox/css/lobibox.css" rel="stylesheet" type="text/css" asp-append-version="true" /> 
     <link href="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.css" rel="stylesheet" type="text/css" asp-append-version="true" />
-       
+
+    <link href="~/lib/pagination/pagination.css" rel="stylesheet" type="text/css" asp-append-version="true">
+
     <script src="~/new_design/assets/js/modernizr.min.js"></script>
+     
 </head>
 <body class="fixed-left">
     <div id="wrapper">
@@ -99,6 +100,7 @@
     <script src="~/new_design/plugins/fancyapps/dist/jquery.fancybox.min.js"></script>
     <script src="~/js/jquery.signalR-6.0.1/signalr.min.js"></script>
 
+    <script src="~/lib/pagination/jquery.pagination.js"></script>
     @RenderSection("scripts", false)
     <script>
         var connection = new signalR.HubConnectionBuilder().withUrl("/NotificationHub").build();
