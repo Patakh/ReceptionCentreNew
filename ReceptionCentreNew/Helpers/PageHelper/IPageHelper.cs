@@ -1,5 +1,5 @@
 ﻿namespace ReceptionCentreNew.Helpers.PageHelper;
-public interface IPageHelper<T>
+public interface IPageHelper<T> where T : class
 {
-    IResultSet<T> GetPage(IQueryable<T> items, int pageNumber);
+    IPageResult<T> GetPage(IQueryable<T> items, int pageNumber, int rowCount);
 }

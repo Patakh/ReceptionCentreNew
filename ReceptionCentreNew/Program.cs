@@ -56,8 +56,7 @@ builder.Services.AddScoped<IRepository, EFRepository>();
 builder.Services.AddScoped<IUserPasswordStore<ApplicationUser>, CustomMembershipProvider>();
 builder.Services.AddScoped<IUserRoleStore<ApplicationUser>, CustomRoleProvider>();
 
-builder.Services.AddTransient(typeof(IPageHelper<>), typeof(PageHelper<>));
-builder.Services.AddSingleton<IPageConfig, PageConfig>();
+builder.Services.AddTransient(typeof(IPageHelper<>), typeof(PageHelper<>)); 
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
