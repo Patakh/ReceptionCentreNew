@@ -68,7 +68,6 @@ public interface IRepository
     IEnumerable<StatisticsDataAppealType> FuncStatisticsDataAppealType(Guid? SprMfcId, DateTime DateStart, DateTime date_stop);
     IEnumerable<StatisticsDataAppealTypeDifficulty> FuncStatisticsDataAppealTypeDifficulty(Guid? SprMfcId, DateTime DateStart, DateTime date_stop);
 
-
     Task Insert<TEntity>(TEntity entity) where TEntity : class;
     Task Inserts<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
     Task Update<TEntity>(TEntity entity) where TEntity : class;

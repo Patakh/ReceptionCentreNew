@@ -12,6 +12,7 @@ public partial class EFRepository : IRepository
     {
         _context = new();
     }
+
     public IQueryable<SprCategory> SprCategory => _context.SprCategory.OrderBy(o => o.Sort);
     public IQueryable<SprEmployees> SprEmployees => _context.SprEmployees;
     public IQueryable<SprEmployeesDepartment> SprEmployeesDepartment => _context.SprEmployeesDepartment;
@@ -50,8 +51,7 @@ public partial class EFRepository : IRepository
     public IQueryable<DataAppealFile> DataAppealFile => _context.DataAppealFile;
     public IQueryable<DataCallback> DataCallback => _context.DataCallback;
     public IQueryable<DataCallbackCalls> DataCallbackCalls => _context.DataCallbackCalls;
-
-
+     
     public IEnumerable<DataAppealSelect> FuncDataAppealSelect(Guid? spr_employee_id, DateTime in_date_start, DateTime in_date_stop, Guid? in_spr_type_id, Guid? in_spr_type_difficulty_id, Guid? in_spr_category_id, Guid? in_spr_subject_treatment_id, int? in_spr_status_id)
                                    => _context.FuncDataAppealSelect(spr_employee_id, in_date_start, in_date_stop, in_spr_type_id, in_spr_type_difficulty_id, in_spr_category_id, in_spr_subject_treatment_id, in_spr_status_id);
     public DataAppealSelect FuncDataAppealInfo(string number) => _context.FuncDataAppealInfo(number);
@@ -122,7 +122,7 @@ public partial class EFRepository : IRepository
     public async Task Delete<TEntity>(TEntity entity)
         where TEntity : class
     {
-        _context.Entry<TEntity>(entity).State = EntityState.Deleted;
+        _context.Entry(entity).State = EntityState.Deleted;
         await _context.SaveChangesAsync();
     }
 }

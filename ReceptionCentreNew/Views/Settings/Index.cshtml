@@ -1,4 +1,4 @@
-﻿@model PagerViewModel<SprSetting>
+﻿@model PageViewModel<SprSetting>
 @{
     ViewBag.Title = "Настройки"; 
 }
@@ -70,10 +70,10 @@
             $('#emp-pagination').pagination({
                 pages: $('#hdnTotalNumberOfPages').val(),
                 currentPage: $('#hdnCurrentPage').val(),
-                itemsOnPage: 10,
+                itemsOnPage: 1,
                 cssStyle: 'light-theme',
                 onPageClick: function (pageNo) {
-                    var url = "/Settings/Index?pageNumber=" + pageNo;
+                    var url = `/Settings/Index?pageNumber=${pageNo}& rowCount= 1`;
                     window.location.href = url;
                 },
                 hrefTextSuffix: '',

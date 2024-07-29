@@ -1,9 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using NpgsqlTypes;
-using ReceptionCentreNew.Data.Context.App;
 using ReceptionCentreNew.Domain.Models.Entities.Functions;
-using System.Data;
 
 namespace ReceptionCentreNew.Data.Context.App;
 public partial class ReceptionCentreContext : DbContext

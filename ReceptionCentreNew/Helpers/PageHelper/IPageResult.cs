@@ -1,9 +1,9 @@
 ﻿using ReceptionCentreNew.Helpers.PageHelper;
 
 namespace ReceptionCentreNew.Helpers;
-public interface IResultSet<T>
+public interface IPageResult<T> where T : class
 {
     IEnumerable<T> Items { get; set; }
 
-    Pager Pager { get; }
+    Page Pager { get; }
 }
